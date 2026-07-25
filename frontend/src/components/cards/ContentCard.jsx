@@ -58,7 +58,7 @@ const ContentCard = ({
         
     }
     return (
-        <div className="card h-100 shadow-sm">
+        <div className="card content-card h-100 shadow-sm">
             <div className="card-body">
                 <div className="d-flex justify-content-between align-items-start mb-2">
                     <h5 className="card-title text-primary">{title}</h5>

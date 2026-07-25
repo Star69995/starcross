@@ -31,12 +31,6 @@ const Navbar = () => {
         }
     };
 
-    // Below lg the menu collapses into the navbar (Bootstrap makes it
-    // position: static, see .account-dropdown-menu in App.css) and should just
-    // fill that flow's width - forcing max-content there overflows the page,
-    // since it's no longer capped relative to a floating element's own edges.
-    const accountMenuItemStyle = { whiteSpace: 'normal', wordBreak: 'break-word' };
-
     const collapseRef = useRef(null); // Ref for the collapsible div
     const bsCollapseRef = useRef(null); // Ref to store the bootstrap Collapse instance
 
@@ -147,27 +141,32 @@ const Navbar = () => {
                                             src={user.photoURL}
                                             alt={user.userName}
                                             referrerPolicy="no-referrer"
-                                            style={{ width: '28px', height: '28px', borderRadius: '50%', objectFit: 'cover' }}
-                                            className="ms-2"
+                                            className="account-avatar ms-2"
                                         />
                                     ) : (
                                         <i className="bi bi-person-circle fs-5 ms-2"></i>
                                     )}
                                     {user.userName}
                                 </a>
-                                <ul className="dropdown-menu dropdown-menu-end account-dropdown-menu" aria-labelledby="accountDropdown">
+                                {/* dropdown-menu-start (not -end): this build is the standard LTR
+                                    bootstrap.min.css under dir="rtl" (see CLAUDE.md), so -end is
+                                    physical right:0 - but RTL flex mirroring plus the physical
+                                    me-auto above already pushes this toggle to the visual left
+                                    edge, so right:0 pushed the menu off the left side of the
+                                    viewport. start (left:0) grows it back into the page. */}
+                                <ul className="dropdown-menu dropdown-menu-start account-dropdown-menu" aria-labelledby="accountDropdown">
                                     <li>
-                                        <Link className="dropdown-item" style={accountMenuItemStyle} to="/profile" onClick={hideNavbar}>
+                                        <Link className="dropdown-item account-dropdown-item" to="/profile" onClick={hideNavbar}>
                                             הפרופיל שלי
                                         </Link>
                                     </li>
                                     <li>
-                                        <Link className="dropdown-item" style={accountMenuItemStyle} to="/favorite-crosswords" onClick={hideNavbar}>
+                                        <Link className="dropdown-item account-dropdown-item" to="/favorite-crosswords" onClick={hideNavbar}>
                                             תשבצים אהובים
                                         </Link>
                                     </li>
                                     <li>
-                                        <Link className="dropdown-item" style={accountMenuItemStyle} to="/favorite-wordlists" onClick={hideNavbar}>
+                                        <Link className="dropdown-item account-dropdown-item" to="/favorite-wordlists" onClick={hideNavbar}>
                                             רשימות מילים אהובות
                                         </Link>
                                     </li>
@@ -175,22 +174,22 @@ const Navbar = () => {
                                         <hr className="dropdown-divider" />
                                     </li>
                                     <li>
-                                        <Link className="dropdown-item" style={accountMenuItemStyle} to="/my-crosswords" onClick={hideNavbar}>
+                                        <Link className="dropdown-item account-dropdown-item" to="/my-crosswords" onClick={hideNavbar}>
                                             התשבצים שלי
                                         </Link>
                                     </li>
                                     <li>
-                                        <Link className="dropdown-item" style={accountMenuItemStyle} to="/my-wordlists" onClick={hideNavbar}>
+                                        <Link className="dropdown-item account-dropdown-item" to="/my-wordlists" onClick={hideNavbar}>
                                             רשימות המילים שלי
                                         </Link>
                                     </li>
                                     <li>
-                                        <Link className="dropdown-item" style={accountMenuItemStyle} to="/create-crossword" onClick={hideNavbar}>
+                                        <Link className="dropdown-item account-dropdown-item" to="/create-crossword" onClick={hideNavbar}>
                                             יצירת תשבץ
                                         </Link>
                                     </li>
                                     <li>
-                                        <Link className="dropdown-item" style={accountMenuItemStyle} to="/create-wordlist" onClick={hideNavbar}>
+                                        <Link className="dropdown-item account-dropdown-item" to="/create-wordlist" onClick={hideNavbar}>
                                             יצירת רשימת מילים
                                         </Link>
                                     </li>
@@ -199,8 +198,7 @@ const Navbar = () => {
                                     </li>
                                     <li>
                                         <button
-                                            className="dropdown-item"
-                                            style={accountMenuItemStyle}
+                                            className="dropdown-item account-dropdown-item"
                                             onClick={handleLogout} // The handler already calls hideNavbar
                                         >
                                             התנתקות

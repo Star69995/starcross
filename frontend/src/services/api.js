@@ -56,11 +56,27 @@ const toClientUser = (uid, data) => ({
     createdAt: data.createdAt,
 })
 
+// Firestore rejects arrays-of-arrays, so MakeGrid's `grid` (an array of row
+// arrays) can't be stored as-is — wrap each row in a map so the outer array
+// only ever contains objects.
+const encodeGridData = (gridData) => ({
+    ...gridData,
+    grid: gridData.grid.map((row) => ({ cells: row })),
+})
+
+const decodeGridData = (gridData) => ({
+    ...gridData,
+    grid: gridData.grid.map((row) => row.cells),
+})
+
 // Firestore stores a flat creatorId/creatorName; reshape to the nested
 // `creator: {_id, userName}` object the UI expects (matches the old
 // Mongoose `.populate("creator", "userName")` shape).
 const toClientDoc = (docSnap) => {
     const { creatorId, creatorName, ...rest } = docSnap.data()
+    if (rest.crosswordObject?.gridData) {
+        rest.crosswordObject = { ...rest.crosswordObject, gridData: decodeGridData(rest.crosswordObject.gridData) }
+    }
     return {
         _id: docSnap.id,
         ...rest,
@@ -187,7 +203,7 @@ export const createCrossword = async (crosswordData) => {
         title: crosswordData.title,
         description: crosswordData.description,
         isPublic: Boolean(crosswordData.isPublic),
-        crosswordObject: { gridData },
+        crosswordObject: { gridData: encodeGridData(gridData) },
         creatorId: uid,
         creatorName: userSnap.data()?.userName,
         likes: [],
@@ -205,6 +221,9 @@ export const updateCrossword = async (id, crosswordData) => {
     const updateFields = Object.fromEntries(
         Object.entries(crosswordData).filter(([key]) => allowedFields.includes(key))
     )
+    if (updateFields.crosswordObject?.gridData) {
+        updateFields.crosswordObject = { ...updateFields.crosswordObject, gridData: encodeGridData(updateFields.crosswordObject.gridData) }
+    }
     await updateDoc(doc(crosswordsCol, id), updateFields)
     const snap = await getDoc(doc(crosswordsCol, id))
     return { message: 'Crossword updated', crossword: toClientDoc(snap) }

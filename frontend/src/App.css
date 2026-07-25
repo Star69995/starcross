@@ -8,12 +8,13 @@ body {
   font-family: 'Segoe UI', 'Arial', sans-serif;
 }
 
-/* Card hover effects */
-.card {
+/* Hover lift for clickable content cards (crossword/word-list grid items) only -
+   not every Bootstrap .card, since that also covers static cards like login/profile/about. */
+.content-card {
   transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
 }
 
-.card:hover {
+.content-card:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
 }
@@ -88,6 +89,19 @@ body {
     width: max-content;
     max-width: calc(100vw - 1rem);
   }
+}
+
+/* Long Hebrew labels wrap instead of clipping/overflowing the menu box. */
+.account-dropdown-item {
+  white-space: normal;
+  word-break: break-word;
+}
+
+.account-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  object-fit: cover;
 }
 
 /* Difficulty badges */
