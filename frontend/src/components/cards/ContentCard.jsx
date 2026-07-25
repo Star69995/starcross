@@ -72,11 +72,11 @@ const ContentCard = ({
                 )}
                 <div className="mb-3">
                     <small className="text-muted">
-                        <i className="bi bi-person me-1 m-1"></i>
+                        <i className="bi bi-person ms-1"></i>
                         {creator}
                     </small>
                     <small className="text-muted ms-3">
-                        <i className="bi bi-calendar me-1"></i>
+                        <i className="bi bi-calendar ms-1"></i>
                         {createdAt}
                     </small>
                 </div>
@@ -89,7 +89,7 @@ const ContentCard = ({
                             </small>
                         )}
                         <small className="text-muted">
-                            <i className="bi bi-heart me-1 m-1"></i>
+                            <i className="bi bi-heart ms-1"></i>
                             {likesCount1}
                         </small>
                     </div>
@@ -98,7 +98,7 @@ const ContentCard = ({
                 <div className="d-flex justify-content-between align-items-center">
                     {viewUrl && (
                         <Link to={viewUrl} className="btn btn-primary btn-sm">
-                            <i className="bi bi-play-circle m-1"></i>{viewText}
+                            <i className="bi bi-play-circle ms-1"></i>{viewText}
                         </Link>
                     )}
 

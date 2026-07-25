@@ -47,13 +47,13 @@ function App() {
             } />
 
             <Route path="/create-crossword" element={
-              <ProtectedRoute requiresContentCreator>
+              <ProtectedRoute>
                 <CrosswordCreator />
               </ProtectedRoute>
             } />
 
             <Route path="/edit-crossword/:id" element={
-              <ProtectedRoute requiresContentCreator>
+              <ProtectedRoute>
                 <CrosswordEditor />
               </ProtectedRoute>
             } />
@@ -71,7 +71,7 @@ function App() {
             } />
 
             <Route path="/edit-wordlist/:id" element={
-              <ProtectedRoute requiresContentCreator>
+              <ProtectedRoute>
                 <WordListEditor />
               </ProtectedRoute>
             } />

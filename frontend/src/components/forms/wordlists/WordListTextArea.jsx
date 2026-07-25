@@ -18,7 +18,7 @@ const WordListTextArea = ({
                     onChange={handleImport}
                 />
                 <label htmlFor="import-file" className="btn btn-outline-secondary">
-                    <i className="bi bi-upload me-1"></i>יבוא
+                    <i className="bi bi-upload ms-1"></i>יבוא
                 </label>
                 <button
                     type="button"
@@ -26,7 +26,7 @@ const WordListTextArea = ({
                     onClick={handleExport}
                     disabled={!wordsText.trim()}
                 >
-                    <i className="bi bi-download me-1"></i>יצוא
+                    <i className="bi bi-download ms-1"></i>יצוא
                 </button>
             </div>
         </div>

@@ -77,6 +77,19 @@ body {
   }
 }
 
+/* Account dropdown in the navbar: Bootstrap floats it (position: absolute) only
+   from lg up (see .navbar-expand-lg .navbar-nav .dropdown-menu); below that it
+   collapses into the nav and becomes position: static. Cap its width to the
+   viewport only while floating - applying that cap while static made it wider
+   than the collapsed nav's own column and pushed the page into horizontal
+   overflow on phones. */
+@media (min-width: 992px) {
+  .account-dropdown-menu {
+    width: max-content;
+    max-width: calc(100vw - 1rem);
+  }
+}
+
 /* Difficulty badges */
 .badge.bg-success {
   background-color: #28a745 !important;

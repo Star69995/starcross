@@ -53,7 +53,6 @@ const toClientUser = (uid, data) => ({
     userName: data.userName,
     email: data.email,
     photoURL: data.photoURL || null,
-    isContentCreator: !!data.isContentCreator,
     createdAt: data.createdAt,
 })
 
@@ -82,7 +81,6 @@ export const register = async (userData) => {
         userName: userData.userName,
         email: userData.email,
         photoURL: null,
-        isContentCreator: Boolean(userData.isContentCreator),
         createdAt: new Date().toISOString(),
     }
     await setDoc(doc(usersCol, credential.user.uid), profile)
@@ -116,7 +114,6 @@ export const loginWithGoogle = async () => {
             userName: credential.user.displayName || credential.user.email.split('@')[0],
             email: credential.user.email,
             photoURL: credential.user.photoURL || null,
-            isContentCreator: false,
             createdAt: new Date().toISOString(),
         }
         await setDoc(userRef, profile)
@@ -135,7 +132,7 @@ export const getCurrentUser = async () => {
 }
 
 export const updateProfile = async (userId, profileData) => {
-    const allowedFields = ['userName', 'isContentCreator']
+    const allowedFields = ['userName']
     const updateFields = Object.fromEntries(
         Object.entries(profileData).filter(([key]) => allowedFields.includes(key))
     )

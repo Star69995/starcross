@@ -20,7 +20,7 @@ function Footer() {
                     <div className="col-md-4 text-center mb-2"> 
                         <h6 className="mb-1">יצירת קשר</h6> 
                         <div>
-                            <i className="fas fa-envelope me-2"></i>
+                            <i className="bi bi-envelope ms-2"></i>
                             <a href="mailto:star69995@gmail.com" className="text-light text-decoration-none">
                                 <small>star69995@gmail.com</small> 
                             </a>
@@ -30,7 +30,7 @@ function Footer() {
                     {/* קישור גיטהאב */}
                     <div className="col-md-4 text-center mb-2" style={{direction: "ltr"}}> 
                         <h6 className="mb-1">קוד המקור</h6> 
-                        <a href="https://github.com/Star69995/star-crossword" className="text-light text-decoration-none" target="_blank" rel="noopener noreferrer">
+                        <a href="https://github.com/Star69995/starcross" className="text-light text-decoration-none" target="_blank" rel="noopener noreferrer">
                             <i className="bi bi-github me-2"></i>
                             <small>GitHub</small> 
                         </a>

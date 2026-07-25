@@ -22,7 +22,15 @@
 
 ## Icons, not emojis
 - Never use emoji characters in UI copy, labels, commit messages, or docs generated for this project. Use `bootstrap-icons` (`<i className="bi bi-...">`), already a dependency, for any icon/visual marker needed in the UI.
-- Always leave a visible gap between an icon and adjacent text — never render `<i className="bi bi-...">` flush against a text node. Use a spacing utility class on the icon (`me-1`/`me-2` before RTL text, `ms-1`/`ms-2` after it) matching the existing direction convention in that component, not a hardcoded margin/padding value.
+- Always leave a visible gap between an icon and adjacent text — never render `<i className="bi bi-...">` flush against a text node.
+- **Important/counter-intuitive**: this app loads the standard (non-RTL) `bootstrap.min.css` build while `<html>` is `dir="rtl"` (see `index.html`) — so Bootstrap's `ms-*`/`me-*` spacing utilities are **physical** (`ms-*` = `margin-left`, `me-*` = `margin-right`), they do NOT flip for RTL like true logical properties would. Combined with RTL bidi layout, an icon that comes *before* its text in JSX renders on the right with the text to its left — so the gap must come from `ms-*` (not `me-*`, which is the LTR-intuitive but wrong choice here and produces a zero-width gap). An icon that comes *after* its text needs `me-*` instead. When in doubt, check a working example in the same file/area rather than guessing from LTR habit.
+- Prefer flex `gap-*` on the shared container (icon and text as flex children) over per-icon margin when possible — it isn't affected by this physical-vs-logical pitfall at all (see `FormCard.jsx`'s submit button).
+
+## RTL arrow direction
+- Hebrew (RTL) is the only language on this site — any directional arrow (character `→`/`←`, or icons like `bi-arrow-left`/`bi-arrow-right`/`bi-chevron-*`) must point the way Hebrew reading actually flows, not the LTR-default direction.
+  - "Back / return to previous" flows toward the right (reading start) — use a right-pointing arrow (`bi-arrow-right`, `→`).
+  - "Forward / next / continue" flows toward the left (reading end) — use a left-pointing arrow (`bi-arrow-left`, `←`).
+  - For a non-navigational "maps to" annotation (e.g. a technical identifier next to its Hebrew explanation), order it so the arrow still reads right-to-left: Hebrew explanation first (right), arrow, identifier last (left) — e.g. `פרופילי משתמשים ← users`, not `users → פרופילי משתמשים`.
 
 ## Keeping docs in sync
 - When a change affects how the app is run, deployed, or structured (new top-level folder, new major dependency, changed Firebase setup, changed scripts), update the root `README.md` (and `frontend/README.md` if frontend-specific) in the same change.

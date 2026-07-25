@@ -58,12 +58,10 @@ const MyCrosswords = () => {
                 <div className="col-12">
                     <div className="d-flex justify-content-between align-items-center mb-4">
                         <h1 className="display-4 text-primary">התשבצים שלי</h1>
-                        {user?.isContentCreator && (
-                            <Link to="/create-crossword" className="btn btn-primary">
-                                <i className="bi bi-plus-circle me-2"></i>
-                                תשבץ חדש
-                            </Link>
-                        )}
+                        <Link to="/create-crossword" className="btn btn-primary">
+                            <i className="bi bi-plus-circle ms-2"></i>
+                            תשבץ חדש
+                        </Link>
                     </div>
                 </div>
             </div>
@@ -86,7 +84,7 @@ const MyCrosswords = () => {
                 </div>
                 <div className="col-md-4 text-md-end">
                     <div className="text-muted">
-                        <i className="bi bi-puzzle me-1"></i>
+                        <i className="bi bi-puzzle ms-1"></i>
                         {filteredCrosswords.length} תשבצים
                     </div>
                 </div>
@@ -116,18 +114,11 @@ const MyCrosswords = () => {
                             <div className="text-muted">
                                 <i className="bi bi-puzzle fs-1 d-block mb-3"></i>
                                 <h4>אין לך עדיין תשבצים</h4>
-                                <p>
-                                    {user?.isContentCreator
-                                        ? 'התחל ליצור את התשבץ הראשון שלך'
-                                        : 'רק יוצרי תוכן יכולים ליצור תשבצים'
-                                    }
-                                </p>
-                                {user?.isContentCreator && (
-                                    <Link to="/create-crossword" className="btn btn-primary">
-                                        <i className="bi bi-plus-circle me-2"></i>
-                                        צור תשבץ חדש
-                                    </Link>
-                                )}
+                                <p>התחל ליצור את התשבץ הראשון שלך</p>
+                                <Link to="/create-crossword" className="btn btn-primary">
+                                    <i className="bi bi-plus-circle ms-2"></i>
+                                    צור תשבץ חדש
+                                </Link>
                             </div>
                         </div>
                     )}

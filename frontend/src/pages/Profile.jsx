@@ -15,7 +15,6 @@ const Profile = () => {
 
     const [profileData, setProfileData] = useState({
         userName: user?.userName || '',
-        isContentCreator: user?.isContentCreator || false,
     })
 
     const [passwordData, setPasswordData] = useState({
@@ -139,17 +138,6 @@ const Profile = () => {
                                             />
                                         </div>
 
-                                        <div className="form-check mb-4">
-                                            <input
-                                                type="checkbox"
-                                                className="form-check-input"
-                                                id="isContentCreator"
-                                                checked={profileData.isContentCreator}
-                                                onChange={(e) => setProfileData({ ...profileData, isContentCreator: e.target.checked })}
-                                            />
-                                            <label className="form-check-label" htmlFor="isContentCreator">יוצר תוכן</label>
-                                        </div>
-
                                         <button
                                             type="submit"
                                             className="btn btn-primary w-100 w-sm-auto"
@@ -157,12 +145,12 @@ const Profile = () => {
                                         >
                                             {loading ? (
                                                 <>
-                                                    <span className="spinner-border spinner-border-sm me-2"></span>
+                                                    <span className="spinner-border spinner-border-sm ms-2"></span>
                                                     שומר...
                                                 </>
                                             ) : (
                                                 <>
-                                                    <i className="bi bi-check-circle me-2"></i>
+                                                    <i className="bi bi-check-circle ms-2"></i>
                                                     שמור שינויים
                                                 </>
                                             )}
@@ -216,12 +204,12 @@ const Profile = () => {
                                         >
                                             {loading ? (
                                                 <>
-                                                    <span className="spinner-border spinner-border-sm me-2"></span>
+                                                    <span className="spinner-border spinner-border-sm ms-2"></span>
                                                     משנה...
                                                 </>
                                             ) : (
                                                 <>
-                                                    <i className="bi bi-shield-check me-2"></i>
+                                                    <i className="bi bi-shield-check ms-2"></i>
                                                     שנה סיסמה
                                                 </>
                                             )}

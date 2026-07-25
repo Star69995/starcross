@@ -6,11 +6,6 @@ service cloud.firestore {
       return request.auth != null;
     }
 
-    function isContentCreator() {
-      return isSignedIn() &&
-        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isContentCreator == true;
-    }
-
     // true if the only field(s) that changed are exactly `fields`
     function onlyFieldsChanged(fields) {
       return request.resource.data.diff(resource.data).affectedKeys().hasOnly(fields);
@@ -25,8 +20,7 @@ service cloud.firestore {
     }
 
     // users/{uid} — strictly self-only, matching the Express app's
-    // authMD-gated, self-only /users routes. isContentCreator stays
-    // self-settable on update (same pre-existing quirk as the Mongo app).
+    // authMD-gated, self-only /users routes.
     match /users/{uid} {
       allow read, update, delete: if isSignedIn() && request.auth.uid == uid;
       allow create: if isSignedIn() && request.auth.uid == uid;
@@ -37,14 +31,12 @@ service cloud.firestore {
                  || (isSignedIn() && resource.data.creatorId == request.auth.uid);
 
       allow create: if isSignedIn()
-                 && isContentCreator()
                  && request.resource.data.creatorId == request.auth.uid
                  && request.resource.data.likes.size() == 0
                  && request.resource.data.solved.size() == 0;
 
-      // full edit — creator only, re-checks isContentCreator on every write
+      // full edit — creator only
       allow update: if isSignedIn()
-                 && isContentCreator()
                  && resource.data.creatorId == request.auth.uid
                  && request.resource.data.creatorId == resource.data.creatorId;
 
@@ -64,7 +56,6 @@ service cloud.firestore {
                  && selfToggleOnly('solved');
 
       allow delete: if isSignedIn()
-                 && isContentCreator()
                  && resource.data.creatorId == request.auth.uid;
     }
 
@@ -73,12 +64,10 @@ service cloud.firestore {
                  || (isSignedIn() && resource.data.creatorId == request.auth.uid);
 
       allow create: if isSignedIn()
-                 && isContentCreator()
                  && request.resource.data.creatorId == request.auth.uid
                  && request.resource.data.likes.size() == 0;
 
       allow update: if isSignedIn()
-                 && isContentCreator()
                  && resource.data.creatorId == request.auth.uid
                  && request.resource.data.creatorId == resource.data.creatorId;
 
@@ -93,7 +82,6 @@ service cloud.firestore {
       // no `solved` rule branch — the current app has no wordList /:id/solved route
 
       allow delete: if isSignedIn()
-                 && isContentCreator()
                  && resource.data.creatorId == request.auth.uid;
     }
   }

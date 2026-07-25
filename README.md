@@ -71,8 +71,6 @@ firebase deploy --only hosting           # push the built frontend
 
 - Renaming a user doesn't retroactively update `creatorName` on their past crosswords/word
   lists (no server-side fan-out available on the free plan). Not built — flag if it matters.
-- `isContentCreator` is self-settable by any user (via `updateProfile`) — same trust level as
-  the original Mongo app, not a new weakness introduced here.
 - `Profile.jsx`'s profile-details tab (`name`/`bio`/`stats`) was already inconsistent with the
   real user schema before this migration (calls `updateProfile` with the wrong argument count,
   references fields — `bio`, `stats` — that don't exist on the `User` model). Left as-is;

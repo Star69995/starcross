@@ -55,7 +55,7 @@ const MyWordLists = () => {
                     <div className="d-flex justify-content-between align-items-center mb-4">
                         <h1 className="display-4 text-primary">רשימות המילים שלי</h1>
                         <Link to="/create-wordlist" className="btn btn-primary">
-                            <i className="bi bi-plus-circle me-2"></i>
+                            <i className="bi bi-plus-circle ms-2"></i>
                             רשימה חדשה
                         </Link>
                     </div>
@@ -80,7 +80,7 @@ const MyWordLists = () => {
                 </div>
                 <div className="col-md-6 text-md-end">
                     <div className="text-muted">
-                        <i className="bi bi-list-ul me-1"></i>
+                        <i className="bi bi-list-ul ms-1"></i>
                         {filteredWordLists.length} רשימות
                     </div>
                 </div>
@@ -106,7 +106,7 @@ const MyWordLists = () => {
                                 <h4>אין לך עדיין רשימות מילים</h4>
                                 <p>התחל ליצור את הרשימה הראשונה שלך</p>
                                 <Link to="/create-wordlist" className="btn btn-primary">
-                                    <i className="bi bi-plus-circle me-2"></i>
+                                    <i className="bi bi-plus-circle ms-2"></i>
                                     צור רשימה חדשה
                                 </Link>
                             </div>

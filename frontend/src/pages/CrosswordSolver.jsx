@@ -129,7 +129,7 @@ const CrosswordSolver = () => {
                             className="btn btn-outline-secondary"
                             onClick={() => navigate('/')}
                         >
-                            <i className="bi bi-arrow-right me-2"></i>
+                            <i className="bi bi-arrow-right ms-2"></i>
                             חזור
                         </button>
 

@@ -10,7 +10,6 @@ const Register = () => {
         email: '',
         password: '',
         confirmPassword: '',
-        isContentCreator: false
     })
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState('')
@@ -44,7 +43,6 @@ const Register = () => {
                 userName: formData.userName,
                 email: formData.email,
                 password: formData.password,
-                isContentCreator: formData.isContentCreator
             })
             navigate('/')
             toast.success('הרשמה בוצעה בהצלחה')
@@ -122,8 +120,6 @@ const Register = () => {
                                     onChange={handleChange}
                                     required
                                 />
-
-                                <GenericFormField name="isContentCreator" label="יוצר תוכן" value={formData.isContentCreator} type="checkbox" onChange={handleChange} />
 
                                 <button
                                     type="submit"
