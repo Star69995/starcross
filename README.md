@@ -43,10 +43,20 @@ process skips the export.
 
 ## Deploy
 
+Hosting deploys are automated via GitHub Actions (`.github/workflows/`):
+- Push to `main` → builds and deploys straight to the live site.
+- Any pull request → builds and deploys to a temporary preview channel, with the
+  preview URL posted back on the PR.
+
+Both workflows authenticate using the `FIREBASE_SERVICE_ACCOUNT_STARCROSS_CROSSWORD` repo
+secret (a Firebase-managed service account created via `firebase init hosting:github`) —
+no local `firebase deploy` needed for hosting.
+
+Firestore rules/indexes are **not** part of the automated workflow and still need a manual
+push when changed:
+
 ```
-firebase deploy --only firestore:rules   # push the security rules
-cd frontend && npm run build && cd ..
-firebase deploy --only hosting           # push the built frontend
+firebase deploy --only firestore:rules
 ```
 
 ## What changed vs. the Mongo/Express version
