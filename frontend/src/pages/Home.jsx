@@ -208,13 +208,25 @@ const Home = () => {
                         </div>
                     )}
                     {filteredCrosswords.length === 0 && (
-                        <div className="col-12 text-center py-5">
-                            <div className="text-muted">
-                                <i className="bi bi-puzzle fs-1 d-block mb-3"></i>
-                                <h4>לא נמצאו תשבצים</h4>
-                                <p>נסה לשנות את החיפוש או חזור מאוחר יותר</p>
+                        <>
+                            <div className="col-12 text-center py-5">
+                                <div className="text-muted">
+                                    <i className="bi bi-puzzle fs-1 d-block mb-3"></i>
+                                    <h4>לא נמצאו תשבצים</h4>
+                                    <p>נסה לשנות את החיפוש או חזור מאוחר יותר</p>
+                                </div>
                             </div>
-                        </div>
+                            {filter === 'all' && (
+                                <div className="col-lg-4 col-md-6 mx-auto">
+                                    <CreateCard
+                                        to="/create-crossword"
+                                        title="יצירת תשבץ חדש"
+                                        subtitle="בנייה פשוטה בכמה צעדים"
+                                        buttonText="להתחיל"
+                                    />
+                                </div>
+                            )}
+                        </>
                     )}
                 </div>
             )}
