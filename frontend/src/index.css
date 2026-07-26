@@ -1,5 +1,30 @@
 @import "bootstrap-icons/font/bootstrap-icons.css";
 
+/* Design tokens — accent blue/success green are taken directly from public/logo.svg
+   (gradient #3b82f6 -> #1d4ed8, dot #10b981) so the palette stays tied to the real
+   brand mark instead of an invented color. Paper/ink neutrals replace pure white/gray.
+   --radius-* re-enable rounding (the reset below zeroes it out globally) only on the
+   specific components in App.css that should have it; circles stay circles regardless. */
+:root {
+  --paper: #F7F3EA;
+  --bg-soft: #F0EAD9;
+  --ink: #241F1A;
+  --muted: #79715F;
+  --line: #E1D7C2;
+  --deep: #201B15;
+  --accent: #1D4ED8;
+  --accent-light: #3B82F6;
+  --accent-dark: #1E40AF;
+  --accent-tint: #E7EEFC;
+  --success: #0F9D6B;
+  --success-tint: #DEF5EA;
+  --like: #D6416A;
+  --highlight-tint: #FBF0C6;
+  --radius-lg: 10px;
+  --radius-md: 7px;
+  --radius-sm: 5px;
+}
+
 * {
   margin: 0;
   padding: 0;

@@ -1,10 +1,13 @@
 // pages/Home.jsx
-import { useCallback } from 'react'
+import { useCallback, useMemo } from 'react'
 import CrosswordCard from '../components/cards/CrosswordCard'
 import { getCrosswords } from '../services/api'
 import { useAsyncData } from '../hooks/useAsyncData'
+import { useAuth } from '../providers/AuthContext'
 
 const Home = () => {
+    const { user } = useAuth()
+
     const fetchCrosswords = useCallback(async () => {
         try {
             const data = await getCrosswords();
@@ -18,6 +21,13 @@ const Home = () => {
     const { data, loading, setData: setCrosswords } = useAsyncData(fetchCrosswords)
     const crosswords = data || []
 
+    // Real count, not an invented streak/progress figure - solved is an actual
+    // array of uids already on each crossword doc, just tallied across this list.
+    const solvedCount = useMemo(
+        () => (user ? crosswords.filter(cw => cw.solved?.includes(user._id)).length : 0),
+        [crosswords, user]
+    )
+
     const handleDeleteCrossword = (id) => {
         setCrosswords(prev => (prev || []).filter(cw => cw._id !== id));
     };
@@ -26,8 +36,14 @@ const Home = () => {
         <div className="container py-4">
             <div className="row">
                 <div className="col-12">
-                    <div className="d-flex justify-content-between align-items-center mb-4">
-                        <h1 className="display-4 text-primary">תשבצים פומביים</h1>
+                    <div className="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+                        <h1 className="display-4 text-primary mb-0">תשבצים פומביים</h1>
+                        {user && !loading && (
+                            <span className="home-solved-chip">
+                                <i className="bi bi-check2-circle"></i>
+                                {solvedCount} תשבצים נפתרו מתוך הרשימה
+                            </span>
+                        )}
                     </div>
                 </div>
             </div>

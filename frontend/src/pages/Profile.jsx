@@ -1,8 +1,14 @@
 // pages/Profile.jsx
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import { useAuth } from '../providers/AuthContext'
 import { auth } from '../services/firebase'
-import { updateProfile, changePassword } from '../services/api'
+import { updateProfile, changePassword, getCrosswords, getMyCrosswords, getMyWordLists } from '../services/api'
+import { useAsyncData } from '../hooks/useAsyncData'
+
+// Milestones are just thresholds checked against the real counts below - not a
+// separate achievements system, so nothing here is invented/fake data.
+const CROSSWORD_MILESTONES = [10, 50, 100]
+const CREATED_MILESTONES = [5, 20]
 
 const Profile = () => {
     const { user, updateUser } = useAuth()
@@ -12,6 +18,32 @@ const Profile = () => {
     const [loading, setLoading] = useState(false)
     const [message, setMessage] = useState('')
     const [error, setError] = useState('')
+
+    const fetchStats = useCallback(async () => {
+        if (!user) return { solvedCount: 0, createdCrosswords: 0, createdWordLists: 0 }
+        try {
+            const [publicCrosswords, myCrosswords, myWordLists] = await Promise.all([
+                getCrosswords(),
+                getMyCrosswords(),
+                getMyWordLists(),
+            ])
+            const uniqueMap = new Map()
+                ;[...publicCrosswords, ...myCrosswords].forEach(cw => uniqueMap.set(cw._id, cw))
+            const solvedCount = Array.from(uniqueMap.values())
+                .filter(cw => cw.solved?.includes(user._id)).length
+            return {
+                solvedCount,
+                createdCrosswords: myCrosswords.length,
+                createdWordLists: myWordLists.length,
+            }
+        } catch (error) {
+            console.error('Error loading profile stats:', error)
+            return { solvedCount: 0, createdCrosswords: 0, createdWordLists: 0 }
+        }
+    }, [user])
+
+    const { data: stats } = useAsyncData(fetchStats, { enabled: Boolean(user) })
+    const { solvedCount = 0, createdCrosswords = 0, createdWordLists = 0 } = stats || {}
 
     const [profileData, setProfileData] = useState({
         userName: user?.userName || '',
@@ -69,8 +101,8 @@ const Profile = () => {
         <div className="container py-4">
             <div className="row justify-content-center">
                 <div className="col-lg-8">
-                    <div className="card shadow">
-                        <div className="card-header bg-primary text-white">
+                    <div className="card shadow profile-cover-motif mb-3">
+                        <div className="card-header bg-primary text-white border-0">
                             <div className="d-flex align-items-center">
                                 {user?.photoURL ? (
                                     <img
@@ -89,7 +121,49 @@ const Profile = () => {
                                 </div>
                             </div>
                         </div>
+                    </div>
 
+                    <div className="profile-stats-row mb-3">
+                        <div className="profile-stat-card">
+                            <i className="bi bi-check2-circle"></i>
+                            <strong>{solvedCount}</strong>
+                            <span>תשבצים נפתרו</span>
+                        </div>
+                        <div className="profile-stat-card">
+                            <i className="bi bi-puzzle-fill"></i>
+                            <strong>{createdCrosswords}</strong>
+                            <span>תשבצים נוצרו</span>
+                        </div>
+                        <div className="profile-stat-card">
+                            <i className="bi bi-collection"></i>
+                            <strong>{createdWordLists}</strong>
+                            <span>רשימות נוצרו</span>
+                        </div>
+                    </div>
+
+                    <div className="mb-3">
+                        <h6 className="text-muted mb-2">הישגים</h6>
+                        <div className="profile-badges-row">
+                            {CROSSWORD_MILESTONES.map(n => (
+                                <div key={`solved-${n}`} className={`profile-badge ${solvedCount >= n ? '' : 'locked'}`}>
+                                    <div className="profile-badge-circle">
+                                        <i className={`bi ${solvedCount >= n ? 'bi-trophy-fill' : 'bi-lock-fill'}`}></i>
+                                    </div>
+                                    <span>{n} תשבצים נפתרו</span>
+                                </div>
+                            ))}
+                            {CREATED_MILESTONES.map(n => (
+                                <div key={`created-${n}`} className={`profile-badge ${createdCrosswords >= n ? '' : 'locked'}`}>
+                                    <div className="profile-badge-circle">
+                                        <i className={`bi ${createdCrosswords >= n ? 'bi-pencil-fill' : 'bi-lock-fill'}`}></i>
+                                    </div>
+                                    <span>{n} תשבצים נוצרו</span>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    <div className="card shadow">
                         <div className="card-body p-0">
                             <ul className="nav nav-tabs flex-column flex-sm-row" role="tablist">
                                 <li className="nav-item flex-fill text-center" role="presentation">

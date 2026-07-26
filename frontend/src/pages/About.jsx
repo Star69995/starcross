@@ -76,7 +76,7 @@ const About = () => {
             <div className="row mb-4">
                 <div className="col">
                     <h1 className="text-primary">
-                        <i className="bi bi-star-fill ms-2"></i>סטאר תשבצים
+                        <i className="bi bi-puzzle-fill ms-2"></i>משבצת
                     </h1>
                     <p className="lead">
                         פלטפורמת תשבצים אינטרנטית המאפשרת יצירה, פתרון ושיתוף של תשבצים –

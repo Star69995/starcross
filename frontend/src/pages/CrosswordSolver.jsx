@@ -184,29 +184,30 @@ const CrosswordSolver = () => {
         <div className="container-fluid py-4">
             <div className="row">
                 <div className="col-12">
-                    <div className="d-flex justify-content-between align-items-center mb-4">
+                    <div className="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
                         <div>
                             <h1 className="display-5 text-primary">{crossword.title}</h1>
                             {crossword.description && (
                                 <p className="text-muted">{crossword.description}</p>
                             )}
                         </div>
-                        <ActionButtons
-                            isLiked={isLiked}
-                            canEdit={crossword.creator._id === user?._id}
-                            canDelete={crossword.creator._id === user?._id}
-                            onEdit={handleEdit}
-                            handleLike={handleLike}
-                            handleDelete={handleDelete}
-                        />
-                        <button
-                            className="btn btn-outline-secondary"
-                            onClick={() => navigate('/')}
-                        >
-                            <i className="bi bi-arrow-right ms-2"></i>
-                            חזור
-                        </button>
-
+                        <div className="d-flex align-items-center gap-2">
+                            <ActionButtons
+                                isLiked={isLiked}
+                                canEdit={crossword.creator._id === user?._id}
+                                canDelete={crossword.creator._id === user?._id}
+                                onEdit={handleEdit}
+                                handleLike={handleLike}
+                                handleDelete={handleDelete}
+                            />
+                            <button
+                                className="btn btn-outline-secondary"
+                                onClick={() => navigate('/')}
+                            >
+                                <i className="bi bi-arrow-right ms-2"></i>
+                                חזור
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>

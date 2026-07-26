@@ -11,6 +11,7 @@ const ContentCard = ({
     creator = "משתמש לא ידוע",
     createdAt,
     stats = [],
+    icon = "bi-grid",
     badge,
     completed,
     liked,
@@ -62,7 +63,12 @@ const ContentCard = ({
         <div className="card content-card h-100 shadow-sm">
             <div className="card-body">
                 <div className="d-flex justify-content-between align-items-start mb-2">
-                    <h5 className="card-title text-primary">{title}</h5>
+                    <div className="d-flex align-items-center gap-2">
+                        <span className="content-card-icon">
+                            <i className={`bi ${icon}`}></i>
+                        </span>
+                        <h5 className="card-title text-primary mb-0">{title}</h5>
+                    </div>
                     <div className="d-flex flex-wrap justify-content-end gap-1">
                         {completed && (
                             <span className="badge bg-success">
@@ -133,6 +139,7 @@ ContentCard.propTypes = {
     creator: PropTypes.string,
     createdAt: PropTypes.string,
     stats: PropTypes.array,
+    icon: PropTypes.string,
     badge: PropTypes.bool,
     completed: PropTypes.bool,
     liked: PropTypes.bool,

@@ -146,12 +146,12 @@ const Block = ({ row, col }) => {
                     textAlign: 'center',
                     fontSize: '24px',
                     border: 'none',
-                    backgroundColor: isBlack ? 'black' :
-                        focusedCell?.row === row && focusedCell?.col === col && cell.value === cell.solution ? 'rgb(84, 180, 143)' :  // צבע ירוק בהיר כשנכון וממוקד
-                            focusedCell?.row === row && focusedCell?.col === col ? 'rgb(171, 178, 255)' :
-                                (cell.isHighlighted && cell.value === cell.solution) ? 'rgb(158, 255, 198)' : // צבע שונה אם ההגדרה מודגשת והתשובה נכונה
-                                    cell.isHighlighted ? 'rgb(200, 220, 255)' :
-                                        (cell.value === cell.solution || (showSolution && cell.solution)) ? 'rgb(221, 255, 221)' :
+                    backgroundColor: isBlack ? 'var(--ink)' :
+                        focusedCell?.row === row && focusedCell?.col === col && cell.value === cell.solution ? '#D8E9C9' : // focused + correct
+                            focusedCell?.row === row && focusedCell?.col === col ? 'var(--highlight-tint)' : // focused (highlighter-pen tint)
+                                (cell.isHighlighted && cell.value === cell.solution) ? '#EAF6DE' : // active word + correct
+                                    cell.isHighlighted ? 'var(--accent-tint)' : // active word
+                                        (cell.value === cell.solution || (showSolution && cell.solution)) ? 'var(--success-tint)' :
                                             'white',
                     outline: 'none',
                     opacity: isBlack || (showSolution && cell.solution) ? 1 : undefined,

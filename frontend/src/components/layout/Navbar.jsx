@@ -1,11 +1,15 @@
 import { useRef, useEffect } from 'react'; // Import useRef and useEffect
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../providers/AuthContext';
 import { Collapse, Dropdown } from 'bootstrap'; // Import Collapse/Dropdown from bootstrap
 
 const Navbar = () => {
     const { user, logout } = useAuth();
     const navigate = useNavigate();
+    const location = useLocation();
+    // The crossword solver hides the bottom bar so the grid/keyboard get the full
+    // viewport height - a plain back-to-list action lives on that page instead.
+    const isSolving = location.pathname.startsWith('/crossword/');
 
     const accountToggleRef = useRef(null); // Ref for the account dropdown toggle link
     const bsDropdownRef = useRef(null); // Ref to store the bootstrap Dropdown instance
@@ -88,10 +92,12 @@ const Navbar = () => {
 
 
     return (
-        <nav ref={navbarRef} className="navbar navbar-expand-lg navbar-dark bg-primary sticky-top">
+        <>
+        <nav ref={navbarRef} className="navbar navbar-expand-lg sticky-top app-navbar">
             <div className="container-fluid">
                 <Link className="navbar-brand fw-bold" to="/" onClick={hideNavbar}>
-                    סטאר תשבצים
+                    <span className="app-brand-mark"><i className="bi bi-puzzle-fill"></i></span>
+                    משבצת
                 </Link>
 
                 <button
@@ -219,6 +225,30 @@ const Navbar = () => {
                 </div>
             </div>
         </nav>
+
+        {!isSolving && (
+            <>
+                <div className="bottom-nav">
+                    <Link className={`bn-item ${location.pathname === '/' ? 'active' : ''}`} to="/">
+                        <i className="bi bi-puzzle"></i>תשבצים
+                    </Link>
+                    <Link className={`bn-item ${location.pathname === '/wordlists' ? 'active' : ''}`} to="/wordlists">
+                        <i className="bi bi-collection"></i>רשימות
+                    </Link>
+                    <Link className="bn-fab" to="/create-crossword" aria-label="יצירת תשבץ חדש">
+                        <i className="bi bi-plus-lg"></i>
+                    </Link>
+                    <Link className={`bn-item ${location.pathname === '/about' ? 'active' : ''}`} to="/about">
+                        <i className="bi bi-info-circle"></i>אודות
+                    </Link>
+                    <Link className={`bn-item ${location.pathname === '/profile' ? 'active' : ''}`} to={user ? '/profile' : '/login'}>
+                        <i className="bi bi-person-circle"></i>חשבון
+                    </Link>
+                </div>
+                <div className="bottom-nav-spacer"></div>
+            </>
+        )}
+        </>
     );
 };
 

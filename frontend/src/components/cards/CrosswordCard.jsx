@@ -44,6 +44,7 @@ const CrosswordCard = ({ crossword, onDelete }) => {
             description={crossword.description}
             creator={crossword.creator?.userName}
             createdAt={new Date(crossword.createdAt).toLocaleDateString('he-IL')}
+            icon="bi-puzzle-fill"
             stats={[
                 { icon: "bi-grid", label: `${crossword.crosswordObject?.gridData?.grid?.length || "?"}x${crossword.crosswordObject?.gridData?.grid?.[0]?.length || "?"}` }
                 // more stats if needed

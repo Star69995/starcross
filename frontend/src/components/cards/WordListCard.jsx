@@ -48,6 +48,7 @@ const WordListCard = ({ wordList, onDelete }) => {
             description={wordList.description}
             creator={wordList.creator?.userName}
             createdAt={new Date(wordList.createdAt).toLocaleDateString('he-IL')}
+            icon="bi-collection-fill"
             stats={[
                 { icon: "bi-list-ul", label: `${wordList.words.length || 0} מילים` }
             ]}

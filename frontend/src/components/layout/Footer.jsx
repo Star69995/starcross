@@ -11,7 +11,7 @@ function Footer() {
                                 alt="לוגו תשבצי דיגיטל"
                                 style={{ width: "30px", height: "30px" }} 
                             />
-                            <h6 className="mb-0 me-2">סטאר תשבצים</h6> 
+                            <h6 className="mb-0 me-2">משבצת</h6>
                         </div>
                         <small className="mb-0">© 2026 כל הזכויות שמורות</small> 
                     </div>

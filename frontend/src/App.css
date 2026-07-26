@@ -6,6 +6,219 @@
 /* Hebrew font optimization */
 body {
   font-family: 'Segoe UI', 'Arial', sans-serif;
+  background: var(--paper);
+  color: var(--ink);
+}
+
+/* ===== Brand palette override =====
+   Bootstrap's primary is compiled at build time into bootstrap.min.css, so simply
+   redefining --bs-primary in :root doesn't retint .btn-primary/.bg-primary/etc. -
+   these rules override the specific utility classes actually used in the app instead,
+   pointing them at the accent blue taken from public/logo.svg. */
+.text-primary {
+  color: var(--accent) !important;
+}
+
+.bg-primary {
+  background-color: var(--accent) !important;
+}
+
+.border-primary {
+  border-color: var(--accent) !important;
+}
+
+.btn-primary {
+  background-color: var(--accent);
+  border-color: var(--accent);
+}
+
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary:active {
+  background-color: var(--accent-dark) !important;
+  border-color: var(--accent-dark) !important;
+}
+
+.btn-outline-primary {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.btn-outline-primary:hover {
+  background-color: var(--accent);
+  border-color: var(--accent);
+}
+
+/* Bootstrap reads its "checked/active" fill from --bs-btn-active-bg (baked in as
+   #0d6efd), not from the color rules above, so the currently-selected filter
+   toggle (see MyCrosswords/MyWordLists) needs its own override. */
+.btn-check:checked + .btn-outline-primary,
+.btn-outline-primary:active,
+.btn-outline-primary.active {
+  background-color: var(--accent) !important;
+  border-color: var(--accent) !important;
+  color: #fff !important;
+}
+
+.form-control:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 0.25rem var(--accent-tint);
+}
+
+.nav-tabs .nav-link.active {
+  color: var(--accent);
+  border-color: var(--line) var(--line) #fff;
+}
+
+.dropdown-item:hover,
+.dropdown-item:focus,
+.dropdown-item.active {
+  background-color: var(--accent-tint);
+  color: var(--ink);
+}
+
+/* Rounded corners, reintroduced only where this design wants them - the global
+   reset in index.css zeroes border-radius everywhere else. */
+.card,
+.btn,
+.form-control,
+.badge,
+.alert,
+.dropdown-menu,
+.input-group-text {
+  border-radius: var(--radius-md);
+}
+
+.btn-sm {
+  border-radius: var(--radius-sm);
+}
+
+/* Public/private + completed badges, recolored to the new palette (still the same
+   real isPublic/completed data - only the styling changed here). */
+.badge.bg-success {
+  background-color: var(--success) !important;
+}
+
+.badge.bg-secondary {
+  background-color: var(--bg-soft) !important;
+  color: var(--muted) !important;
+}
+
+/* ===== Profile page ===== */
+.profile-cover-motif .card-header {
+  position: relative;
+  background-color: var(--deep) !important;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, .07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, .07) 1px, transparent 1px);
+  background-size: 27px 27px;
+}
+
+.profile-stats-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 14px;
+}
+
+.profile-stat-card {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  text-align: center;
+}
+
+.profile-stat-card i {
+  font-size: 1.3rem;
+  color: var(--accent);
+}
+
+.profile-stat-card strong {
+  display: block;
+  font-size: 1.4rem;
+  margin: 6px 0 2px;
+}
+
+.profile-stat-card span {
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+
+.profile-badges-row {
+  display: flex;
+  gap: 14px;
+  overflow-x: auto;
+  padding: 10px 2px 6px;
+}
+
+.profile-badge {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  width: 78px;
+  text-align: center;
+}
+
+.profile-badge span {
+  font-size: 0.72rem;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.profile-badge-circle {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  background: linear-gradient(135deg, var(--accent-light), var(--accent));
+  color: #fff;
+  box-shadow: 0 8px 14px rgba(29, 78, 216, 0.26);
+  transform: rotate(-6deg);
+}
+
+.profile-badge:nth-child(even) .profile-badge-circle {
+  transform: rotate(5deg);
+}
+
+.profile-badge.locked .profile-badge-circle {
+  background: var(--bg-soft);
+  color: #A99C86;
+  box-shadow: none;
+  transform: none;
+}
+
+.home-solved-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--bg-soft);
+  color: var(--ink);
+  font-weight: 700;
+  font-size: 0.85rem;
+  padding: 8px 14px;
+  border-radius: var(--radius-sm);
+}
+
+.home-solved-chip i {
+  color: var(--success);
+}
+
+.content-card-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: var(--radius-sm);
+  background: var(--accent-tint);
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.05rem;
+  flex-shrink: 0;
 }
 
 /* Hover lift for clickable content cards (crossword/word-list grid items) only -
@@ -23,6 +236,66 @@ body {
 .crossword-container {
   max-width: 600px;
   margin: 0 auto;
+}
+
+.grid-wrap {
+  background: #fff;
+  border-radius: var(--radius-lg);
+  padding: 18px;
+  box-shadow: 0 10px 24px rgba(36, 31, 26, 0.09);
+  border: 1px solid var(--line);
+  width: fit-content;
+  margin: 0 auto;
+}
+
+.clue-banner {
+  width: 100%;
+  margin-bottom: 12px;
+  padding: 14px 18px;
+  border-radius: var(--radius-lg);
+  background: var(--ink);
+  color: #fff;
+  text-align: center;
+  font-weight: 600;
+  box-shadow: 0 10px 22px rgba(36, 31, 26, 0.16);
+}
+
+.defs-tabs {
+  display: none;
+}
+
+@media (max-width: 991px) {
+  .defs-tabs {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 10px;
+  }
+
+  .defs-tab {
+    flex: 1;
+    text-align: center;
+    padding: 10px;
+    border-radius: var(--radius-sm);
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: var(--muted);
+    background: var(--bg-soft);
+    border: none;
+    cursor: pointer;
+  }
+
+  .defs-tab.active {
+    background: var(--accent-tint);
+    color: var(--accent);
+  }
+
+  .defs-column {
+    display: none;
+  }
+
+  .defs-column.active {
+    display: block;
+  }
 }
 
 /* Custom scrollbar for word lists */
@@ -104,18 +377,65 @@ body {
   object-fit: cover;
 }
 
-/* Difficulty badges */
-.badge.bg-success {
-  background-color: #28a745 !important;
+/* Like buttons use their own pink-red (--like) rather than the brand accent blue -
+   hearts read as red/pink almost universally regardless of a site's brand color. */
+.btn-danger,
+.text-danger {
+  color: #fff;
+  background-color: var(--like);
+  border-color: var(--like);
 }
 
-.badge.bg-warning {
-  background-color: #ffc107 !important;
-  color: #000;
+.btn-outline-danger {
+  color: var(--like);
+  border-color: var(--like);
 }
 
-.badge.bg-danger {
-  background-color: #dc3545 !important;
+.btn-outline-danger:hover {
+  background-color: var(--like);
+  border-color: var(--like);
+}
+
+.bi-heart-fill.text-danger,
+.text-danger.bi-heart {
+  color: var(--like) !important;
+}
+
+/* ===== react-toastify ===== react-toastify ships its own CSS (imported
+   separately in App.jsx) with hardcoded colors entirely independent of
+   Bootstrap, so none of the overrides above touch it. */
+.Toastify__toast {
+  border-radius: var(--radius-md);
+  font-family: 'Segoe UI', 'Arial', sans-serif;
+}
+
+.Toastify__toast--success,
+.Toastify__toast--error,
+.Toastify__toast--info {
+  color: #fff;
+}
+
+.Toastify__toast--success {
+  background: var(--success);
+}
+
+.Toastify__toast--error {
+  background: var(--like);
+}
+
+.Toastify__toast--info {
+  background: var(--ink);
+}
+
+.Toastify__toast--success .Toastify__close-button,
+.Toastify__toast--error .Toastify__close-button,
+.Toastify__toast--info .Toastify__close-button {
+  color: #fff;
+  opacity: 0.8;
+}
+
+.Toastify__progress-bar {
+  background: rgba(255, 255, 255, 0.6);
 }
 
 /* Like button animation */
@@ -134,6 +454,122 @@ body {
 
   100% {
     transform: scale(1);
+  }
+}
+
+/* ===== Navbar ===== */
+.app-navbar {
+  background: rgba(247, 243, 234, 0.92);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--line);
+}
+
+.app-navbar .nav-link {
+  color: var(--muted);
+  font-weight: 600;
+  border-radius: var(--radius-sm);
+  padding: 0.5rem 0.9rem;
+}
+
+.app-navbar .nav-link:hover {
+  background: var(--bg-soft);
+  color: var(--ink);
+}
+
+.app-navbar .navbar-brand {
+  color: var(--ink) !important;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.app-brand-mark {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent-light), var(--accent));
+  border: 1.5px solid var(--accent-dark);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+/* ===== Mobile bottom quick-nav bar =====
+   Supplements (doesn't replace) the existing hamburger + account dropdown above,
+   which still holds the full menu (favorites, my content, create, logout) - this
+   bar only surfaces the handful of destinations someone reaches for constantly. */
+.bottom-nav {
+  display: none;
+}
+
+@media (max-width: 900px) {
+  .bottom-nav {
+    display: flex;
+    position: fixed;
+    bottom: 0;
+    inset-inline: 0;
+    z-index: 1030;
+    background: #fff;
+    border-top: 1px solid var(--line);
+    padding: 8px 10px calc(8px + env(safe-area-inset-bottom));
+    box-shadow: 0 -8px 24px rgba(36, 31, 26, 0.08);
+    align-items: center;
+    justify-content: space-around;
+  }
+
+  .bn-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    color: var(--muted);
+    font-size: 0.7rem;
+    font-weight: 600;
+    flex: 1;
+    padding: 4px 0;
+    text-decoration: none;
+  }
+
+  .bn-item i {
+    font-size: 1.25rem;
+  }
+
+  .bn-item.active {
+    color: var(--ink);
+  }
+
+  .bn-fab {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    margin-top: -28px;
+    background: linear-gradient(135deg, var(--accent-light), var(--accent));
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    box-shadow: 0 10px 20px rgba(29, 78, 216, 0.38);
+    border: 4px solid var(--paper);
+    text-decoration: none;
+  }
+
+}
+
+/* Rendered by Navbar right after the fixed bottom-nav so the page content doesn't
+   sit underneath it - omitted (via isSolving) on the crossword solver, which hides
+   the bottom-nav entirely so the grid gets the full viewport height. */
+.bottom-nav-spacer {
+  display: none;
+}
+
+@media (max-width: 900px) {
+  .bottom-nav-spacer {
+    display: block;
+    height: 78px;
   }
 }
 
