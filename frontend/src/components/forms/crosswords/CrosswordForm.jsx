@@ -1,13 +1,13 @@
-import { useState, useEffect } from "react";
+import { useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 import { createCrossword, updateCrossword, getMyWordLists, getWordLists } from "../../../services/api";
 import FormCard from "../FormCard";
 import WordListsPicker from "./WordListsPicker";
+import { useAsyncData } from "../../../hooks/useAsyncData";
 
 const CrosswordForm = ({ initialData, onSubmit }) => {
     const navigate = useNavigate();
-    const [wordLists, setWordLists] = useState([]);
     const [loading, setLoading] = useState(false);
     const [submitError, setSubmitError] = useState("");
     const [customErrors, setCustomErrors] = useState({});
@@ -22,23 +22,7 @@ const CrosswordForm = ({ initialData, onSubmit }) => {
 
     const isEdit = Boolean(initialData && initialData._id);
 
-    useEffect(() => {
-        // Only fetch word lists if it's not editing
-        if (!isEdit) {
-            fetchWordLists();
-        }
-        // Update form state if initialData changes
-        if (initialData) {
-            setFieldsState({
-                title: initialData.title || "",
-                description: initialData.description || "",
-                isPublic: initialData.isPublic || false,
-            });
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [initialData]);
-
-    const fetchWordLists = async () => {
+    const fetchWordLists = useCallback(async () => {
         try {
             const [myData, publicData] = await Promise.all([
                 getMyWordLists(),
@@ -58,12 +42,15 @@ const CrosswordForm = ({ initialData, onSubmit }) => {
             });
 
             // Convert back to array
-            setWordLists(Array.from(uniqueMap.values()));
-            
+            return Array.from(uniqueMap.values());
         } catch (error) {
             console.error('שגיאה בשליפת רשימות מילים', error);
+            return [];
         }
-    };
+    }, []);
+
+    const { data: wordListsData } = useAsyncData(fetchWordLists, { enabled: !isEdit });
+    const wordLists = wordListsData || [];
 
     // Filter fields for creation or edit mode
     const allFields = [

@@ -49,6 +49,7 @@ const CrosswordEditor = () => {
 
     return (
         <CrosswordForm
+            key={crossword._id}
             initialData={crossword}
             onSubmit={handleUpdateCrossword}
         />

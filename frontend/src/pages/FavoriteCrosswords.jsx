@@ -1,38 +1,24 @@
 // pages/Home.jsx
-import { useState, useEffect } from 'react'
+import { useCallback } from 'react'
 import CrosswordCard from '../components/cards/CrosswordCard'
 import { getCrosswords, getMyCrosswords } from '../services/api'
 import { useAuth } from '../providers/AuthContext'
+import { useAsyncData } from '../hooks/useAsyncData'
 
 const FavoriteCrosswords = () => {
     const { user, loading: authLoading } = useAuth()
-    const [crosswords, setCrosswords] = useState([])
-    const [loading, setLoading] = useState(true)
 
-    useEffect(() => {
-        // Wait for auth to finish loading
-        if (authLoading) {
-            return;
-        }
-
-        // If no user after auth loaded, don't fetch
+    const fetchCrosswords = useCallback(async () => {
         if (!user) {
-            setLoading(false);
-            return;
+            return []
         }
-
-        fetchCrosswords()
-    }, [user, authLoading]) // Add all dependencies
-
-    const fetchCrosswords = async () => {
         try {
-            setLoading(true);
             const publicCrosswords = await getCrosswords();
             const myCrosswords = await getMyCrosswords();
 
             // Use Map to remove duplicates efficiently
             const uniqueMap = new Map();
-            
+
             // Add all lists to the map (duplicates will be overwritten)
             [...publicCrosswords, ...myCrosswords].forEach(list => {
                 uniqueMap.set(list._id, list);
@@ -40,21 +26,20 @@ const FavoriteCrosswords = () => {
 
             // Convert back to array and filter for liked items only
             const allCrosswords = Array.from(uniqueMap.values());
-            const likedCrosswords = allCrosswords.filter(crossword =>
+            return allCrosswords.filter(crossword =>
                 crossword.likes.includes(user._id)
             );
-
-            setCrosswords(likedCrosswords);
         } catch (error) {
             console.error('Error fetching crosswords:', error);
-            setCrosswords([]); // Fallback to empty array on error
-        } finally {
-            setLoading(false);
+            return []; // Fallback to empty array on error
         }
-    };
+    }, [user]);
+
+    const { data, loading, setData: setCrosswords } = useAsyncData(fetchCrosswords, { enabled: !authLoading })
+    const crosswords = data || []
 
     const handleDeleteCrossword = (id) => {
-        setCrosswords(prev => prev.filter(cw => cw._id !== id));
+        setCrosswords(prev => (prev || []).filter(cw => cw._id !== id));
     };
 
     return (

@@ -50,6 +50,7 @@ const WordListEditor = () => {
 
     return (
         <WordListForm
+            key={wordList._id}
             initialData={wordList}
             onSubmit={handleUpdateWordList}
         />

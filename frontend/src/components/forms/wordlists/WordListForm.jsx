@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 import FormCard from "../FormCard";
@@ -11,7 +11,7 @@ const WordListForm = ({ initialData, onSubmit }) => {
     const [loading, setLoading] = useState(false);
 
     // Initialize fields from initialData for edit, or blank for create
-    const [fieldsState, setFieldsState] = useState({
+    const [fieldsState] = useState({
         title: initialData?.title || "",
         description: initialData?.description || "",
         isPublic: initialData?.isPublic || false,
@@ -27,25 +27,6 @@ const WordListForm = ({ initialData, onSubmit }) => {
                 .join("\n")
             : ""
     );
-
-    useEffect(() => {
-        if (initialData) {
-            setFieldsState({
-                title: initialData.title || "",
-                description: initialData.description || "",
-                isPublic: initialData.isPublic || false,
-            });
-            setWordsText(
-                initialData.words
-                    ? initialData.words
-                        .map((w) =>
-                            [w.solution, w.definition].filter(Boolean).join("|")
-                        )
-                        .join("\n")
-                    : ""
-            );
-        }
-    }, [initialData]);
 
     const fields = [
         {

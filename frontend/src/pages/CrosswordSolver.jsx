@@ -1,5 +1,5 @@
 // pages/CrosswordSolver.jsx
-import { useState, useEffect } from 'react'
+import { useEffect, useCallback } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import Crossword from '../components/board/Crossword'
 import { getCrosswordById, deleteCrossword, toggleLikeCrossword } from '../services/api'
@@ -7,40 +7,32 @@ import { useCrossword } from '../providers/CrosswordContext'
 import ActionButtons from '../components/cards/ActionButtons'
 import { useAuth } from '../providers/AuthContext'
 import { toast } from 'react-toastify'
+import { useAsyncData } from '../hooks/useAsyncData'
 
 const CrosswordSolver = () => {
     const { id } = useParams()
     const navigate = useNavigate()
-    const [crossword, setCrossword] = useState(null)
-    const [loading, setLoading] = useState(true)
-    const [error, setError] = useState('')
     const { setGridData } = useCrossword()
     const { user, loading: authLoading } = useAuth()
-    const [isLiked, setIsLiked] = useState(false)
+
+    const fetchCrossword = useCallback(async () => {
+        try {
+            return await getCrosswordById(id)
+        } catch (error) {
+            console.error('Error fetching crossword:', error)
+            throw error
+        }
+    }, [id])
+
+    const { data: crossword, loading, error: fetchError, setData: setCrossword } = useAsyncData(fetchCrossword, { enabled: !authLoading })
+    const error = fetchError ? 'שגיאה בטעינת התשבץ' : (!loading && !crossword ? 'תשבץ לא נמצא' : '')
+    const isLiked = Boolean(crossword?.likes?.includes(user?._id))
 
     useEffect(() => {
-        // Wait for auth to finish loading
-        if (authLoading) {
-            return;
+        if (crossword) {
+            setGridData(crossword.crosswordObject.gridData)
         }
-
-        fetchCrossword()
-    }, [id, user, authLoading])
-
-    const fetchCrossword = async () => {
-        try {
-            setLoading(true)
-            const data = await getCrosswordById(id)
-            setCrossword(data)
-            setIsLiked(data.likes.includes(user?._id))
-            setGridData(data.crosswordObject.gridData)
-        } catch (error) {
-            setError('שגיאה בטעינת התשבץ')
-            console.error('Error fetching crossword:', error)
-        } finally {
-            setLoading(false)
-        }
-    }
+    }, [crossword, setGridData])
 
     const handleEdit = () => {
         navigate(`/edit-crossword/${crossword._id}/`)
@@ -61,14 +53,19 @@ const CrosswordSolver = () => {
         }
     }
 
-    const handleLike = async (id) => {
+    const handleLike = async (likeId) => {
         if (!user) {
             toast.info("כדי לעשות לייק על תשבץ צריך להתחבר תחילה")
             return false;
         }
         try {
-            await toggleLikeCrossword(id)
-            setIsLiked(!isLiked);
+            await toggleLikeCrossword(likeId)
+            setCrossword(prev => prev && {
+                ...prev,
+                likes: prev.likes.includes(user._id)
+                    ? prev.likes.filter(uid => uid !== user._id)
+                    : [...prev.likes, user._id],
+            });
             return true;
         } catch (error) {
             console.error('Error liking word list:', error)

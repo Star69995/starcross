@@ -1,31 +1,25 @@
 // pages/Home.jsx
-import { useState, useEffect } from 'react'
+import { useCallback } from 'react'
 import CrosswordCard from '../components/cards/CrosswordCard'
 import { getCrosswords } from '../services/api'
+import { useAsyncData } from '../hooks/useAsyncData'
 
 const Home = () => {
-    const [crosswords, setCrosswords] = useState([])
-    const [loading, setLoading] = useState(true)
-
-    useEffect(() => {
-        fetchCrosswords()
-    }, [])
-
-    const fetchCrosswords = async () => {
+    const fetchCrosswords = useCallback(async () => {
         try {
-            setLoading(true);
             const data = await getCrosswords();
-            setCrosswords(Array.isArray(data) ? data : []);
+            return Array.isArray(data) ? data : [];
         } catch (error) {
             console.error('Error fetching crosswords:', error);
-            setCrosswords([]); // Fallback to empty array on error
-        } finally {
-            setLoading(false);
+            return []; // Fallback to empty array on error
         }
-    };
+    }, []);
+
+    const { data, loading, setData: setCrosswords } = useAsyncData(fetchCrosswords)
+    const crosswords = data || []
 
     const handleDeleteCrossword = (id) => {
-        setCrosswords(prev => prev.filter(cw => cw._id !== id));
+        setCrosswords(prev => (prev || []).filter(cw => cw._id !== id));
     };
 
     return (

@@ -1,42 +1,29 @@
 // pages/MyWordLists.jsx
-import { useState, useEffect } from 'react'
+import { useState, useCallback } from 'react'
 import { Link } from 'react-router-dom'
 import WordListCard from '../components/cards/WordListCard'
 import { getMyWordLists } from '../services/api'
 import { useAuth } from '../providers/AuthContext'
+import { useAsyncData } from '../hooks/useAsyncData'
 
 const MyWordLists = () => {
     const { user, loading: authLoading } = useAuth()
-    const [wordLists, setWordLists] = useState([])
-    const [loading, setLoading] = useState(true)
     const [filter, setFilter] = useState('all')
 
-    useEffect(() => {
-        // Wait for auth to finish loading
-        if (authLoading) {
-            return;
-        }
-
-        // If no user after auth loaded, don't fetch
+    const fetchWordLists = useCallback(async () => {
         if (!user) {
-            setLoading(false);
-            return;
+            return []
         }
-
-        fetchWordLists()
-    }, [user, authLoading]) // Add all dependencies
-
-    const fetchWordLists = async () => {
         try {
-            setLoading(true)
-            const data = await getMyWordLists()
-            setWordLists(data)
+            return await getMyWordLists()
         } catch (error) {
             console.error('Error fetching word lists:', error)
-        } finally {
-            setLoading(false)
+            return []
         }
-    }
+    }, [user])
+
+    const { data, loading, setData: setWordLists } = useAsyncData(fetchWordLists, { enabled: !authLoading })
+    const wordLists = data || []
 
     const filteredWordLists = wordLists.filter(list => {
         if (filter === 'public') return list.isPublic
@@ -45,7 +32,7 @@ const MyWordLists = () => {
     })
 
     const handleDeleteWordList = async (id) => {
-        setWordLists(prev => prev.filter(cw => cw._id !== id));
+        setWordLists(prev => (prev || []).filter(cw => cw._id !== id));
     };
 
     return (

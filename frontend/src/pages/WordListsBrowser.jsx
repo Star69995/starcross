@@ -1,32 +1,24 @@
 // pages/WordListsBrowser.jsx
-import { useState, useEffect } from 'react'
+import { useState, useCallback } from 'react'
 import WordListCard from '../components/cards/WordListCard'
 import { getWordLists } from '../services/api'
+import { useAsyncData } from '../hooks/useAsyncData'
 
 const WordListsBrowser = () => {
-    const [wordLists, setWordLists] = useState([])
-    const [loading, setLoading] = useState(true)
     const [searchTerm, setSearchTerm] = useState('')
     const [sortBy, setSortBy] = useState('newest')
 
-    useEffect(() => {
-        fetchWordLists()
-    }, [sortBy])
-
-    const fetchWordLists = async () => {
+    const fetchWordLists = useCallback(async () => {
         try {
-            setLoading(true)
-            const data = await getWordLists({
-                isPublic: true,
-                sortBy: sortBy
-            })
-            setWordLists(data)
+            return await getWordLists({ isPublic: true, sortBy })
         } catch (error) {
             console.error('Error fetching word lists:', error)
-        } finally {
-            setLoading(false)
+            return []
         }
-    }
+    }, [sortBy])
+
+    const { data, loading, setData: setWordLists } = useAsyncData(fetchWordLists)
+    const wordLists = data || []
 
     const filteredWordLists = wordLists.filter(list =>
         list.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -34,7 +26,7 @@ const WordListsBrowser = () => {
     )
 
     const handleDeleteWordList = (id) => {
-        setWordLists(prev => prev.filter(cw => cw._id !== id));
+        setWordLists(prev => (prev || []).filter(cw => cw._id !== id));
     };
 
     return (

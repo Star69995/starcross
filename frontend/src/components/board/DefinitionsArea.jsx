@@ -16,11 +16,10 @@ function DefinitionsArea() {
         <div className="mt-1 d-flex flex-column gap-2 p-3">
             <h2 className="text-center">הגדרות:</h2>
 
-            <div
-                style={{ display: "flex", justifyContent: "space-evenly" }}>
-                <div>
+            <div className="row">
+                <div className="col-6">
                     <h3>מאוזן:</h3>
-                    <ul style={{ textAlign: "right", listStyle: 'none' }}>
+                    <ul className="list-unstyled" style={{ textAlign: "right" }}>
                         {definitionsUsed.across.map((def) => (
                             <Definition
                                 key={def.number}
@@ -30,9 +29,9 @@ function DefinitionsArea() {
                     </ul>
                 </div>
 
-                <div>
+                <div className="col-6">
                     <h3>מאונך:</h3>
-                    <ul style={{ textAlign: "right", listStyle: 'none' }}>
+                    <ul className="list-unstyled" style={{ textAlign: "right" }}>
                         {definitionsUsed.down.map((def) => (
                             <Definition
                                 key={def.number}

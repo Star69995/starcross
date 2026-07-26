@@ -1,47 +1,32 @@
-import { useState, useEffect } from 'react'
+import { useState, useCallback } from 'react'
 import { Link } from 'react-router-dom'
 import CrosswordCard from '../components/cards/CrosswordCard'
 import { getMyCrosswords } from '../services/api'
 import { useAuth } from '../providers/AuthContext'
+import { useAsyncData } from '../hooks/useAsyncData'
 
 const MyCrosswords = () => {
-    const [crosswords, setCrosswords] = useState([])
-    const [loading, setLoading] = useState(true)
     const [filter, setFilter] = useState('all')
     const { user, loading: authLoading } = useAuth()
 
-    useEffect(() => {
-        // Wait for auth to finish loading
-        if (authLoading) {
-            return;
-        }
-
-        // If no user after auth loaded, don't fetch
+    const fetchMyCrosswords = useCallback(async () => {
         if (!user) {
-            setLoading(false);
-            return;
+            return []
         }
-
-        fetchCrosswords()
-    }, [user, authLoading]) // Add all dependencies
-
-    const fetchCrosswords = async () => {
         try {
-            setLoading(true);
             const data = await getMyCrosswords();
-            // Ensure data is an array; if not, set to empty array
-            setCrosswords(Array.isArray(data) ? data : []);
+            return Array.isArray(data) ? data : [];
         } catch (error) {
             console.error('Error fetching crosswords:', error);
-            // On error, set to empty array as fallback
-            setCrosswords([]);
-        } finally {
-            setLoading(false);
+            return [];
         }
-    };
+    }, [user]);
+
+    const { data, loading, setData: setCrosswords, refetch: fetchCrosswords } = useAsyncData(fetchMyCrosswords, { enabled: !authLoading })
+    const crosswords = data || []
 
     const handleDelete = async (id) => {
-        setCrosswords(prev => prev.filter(cw => cw._id !== id));
+        setCrosswords(prev => (prev || []).filter(cw => cw._id !== id));
     }
 
 

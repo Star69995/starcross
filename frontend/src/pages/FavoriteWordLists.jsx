@@ -1,35 +1,20 @@
 // pages/MyWordLists.jsx
-import { useState, useEffect } from 'react'
+import { useState, useCallback } from 'react'
 import WordListCard from '../components/cards/WordListCard'
 import { useAuth } from '../providers/AuthContext'
 import { getMyWordLists, getWordLists } from '../services/api'
+import { useAsyncData } from '../hooks/useAsyncData'
 
 const FavoriteWordLists = () => {
     const { user, loading: authLoading } = useAuth()
-    const [wordLists, setWordLists] = useState([])
-    const [loading, setLoading] = useState(true)
     const [searchTerm, setSearchTerm] = useState('')
     const [sortBy, setSortBy] = useState('newest')
 
-    useEffect(() => {
-        // Wait for auth to finish loading
-        if (authLoading) {
-            return;
-        }
-
-        // If no user after auth loaded, don't fetch
+    const fetchWordLists = useCallback(async () => {
         if (!user) {
-            setLoading(false);
-            return;
+            return []
         }
-
-        fetchWordLists()
-    }, [user, authLoading, sortBy]) // Add all dependencies
-
-    const fetchWordLists = async () => {
         try {
-            setLoading(true)
-
             const publicWordlists = await getWordLists();
             const MyWordLists = await getMyWordLists();
 
@@ -43,17 +28,17 @@ const FavoriteWordLists = () => {
 
             // Convert back to array and filter for liked items only
             const allCrosswords = Array.from(uniqueMap.values());
-            const likedCrosswords = allCrosswords.filter(crossword =>
+            return allCrosswords.filter(crossword =>
                 crossword.likes.includes(user._id)
             );
-
-            setWordLists(likedCrosswords);
         } catch (error) {
             console.error('Error fetching word lists:', error)
-        } finally {
-            setLoading(false)
+            return []
         }
-    }
+    }, [user, sortBy]) // eslint-disable-line react-hooks/exhaustive-deps -- sortBy kept for parity with prior refetch-on-sort behavior
+
+    const { data, loading, setData: setWordLists } = useAsyncData(fetchWordLists, { enabled: !authLoading })
+    const wordLists = data || []
 
     const filteredWordLists = wordLists.filter(list =>
         list.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -61,7 +46,7 @@ const FavoriteWordLists = () => {
     )
 
     const handleDeleteWordList = (id) => {
-        setWordLists(prev => prev.filter(cw => cw._id !== id));
+        setWordLists(prev => (prev || []).filter(cw => cw._id !== id));
     };
 
     return (
