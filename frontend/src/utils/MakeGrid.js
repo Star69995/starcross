@@ -12,11 +12,14 @@ const MakeGrid = ({ size = 12, maxWords = 10, definitionsList = [] }) => {
         );
     };
 
-    const trimGrid = (grid) => {
+    // Returns the crop bounds trimGrid would apply, so callers can shift any
+    // row/col recorded against the untrimmed grid (e.g. wordPositions) by the
+    // same top/left offset - otherwise those coordinates point at the wrong
+    // cells once the grid is cropped.
+    const getTrimBounds = (grid) => {
         const rows = grid.length;
         const cols = grid[0].length;
 
-        // חיתוך שורות ריקות מלמעלה ומלמטה
         let top = 0, bottom = rows - 1;
         while (top < rows && grid[top].every(cell => cell.solution === null)) {
             top++;
@@ -25,7 +28,6 @@ const MakeGrid = ({ size = 12, maxWords = 10, definitionsList = [] }) => {
             bottom--;
         }
 
-        // חיתוך עמודות ריקות מצד ימין ושמאל
         let left = 0, right = cols - 1;
         while (left < cols && grid.every(row => row[left].solution === null)) {
             left++;
@@ -34,6 +36,10 @@ const MakeGrid = ({ size = 12, maxWords = 10, definitionsList = [] }) => {
             right--;
         }
 
+        return { top, bottom, left, right };
+    };
+
+    const trimGrid = (grid, { top, bottom, left, right }) => {
         // אם לא נותרו שורות או עמודות, תחזיר גריד ריק
         if (top > bottom || left > right) {
             return [];
@@ -206,8 +212,14 @@ const MakeGrid = ({ size = 12, maxWords = 10, definitionsList = [] }) => {
             }
         }
 
-        // חיתוך שורות ועמודות ריקות
-        grid = trimGrid(grid);
+        // חיתוך שורות ועמודות ריקות - ומזיזים את wordPositions באותו היסט,
+        // אחרת השורה/עמודה שלהם תצביע על תאים שגויים בגריד החתוך
+        const trimBounds = getTrimBounds(grid);
+        grid = trimGrid(grid, trimBounds);
+        wordPositions.forEach(word => {
+            word.row -= trimBounds.top;
+            word.col -= trimBounds.left;
+        });
 
         // מסדרים את ההגדרות לפי מאוזן/מאונך
         const formattedDefinitions = {

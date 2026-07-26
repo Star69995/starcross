@@ -13,7 +13,7 @@ function DefinitionsArea() {
     }
 
     return (
-        <div className="mt-1 d-flex flex-column gap-2 p-3">
+        <div className="mt-1 d-flex flex-column gap-2 py-2 py-md-3">
             <h2 className="text-center">הגדרות:</h2>
 
             <div className="row">

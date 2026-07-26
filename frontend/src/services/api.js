@@ -260,6 +260,26 @@ export const unmarkCrosswordSolved = async (id) => {
     return { message: 'Crossword updated', crossword: toClientDoc(snap) }
 }
 
+// Per-user solving progress, stored under the user's own doc so cross-device
+// sync only ever needs the signed-in uid (matches the users/{uid} auth model
+// already used elsewhere) - never persisted client-side (no localStorage).
+const progressDoc = (uid, crosswordId) => doc(db, 'users', uid, 'progress', crosswordId)
+
+export const getCrosswordProgress = async (crosswordId) => {
+    const uid = requireUid()
+    const snap = await getDoc(progressDoc(uid, crosswordId))
+    return snap.exists() ? snap.data() : null
+}
+
+export const saveCrosswordProgress = async (crosswordId, values, completed) => {
+    const uid = requireUid()
+    await setDoc(progressDoc(uid, crosswordId), {
+        values,
+        completed,
+        updatedAt: new Date().toISOString(),
+    })
+}
+
 export const updateCrosswordVisibility = async (id, isPublic) => {
     const ref = doc(crosswordsCol, id)
     await updateDoc(ref, { isPublic: Boolean(isPublic) })

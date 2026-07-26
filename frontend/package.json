@@ -5,8 +5,11 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev:live": "vite --mode live",
     "build": "vite build",
+    "build:live": "vite build --mode live",
     "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
     "preview": "vite preview",
     "predeploy": "vite build",
     "deploy": "gh-pages -d dist"

@@ -24,6 +24,11 @@ service cloud.firestore {
     match /users/{uid} {
       allow read, update, delete: if isSignedIn() && request.auth.uid == uid;
       allow create: if isSignedIn() && request.auth.uid == uid;
+
+      // per-user crossword solving progress - strictly self-only
+      match /progress/{crosswordId} {
+        allow read, write: if isSignedIn() && request.auth.uid == uid;
+      }
     }
 
     match /crosswords/{id} {

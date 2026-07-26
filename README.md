@@ -18,8 +18,13 @@ needs (a `demo-` project ID puts the emulators in fully offline mode).
 1. Install the Firebase CLI if you don't have it: `npm install -g firebase-tools`
 2. `npm install` (repo root — pulls in `concurrently`)
 3. `cd frontend && npm install && cd ..`
-4. `npm run dev` (repo root) — starts the Auth + Firestore emulators *and* the Vite dev
-   server together, and prints the local URL (usually `http://localhost:5173`).
+4. `npm run dev:emulators` (repo root) — starts the Auth + Firestore emulators *and* the
+   Vite dev server together, and prints the local URL (usually `http://localhost:5173`).
+   This is the recommended default — it just works with no other setup.
+
+Once emulators are running, `npm run dev` (repo root) starts *only* the Vite dev server —
+useful if you're leaving the emulators up in one terminal (`npm run emulators`, on its own,
+same import/export behavior) while restarting/iterating on the frontend in another.
 
 Sign up a user from the app's Register page like normal — it's writing to the emulator,
 not a real backend, so any email/password works and nothing leaves your machine. The
@@ -41,6 +46,18 @@ process skips the export.
    its config values into `frontend/.env`, and set `VITE_USE_FIREBASE_EMULATOR=false`
    (see `frontend/.env.example` for the variable names).
 
+## Run against the live Firebase project (not the emulator)
+
+To point your local dev server at the real Firebase project instead of the emulator suite
+(e.g. to check data that only exists in production), create `frontend/.env.live.local` with
+your real project's values (copy `frontend/.env.example`, fill in the real keys, and set
+`VITE_USE_FIREBASE_EMULATOR=false`). That filename matches the `*.local` pattern already in
+`frontend/.gitignore`, so it's never committed. Then:
+
+- `npm run dev:live` (repo root) — Vite dev server against the live project.
+- `npm run build:live` (repo root) — production build against the live project
+  (used by the `deploy`/`deploy:preview` scripts below).
+
 ## Deploy
 
 Hosting deploys are automated via GitHub Actions (`.github/workflows/`):
@@ -49,14 +66,17 @@ Hosting deploys are automated via GitHub Actions (`.github/workflows/`):
   preview URL posted back on the PR.
 
 Both workflows authenticate using the `FIREBASE_SERVICE_ACCOUNT_STARCROSS_CROSSWORD` repo
-secret (a Firebase-managed service account created via `firebase init hosting:github`) —
-no local `firebase deploy` needed for hosting.
+secret (a Firebase-managed service account created via `firebase init hosting:github`), and
+inject the real `VITE_FIREBASE_*` values as build-time env vars — no local `frontend/.env.live.local`
+or `firebase deploy` needed for the normal PR/merge flow.
 
-Firestore rules/indexes are **not** part of the automated workflow and still need a manual
-push when changed:
+For a manual deploy from your own machine (needs `frontend/.env.live.local` set up as above,
+and `firebase login`), repo-root scripts wrap the same commands the CI uses:
 
 ```
-firebase deploy --only firestore:rules
+npm run deploy          # build:live + firebase deploy --only hosting (live site)
+npm run deploy:preview  # build:live + firebase hosting:channel:deploy preview
+npm run deploy:rules    # firestore.rules only — not part of any automated workflow
 ```
 
 ## What changed vs. the Mongo/Express version

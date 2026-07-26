@@ -1,19 +1,37 @@
 // pages/CrosswordSolver.jsx
-import { useEffect, useCallback } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useEffect, useCallback, useRef } from 'react'
+import { useParams, useNavigate, Link } from 'react-router-dom'
 import Crossword from '../components/board/Crossword'
-import { getCrosswordById, deleteCrossword, toggleLikeCrossword } from '../services/api'
+import {
+    getCrosswordById,
+    deleteCrossword,
+    toggleLikeCrossword,
+    getCrosswordProgress,
+    saveCrosswordProgress,
+    markCrosswordSolved,
+    unmarkCrosswordSolved,
+} from '../services/api'
 import { useCrossword } from '../providers/CrosswordContext'
 import ActionButtons from '../components/cards/ActionButtons'
 import { useAuth } from '../providers/AuthContext'
 import { toast } from 'react-toastify'
 import { useAsyncData } from '../hooks/useAsyncData'
+import { extractGridValues } from '../utils/gridProgress'
+
+const SAVE_DEBOUNCE_MS = 800
 
 const CrosswordSolver = () => {
     const { id } = useParams()
     const navigate = useNavigate()
-    const { setGridData } = useCrossword()
+    const { grid, isCompleted, loadGridData } = useCrossword()
     const { user, loading: authLoading } = useAuth()
+
+    // Progress sync bookkeeping - not React state on purpose, none of it should
+    // trigger a re-render or be written to localStorage; Firestore is the only
+    // persistence layer.
+    const readyToSaveRef = useRef(false)
+    const wasCompletedRef = useRef(false)
+    const lastSavedSnapshotRef = useRef(null)
 
     const fetchCrossword = useCallback(async () => {
         try {
@@ -28,11 +46,70 @@ const CrosswordSolver = () => {
     const error = fetchError ? 'שגיאה בטעינת התשבץ' : (!loading && !crossword ? 'תשבץ לא נמצא' : '')
     const isLiked = Boolean(crossword?.likes?.includes(user?._id))
 
+    // Load the grid and, for signed-in users, merge in their previously saved
+    // progress from Firestore so solving resumes on any device.
     useEffect(() => {
-        if (crossword) {
-            setGridData(crossword.crosswordObject.gridData)
+        if (!crossword) return
+        readyToSaveRef.current = false
+
+        let cancelled = false
+        const load = async () => {
+            let savedValues = {}
+            let completed = false
+            if (user) {
+                try {
+                    const progress = await getCrosswordProgress(id)
+                    savedValues = progress?.values || {}
+                    completed = Boolean(progress?.completed)
+                } catch (err) {
+                    console.error('Error loading crossword progress:', err)
+                }
+            }
+            if (cancelled) return
+            wasCompletedRef.current = completed
+            lastSavedSnapshotRef.current = JSON.stringify({ values: savedValues, completed })
+            loadGridData(crossword.crosswordObject.gridData, savedValues)
+            readyToSaveRef.current = true
         }
-    }, [crossword, setGridData])
+        load()
+
+        return () => { cancelled = true }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [crossword, user, id])
+
+    // Autosave: persist filled-in letters (debounced) whenever the grid
+    // changes, and flip the crossword's `solved` membership the moment the
+    // puzzle becomes (or stops being) fully answered.
+    useEffect(() => {
+        if (!user || !readyToSaveRef.current || grid.length === 0) return
+
+        const timeoutId = setTimeout(async () => {
+            const values = extractGridValues(grid)
+            const snapshot = JSON.stringify({ values, completed: isCompleted })
+            if (snapshot === lastSavedSnapshotRef.current) return
+
+            try {
+                await saveCrosswordProgress(id, values, isCompleted)
+                lastSavedSnapshotRef.current = snapshot
+
+                if (isCompleted !== wasCompletedRef.current) {
+                    wasCompletedRef.current = isCompleted
+                    if (isCompleted) {
+                        await markCrosswordSolved(id)
+                        setCrossword(prev => prev && { ...prev, solved: [...(prev.solved || []), user._id] })
+                        toast.success('כל הכבוד! פתרת את התשבץ בהצלחה')
+                    } else {
+                        await unmarkCrosswordSolved(id)
+                        setCrossword(prev => prev && { ...prev, solved: (prev.solved || []).filter(uid => uid !== user._id) })
+                    }
+                }
+            } catch (err) {
+                console.error('Error saving crossword progress:', err)
+            }
+        }, SAVE_DEBOUNCE_MS)
+
+        return () => clearTimeout(timeoutId)
+    }, [grid, isCompleted, user, id, setCrossword])
 
     const handleEdit = () => {
         navigate(`/edit-crossword/${crossword._id}/`)
@@ -133,6 +210,18 @@ const CrosswordSolver = () => {
                     </div>
                 </div>
             </div>
+
+            {!user && !authLoading && (
+                <div className="alert alert-info d-flex flex-wrap align-items-center justify-content-between gap-2 mb-4" role="alert">
+                    <span>
+                        <i className="bi bi-info-circle-fill ms-2"></i>
+                        ההתקדמות בפתרון תשבץ נשמרת אוטומטית רק למשתמשים מחוברים. הירשם כדי שההתקדמות שלך תישמר ותיטען מכל מכשיר.
+                    </span>
+                    <Link to="/register" className="btn btn-primary btn-sm">
+                        הרשמה
+                    </Link>
+                </div>
+            )}
 
             {/* Pass the crossword data to your existing Crossword component */}
             <Crossword crosswordData={crossword} />

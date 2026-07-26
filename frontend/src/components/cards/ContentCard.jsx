@@ -12,6 +12,7 @@ const ContentCard = ({
     createdAt,
     stats = [],
     badge,
+    completed,
     liked,
     onLike,
     likesCount,
@@ -62,10 +63,18 @@ const ContentCard = ({
             <div className="card-body">
                 <div className="d-flex justify-content-between align-items-start mb-2">
                     <h5 className="card-title text-primary">{title}</h5>
-                    {badge
-                        ? <span className="badge bg-success">ציבורית</span>
-                        : <span className="badge bg-secondary">פרטית</span>
-                    }
+                    <div className="d-flex flex-wrap justify-content-end gap-1">
+                        {completed && (
+                            <span className="badge bg-success">
+                                <i className="bi bi-check-circle-fill ms-1"></i>
+                                הושלם
+                            </span>
+                        )}
+                        {badge
+                            ? <span className="badge bg-success">ציבורית</span>
+                            : <span className="badge bg-secondary">פרטית</span>
+                        }
+                    </div>
                 </div>
                 {description && (
                     <p className="card-text text-muted small">{description}</p>
@@ -125,6 +134,7 @@ ContentCard.propTypes = {
     createdAt: PropTypes.string,
     stats: PropTypes.array,
     badge: PropTypes.bool,
+    completed: PropTypes.bool,
     liked: PropTypes.bool,
     onLike: PropTypes.func,
     likesCount: PropTypes.number,

@@ -7,15 +7,16 @@ const Crossword = () => {
     const { grid, definitions } = useCrossword();
 
     return (
-        <div className="container p-4 border rounded shadow">
+        <div className="container-fluid py-3 py-md-4">
             <div className="text-center mb-4 fs-4 fw-bold">תשבץ</div>
-
-            <CurrentDef />
 
             <div className="row justify-content-center align-items-start">
                 {/* Grid area */}
                 <div className="col-12 col-lg-6 mb-4 mb-lg-0 d-flex justify-content-center">
-                    <Grid crossword={grid} />
+                    <div>
+                        <CurrentDef />
+                        <Grid crossword={grid} />
+                    </div>
                 </div>
 
                 {/* Definitions area */}

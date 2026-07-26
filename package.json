@@ -2,7 +2,16 @@
   "name": "star-crossword-firebase",
   "private": true,
   "scripts": {
-    "dev": "concurrently -n emulators,frontend -c yellow,cyan \"firebase emulators:start --only auth,firestore --project demo-star-crossword --import=./.emulator-data --export-on-exit=./.emulator-data\" \"npm --prefix frontend run dev\""
+    "dev": "npm --prefix frontend run dev",
+    "dev:emulators": "concurrently -n emulators,frontend -c yellow,cyan \"npm run emulators\" \"npm --prefix frontend run dev\"",
+    "dev:live": "npm --prefix frontend run dev:live",
+    "emulators": "firebase emulators:start --only auth,firestore --project demo-star-crossword --import=./.emulator-data --export-on-exit=./.emulator-data",
+    "build": "npm --prefix frontend run build",
+    "build:live": "npm --prefix frontend run build:live",
+    "lint": "npm --prefix frontend run lint",
+    "deploy": "npm run build:live && firebase deploy --only hosting",
+    "deploy:preview": "npm run build:live && firebase hosting:channel:deploy preview",
+    "deploy:rules": "firebase deploy --only firestore:rules"
   },
   "devDependencies": {
     "concurrently": "^10.0.4"

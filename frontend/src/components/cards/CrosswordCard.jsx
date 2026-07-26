@@ -49,6 +49,7 @@ const CrosswordCard = ({ crossword, onDelete }) => {
                 // more stats if needed
             ]}
             badge={crossword.isPublic}
+            completed={Boolean(user && crossword.solved?.includes(user._id))}
             liked={crossword.likes.includes(user?._id)}
             onLike={handleLike}
             likesCount={crossword.likes.length || 0}
