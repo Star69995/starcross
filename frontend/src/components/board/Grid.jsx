@@ -14,19 +14,22 @@ function Grid() {
                 <tbody>
                     {grid.map((row, rowIndex) => (
                         <tr key={rowIndex}>
-                            {row.map((cell, colIndex) => (
-                                <td key={colIndex} style={{
-                                    width: '40px',
-                                    height: '40px',
-                                    border: '1.5px solid var(--line)', // Add border to each cell
-                                    padding: 0 // Remove default padding
-                                }}>
-                                    <Block
-                                        col={colIndex}
-                                        row={rowIndex}
-                                    />
-                                </td>
-                            ))}
+                            {row.map((cell, colIndex) => {
+                                const isBlack = cell.solution === null;
+                                return (
+                                    <td key={colIndex} style={{
+                                        width: '40px',
+                                        height: '40px',
+                                        border: isBlack ? 'none' : '1.5px solid var(--line)',
+                                        padding: 0 // Remove default padding
+                                    }}>
+                                        <Block
+                                            col={colIndex}
+                                            row={rowIndex}
+                                        />
+                                    </td>
+                                );
+                            })}
                         </tr>
                     ))}
                 </tbody>

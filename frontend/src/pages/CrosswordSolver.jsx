@@ -21,19 +21,12 @@ import { extractGridValues, percentComplete } from '../utils/gridProgress'
 
 const SAVE_DEBOUNCE_MS = 800
 
-const formatElapsed = (totalSeconds) => {
-    const minutes = Math.floor(totalSeconds / 60)
-    const seconds = totalSeconds % 60
-    return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`
-}
-
 const CrosswordSolver = () => {
     const { id } = useParams()
     const navigate = useNavigate()
     const { grid, isCompleted, loadGridData, revealHint } = useCrossword()
     const { user, loading: authLoading } = useAuth()
     const [showClueList, setShowClueList] = useState(true)
-    const [elapsedSeconds, setElapsedSeconds] = useState(0)
 
     // Progress sync bookkeeping - not React state on purpose, none of it should
     // trigger a re-render or be written to localStorage; Firestore is the only
@@ -54,15 +47,6 @@ const CrosswordSolver = () => {
     const { data: crossword, loading, error: fetchError, setData: setCrossword } = useAsyncData(fetchCrossword, { enabled: !authLoading })
     const error = fetchError ? 'שגיאה בטעינת התשבץ' : (!loading && !crossword ? 'תשבץ לא נמצא' : '')
     const isLiked = Boolean(crossword?.likes?.includes(user?._id))
-
-    // Session-only solve timer (per CLAUDE.md/plan: not persisted, resets if you
-    // navigate away and back - matches what the mockup visibly shows without
-    // adding a new Firestore field).
-    useEffect(() => {
-        if (loading || !crossword) return
-        const intervalId = setInterval(() => setElapsedSeconds((s) => s + 1), 1000)
-        return () => clearInterval(intervalId)
-    }, [loading, crossword])
 
     const percent = useMemo(() => {
         if (!crossword || grid.length === 0) return 0
@@ -213,10 +197,6 @@ const CrosswordSolver = () => {
                             <i className="bi bi-puzzle-fill text-primary ms-2"></i>
                         </h1>
                         <div className="flex-grow-1"></div>
-                        <span className="solve-toolbar-pill mono">
-                            <i className="bi bi-stopwatch ms-1"></i>
-                            {formatElapsed(elapsedSeconds)}
-                        </span>
                         <span className="solve-toolbar-pill">
                             <i className="bi bi-check2-circle ms-1"></i>
                             {percent}% הושלם

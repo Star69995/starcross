@@ -127,6 +127,15 @@ body {
   border-radius: var(--radius-sm);
 }
 
+/* Bootstrap's alert-info bakes in its own cyan palette (#cff4fc bg / #055160 text),
+   unrelated to the warm paper/ink/accent-blue palette used everywhere else - recolor
+   it to the accent tint so info banners read as part of the same design language. */
+.alert-info {
+  background-color: var(--accent-tint);
+  border-color: var(--accent-tint);
+  color: var(--ink);
+}
+
 /* Public/private + completed badges, recolored to the new palette (still the same
    real isPublic/completed data - only the styling changed here). */
 .badge.bg-success {
