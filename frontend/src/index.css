@@ -24,6 +24,11 @@
   --radius-lg: 10px;
   --radius-md: 7px;
   --radius-sm: 5px;
+  /* Shared easing curves for interactive feedback (buttons, cards, toggles) -
+     --ease-snappy overshoots slightly for a "pressable" feel on hover/tap,
+     --ease-smooth is a standard material-style ease for color/shadow fades. */
+  --ease-snappy: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 * {

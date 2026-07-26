@@ -194,7 +194,7 @@ const CrosswordSolver = () => {
                     <div className="solve-toolbar d-flex flex-wrap align-items-center gap-2 mb-2">
                         <h1 className="display-5 mb-0 text-truncate">
                             {crossword.title}
-                            <i className="bi bi-puzzle-fill text-primary ms-2"></i>
+                            <i className="bi bi-puzzle-fill text-primary me-2"></i>
                         </h1>
                         <div className="flex-grow-1"></div>
                         <span className="solve-toolbar-pill">

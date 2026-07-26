@@ -1,6 +1,8 @@
 // pages/MyWordLists.jsx
 import { useState, useCallback } from 'react'
 import WordListCard from '../components/cards/WordListCard'
+import PageHeader from '../components/layout/PageHeader'
+import SearchInput from '../components/forms/SearchInput'
 import { useAuth } from '../providers/AuthContext'
 import { getMyWordLists, getWordLists } from '../services/api'
 import { useAsyncData } from '../hooks/useAsyncData'
@@ -51,28 +53,15 @@ const FavoriteWordLists = () => {
 
     return (
         <div className="container py-4">
-            <div className="row">
-                <div className="col-12">
-                    <div className="d-flex justify-content-between align-items-center mb-4">
-                        <h1 className="display-4"> רשימות מילים אהובות</h1>
-                    </div>
-                </div>
-            </div>
+            <PageHeader title="רשימות מילים אהובות" />
 
             <div className="row mb-4">
                 <div className="col-md-8">
-                    <div className="input-group">
-                        <span className="input-group-text">
-                            <i className="bi bi-search"></i>
-                        </span>
-                        <input
-                            type="text"
-                            className="form-control"
-                            placeholder="חפש רשימות מילים..."
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                        />
-                    </div>
+                    <SearchInput
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        placeholder="חפש רשימות מילים..."
+                    />
                 </div>
                 <div className="col-md-4">
                     <select

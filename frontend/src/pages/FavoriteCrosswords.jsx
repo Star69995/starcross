@@ -1,6 +1,7 @@
 // pages/Home.jsx
 import { useCallback } from 'react'
 import CrosswordCard from '../components/cards/CrosswordCard'
+import PageHeader from '../components/layout/PageHeader'
 import { getCrosswords, getMyCrosswords } from '../services/api'
 import { useAuth } from '../providers/AuthContext'
 import { useAsyncData } from '../hooks/useAsyncData'
@@ -44,13 +45,7 @@ const FavoriteCrosswords = () => {
 
     return (
         <div className="container py-4">
-            <div className="row">
-                <div className="col-12">
-                    <div className="d-flex justify-content-between align-items-center mb-4">
-                        <h1 className="display-4">תשבצים אהובים</h1>
-                    </div>
-                </div>
-            </div>
+            <PageHeader title="תשבצים אהובים" />
 
             {loading ? (
                 <div className="text-center py-5">

@@ -97,7 +97,7 @@ const Navbar = () => {
         <nav ref={navbarRef} className="navbar navbar-expand-lg sticky-top app-navbar">
             <div className="container-fluid">
                 <Link className="navbar-brand fw-bold" to="/" onClick={hideNavbar}>
-                    <span className="app-brand-mark"><i className="bi bi-puzzle-fill"></i></span>
+                    <span className="app-brand-mark"><i className="bi bi-grid-3x3-gap-fill"></i></span>
                     משבצת
                 </Link>
 

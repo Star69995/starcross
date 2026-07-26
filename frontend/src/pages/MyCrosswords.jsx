@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react'
 import { Link } from 'react-router-dom'
 import CrosswordCard from '../components/cards/CrosswordCard'
+import PageHeader from '../components/layout/PageHeader'
 import { getMyCrosswords } from '../services/api'
 import { useAuth } from '../providers/AuthContext'
 import { useAsyncData } from '../hooks/useAsyncData'
@@ -39,17 +40,15 @@ const MyCrosswords = () => {
 
     return (
         <div className="container py-4">
-            <div className="row">
-                <div className="col-12">
-                    <div className="d-flex justify-content-between align-items-center mb-4">
-                        <h1 className="display-4">התשבצים שלי</h1>
-                        <Link to="/create-crossword" className="btn btn-primary">
-                            <i className="bi bi-plus-circle ms-2"></i>
-                            תשבץ חדש
-                        </Link>
-                    </div>
-                </div>
-            </div>
+            <PageHeader
+                title="התשבצים שלי"
+                action={(
+                    <Link to="/create-crossword" className="btn btn-primary">
+                        <i className="bi bi-plus-circle ms-2"></i>
+                        תשבץ חדש
+                    </Link>
+                )}
+            />
 
             <div className="row mb-4">
                 <div className="col-md-8">

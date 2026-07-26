@@ -95,6 +95,53 @@ body {
   box-shadow: 0 0 0 0.25rem var(--accent-tint);
 }
 
+/* Login/Register card column - a percentage-based col-md-6/col-lg-4 combo
+   actually SHRINKS the card between the md and lg breakpoints (Bootstrap's
+   .container max-width jumps from 720px to 960px right as the column's own
+   share drops from 50% to 33%, so the rendered width goes ~336px -> ~296px
+   -> grows again past xl). A fixed cap reads as a stable, sensible size that
+   only ever grows to fill space up to a comfortable form width, then stops -
+   full-width below that on phones (col-12 already gives 100% there). */
+.auth-card-col {
+  max-width: 420px;
+}
+
+/* ===== Button feedback =====
+   Bootstrap's .btn only transitions color/background/border/box-shadow, not
+   transform - so buttons had a color-fade but no physical "press" feeling.
+   This adds a light lift on hover and a quick scale-down on press/active,
+   using --ease-snappy so it reads as responsive rather than sluggish. */
+.btn {
+  transition: transform 0.15s var(--ease-snappy), box-shadow 0.2s var(--ease-smooth),
+    background-color 0.2s var(--ease-smooth), border-color 0.2s var(--ease-smooth),
+    color 0.2s var(--ease-smooth);
+}
+
+.btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+.btn:active:not(:disabled),
+.btn.active:not(:disabled) {
+  transform: translateY(0) scale(0.96);
+  transition-duration: 0.08s;
+}
+
+.btn:disabled {
+  transform: none;
+}
+
+.btn-primary:hover:not(:disabled),
+.btn-danger:hover:not(:disabled),
+.btn-success:hover:not(:disabled),
+.btn-check:checked + .btn-outline-primary:hover {
+  box-shadow: 0 8px 16px rgba(36, 31, 26, 0.16);
+}
+
+.dropdown-item {
+  transition: background-color 0.15s var(--ease-smooth), color 0.15s var(--ease-smooth);
+}
+
 .nav-tabs .nav-link.active {
   color: var(--accent);
   border-color: var(--line) var(--line) #fff;
@@ -271,10 +318,31 @@ body {
   flex-shrink: 0;
 }
 
+/* Stat/like chips on content cards - soft pills instead of bare icon+number,
+   matching the pill treatment used elsewhere (search-bar, badges) rather than
+   plain inline text. */
+.content-card-stat {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  background: var(--bg-soft);
+  color: var(--muted);
+  padding: 0.25rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+}
+
+/* Separates the metadata section from the view/like/edit actions so the card
+   reads as two tiers instead of one undifferentiated stack. */
+.content-card-footer {
+  border-top: 1px solid var(--line);
+  padding-top: 0.75rem;
+}
+
 /* Hover lift for clickable content cards (crossword/word-list grid items) only -
    not every Bootstrap .card, since that also covers static cards like login/profile/about. */
 .content-card {
-  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  transition: transform 0.2s var(--ease-smooth), box-shadow 0.2s var(--ease-smooth), border-color 0.2s var(--ease-smooth);
 }
 
 .create-card {
@@ -307,6 +375,43 @@ body {
   box-shadow: 0 16px 32px rgba(36, 31, 26, 0.14);
 }
 
+/* Search bar (Home/WordListsBrowser/FavoriteWordLists) - a single soft pill with
+   the icon inset inside it, matching .filter-pills/.solve-toolbar-pill rather than
+   Bootstrap's default .input-group, which renders the icon as a visually detached
+   square box glued to the input. */
+.search-bar {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 0.55rem 1.1rem;
+  box-shadow: 0 10px 24px rgba(36, 31, 26, 0.06);
+  transition: border-color 0.2s var(--ease-smooth), box-shadow 0.2s var(--ease-smooth);
+}
+
+.search-bar:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 0.25rem var(--accent-tint);
+}
+
+.search-bar i {
+  color: var(--muted);
+  flex-shrink: 0;
+}
+
+.search-bar-input {
+  border: none;
+  outline: none;
+  background: transparent;
+  flex: 1;
+  min-width: 0;
+  color: var(--ink);
+  font-size: 0.95rem;
+}
+
+.search-bar-input::placeholder {
+  color: var(--muted);
+}
+
 /* Segmented pill filter (word lists הכל/שלי/אהובות, profile tabs) - a shared
    black-active-pill look instead of Bootstrap's default nav-tabs/underline. */
 .filter-pills {
@@ -326,7 +431,11 @@ body {
   font-size: 0.85rem;
   padding: 6px 16px;
   border-radius: 999px;
-  transition: background 0.15s ease, color 0.15s ease;
+  transition: background 0.15s var(--ease-smooth), color 0.15s var(--ease-smooth), transform 0.1s var(--ease-snappy);
+}
+
+.filter-pill:active {
+  transform: scale(0.94);
 }
 
 .filter-pill.active {
@@ -352,6 +461,20 @@ body {
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  transition: background-color 0.2s var(--ease-smooth), border-color 0.2s var(--ease-smooth),
+    color 0.2s var(--ease-smooth), transform 0.15s var(--ease-snappy);
+}
+
+.solve-toolbar-btn:hover {
+  background: var(--accent-tint);
+  border-color: var(--accent);
+  color: var(--accent);
+  transform: translateY(-1px);
+}
+
+.solve-toolbar-btn:active {
+  transform: scale(0.92);
+  transition-duration: 0.08s;
 }
 
 .solve-toolbar-pill {
@@ -417,6 +540,16 @@ body {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  transition: background-color 0.2s var(--ease-smooth), transform 0.15s var(--ease-snappy);
+}
+
+.clue-nav-btn:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.26);
+}
+
+.clue-nav-btn:active:not(:disabled) {
+  transform: scale(0.88);
+  transition-duration: 0.08s;
 }
 
 .clue-nav-btn:disabled {
@@ -546,11 +679,14 @@ body {
 
 /* Like buttons use their own pink-red (--like) rather than the brand accent blue -
    hearts read as red/pink almost universally regardless of a site's brand color. */
-.btn-danger,
-.text-danger {
+.btn-danger {
   color: #fff;
   background-color: var(--like);
   border-color: var(--like);
+}
+
+.text-danger {
+  color: var(--like) !important;
 }
 
 .btn-outline-danger {
@@ -635,6 +771,7 @@ body {
   font-weight: 600;
   border-radius: var(--radius-sm);
   padding: 0.5rem 0.9rem;
+  transition: background-color 0.2s var(--ease-smooth), color 0.2s var(--ease-smooth);
 }
 
 .app-navbar .nav-link:hover {
@@ -708,6 +845,7 @@ body {
     flex: 1;
     padding: 4px 0;
     text-decoration: none;
+    transition: color 0.2s var(--ease-smooth), transform 0.1s var(--ease-snappy);
   }
 
   .bn-item i {
@@ -716,6 +854,10 @@ body {
 
   .bn-item.active {
     color: var(--ink);
+  }
+
+  .bn-item:active {
+    transform: scale(0.9);
   }
 
   .bn-fab {
@@ -732,6 +874,17 @@ body {
     box-shadow: 0 10px 20px rgba(29, 78, 216, 0.38);
     border: 4px solid var(--paper);
     text-decoration: none;
+    transition: transform 0.15s var(--ease-snappy), box-shadow 0.2s var(--ease-smooth);
+  }
+
+  .bn-fab:hover {
+    transform: translateY(-2px) scale(1.04);
+    box-shadow: 0 14px 26px rgba(29, 78, 216, 0.46);
+  }
+
+  .bn-fab:active {
+    transform: scale(0.94);
+    transition-duration: 0.08s;
   }
 
 }
@@ -793,6 +946,13 @@ body {
     color: var(--ink);
     font-weight: 700;
     font-size: 1rem;
+    transition: background-color 0.15s var(--ease-smooth), transform 0.08s var(--ease-snappy);
+  }
+
+  .hebrew-keyboard-key:active {
+    background: var(--accent-tint);
+    color: var(--accent);
+    transform: scale(0.9);
   }
 
   .hebrew-keyboard-backspace {
@@ -801,8 +961,35 @@ body {
     color: var(--accent);
   }
 
+  .hebrew-keyboard-backspace:active {
+    background: var(--accent);
+    color: #fff;
+  }
+
   .solver-keyboard-spacer {
     display: block;
     height: 160px;
+  }
+}
+
+/* Respect the OS-level "reduce motion" setting - disable the transform-based
+   press/lift/hover feedback above (and the heartbeat/fade keyframes) instead
+   of forcing every user through them. */
+@media (prefers-reduced-motion: reduce) {
+
+  .btn,
+  .content-card,
+  .create-card,
+  .filter-pill,
+  .solve-toolbar-btn,
+  .clue-nav-btn,
+  .bn-item,
+  .bn-fab,
+  .hebrew-keyboard-key,
+  .fade-in,
+  .btn-danger .bi-heart-fill {
+    transition: none !important;
+    animation: none !important;
+    transform: none !important;
   }
 }

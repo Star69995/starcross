@@ -87,32 +87,32 @@ const ContentCard = ({
                 {description && (
                     <p className="card-text text-muted small">{description}</p>
                 )}
-                <div className="mb-3">
-                    <small className="text-muted">
-                        <i className="bi bi-person ms-1"></i>
-                        {creator}
+                <div className="mb-3 d-flex align-items-center gap-3">
+                    <small className="text-muted d-flex align-items-center gap-1" style={{ minWidth: 0 }}>
+                        <i className="bi bi-person flex-shrink-0"></i>
+                        <span className="text-truncate" dir="ltr" style={{ textAlign: 'right' }}>{creator}</span>
                     </small>
-                    <small className="text-muted ms-3">
-                        <i className="bi bi-calendar ms-1"></i>
+                    <small className="text-muted d-flex align-items-center gap-1 flex-shrink-0">
+                        <i className="bi bi-calendar"></i>
                         {createdAt}
                     </small>
                 </div>
                 <div className="d-flex justify-content-between align-items-center mb-3">
-                    <div className="d-flex gap-3">
+                    <div className="d-flex flex-wrap gap-2">
                         {stats.map((stat, i) =>
-                            <small key={i} className="text-muted">
-                                <i className={`bi ${stat.icon} me-1 m-1`}></i>
+                            <small key={i} className="content-card-stat">
+                                <i className={`bi ${stat.icon}`}></i>
                                 {stat.label}
                             </small>
                         )}
-                        <small className="text-muted">
-                            <i className="bi bi-heart ms-1"></i>
+                        <small className="content-card-stat">
+                            <i className="bi bi-heart"></i>
                             {likesCount1}
                         </small>
                     </div>
                     {children}
                 </div>
-                <div className="d-flex justify-content-between align-items-center">
+                <div className="d-flex justify-content-between align-items-center content-card-footer">
                     {viewUrl && (
                         <Link to={viewUrl} className="btn btn-primary btn-sm">
                             <i className="bi bi-play-circle ms-1"></i>{viewText}

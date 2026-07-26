@@ -1,27 +1,47 @@
 // pages/Home.jsx
 import { Fragment, useCallback, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { toast } from 'react-toastify'
 import CrosswordCard from '../components/cards/CrosswordCard'
 import CreateCard from '../components/cards/CreateCard'
-import { getCrosswords, getInProgressCrossword, getRecentSolves, getSolvedCount } from '../services/api'
+import PageHeader from '../components/layout/PageHeader'
+import SearchInput from '../components/forms/SearchInput'
+import { getCrosswords, getMyCrosswords, getInProgressCrossword, getRecentSolves, getSolvedCount } from '../services/api'
 import { useAsyncData } from '../hooks/useAsyncData'
 import { useAuth } from '../providers/AuthContext'
 import { percentComplete } from '../utils/gridProgress'
 import { formatRelativeDate } from '../utils/relativeDate'
 
+const FILTERS = [
+    { key: 'all', label: 'הכל' },
+    { key: 'mine', label: 'שלי' },
+    { key: 'favorites', label: 'אהובות' },
+]
+
 const Home = () => {
     const { user } = useAuth()
     const [searchTerm, setSearchTerm] = useState('')
+    const [filter, setFilter] = useState('all')
 
     const fetchCrosswords = useCallback(async () => {
         try {
-            const data = await getCrosswords();
-            return Array.isArray(data) ? data : [];
+            if (filter === 'mine') {
+                if (!user) return []
+                return await getMyCrosswords()
+            }
+            if (filter === 'favorites') {
+                if (!user) return []
+                const [publicCrosswords, myCrosswords] = await Promise.all([getCrosswords(), getMyCrosswords()])
+                const uniqueMap = new Map()
+                    ;[...publicCrosswords, ...myCrosswords].forEach(cw => uniqueMap.set(cw._id, cw))
+                return Array.from(uniqueMap.values()).filter(cw => cw.likes.includes(user._id))
+            }
+            return await getCrosswords()
         } catch (error) {
             console.error('Error fetching crosswords:', error);
             return []; // Fallback to empty array on error
         }
-    }, []);
+    }, [filter, user]);
 
     const { data, loading, setData: setCrosswords } = useAsyncData(fetchCrosswords)
     const crosswords = data || []
@@ -60,37 +80,44 @@ const Home = () => {
         setCrosswords(prev => (prev || []).filter(cw => cw._id !== id));
     };
 
+    const handleFilterClick = (key) => {
+        if (key !== 'all' && !user) {
+            toast.info('כדי לצפות בתשבצים שלך או באהובים צריך להתחבר תחילה')
+            return
+        }
+        setFilter(key)
+    }
+
     const hasActivity = user && activity && (activity.inProgress || activity.recentSolves.length > 0 || activity.solvedCount > 0)
 
     return (
         <div className="container py-4">
-            <div className="row">
-                <div className="col-12">
-                    <div className="mb-4">
-                        <h1 className="display-4 mb-1">תשבצים</h1>
-                        <p className="text-muted mb-0">יש תשבץ אחד באמצע פתירה, ואפשר להמשיך להתקדם בדיוק מאיפה שהפסקת</p>
-                    </div>
-                </div>
-            </div>
+            <PageHeader
+                title="תשבצים"
+                subtitle="יש תשבץ אחד באמצע פתירה, ואפשר להמשיך להתקדם בדיוק מאיפה שהפסקת"
+            />
 
             {hasActivity && (
                 <div className="row g-3 mb-4">
                     <div className="col-lg-5">
                         <div className="card content-card h-100 shadow-sm">
                             <div className="card-body">
-                                <div className="d-flex justify-content-between align-items-center mb-2">
-                                    <strong className="fs-4">{activity.solvedCount}</strong>
-                                    <span className="text-muted small">תשבצים נפתרו עד כה</span>
+                                <div className="d-flex align-items-center gap-2 mb-3">
+                                    <span className="content-card-icon">
+                                        <i className="bi bi-check2-circle"></i>
+                                    </span>
+                                    <div>
+                                        <strong className="fs-4 d-block lh-1">{activity.solvedCount}</strong>
+                                        <span className="text-muted small">תשבצים נפתרו עד כה</span>
+                                    </div>
                                 </div>
                                 {activity.recentSolves.length > 0 && (
-                                    <ul className="list-unstyled mb-0 small">
+                                    <ul className="list-unstyled mb-0 small content-card-footer">
                                         {activity.recentSolves.map(solve => (
-                                            <li key={solve.crosswordId} className="d-flex justify-content-between align-items-center py-1">
-                                                <span className="text-muted">{formatRelativeDate(solve.updatedAt)}</span>
-                                                <span className="text-truncate">
-                                                    {solve.crossword.title}
-                                                    <i className="bi bi-check-circle-fill text-success ms-2"></i>
-                                                </span>
+                                            <li key={solve.crosswordId} className="d-flex align-items-center gap-2 py-1">
+                                                <i className="bi bi-check-circle-fill text-success"></i>
+                                                <span className="text-truncate flex-grow-1" style={{ minWidth: 0 }}>{solve.crossword.title}</span>
+                                                <span className="text-muted text-nowrap">{formatRelativeDate(solve.updatedAt)}</span>
                                             </li>
                                         ))}
                                     </ul>
@@ -121,19 +148,26 @@ const Home = () => {
                 </div>
             )}
 
-            <div className="row mb-4">
-                <div className="col-12">
-                    <div className="input-group">
-                        <span className="input-group-text">
-                            <i className="bi bi-search"></i>
-                        </span>
-                        <input
-                            type="text"
-                            className="form-control"
-                            placeholder="חיפוש תשבץ לפי שם..."
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                        />
+            <div className="row mb-4 g-2">
+                <div className="col-md-8">
+                    <SearchInput
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        placeholder="חיפוש תשבץ לפי שם..."
+                    />
+                </div>
+                <div className="col-md-4">
+                    <div className="filter-pills justify-content-md-end">
+                        {FILTERS.map(f => (
+                            <button
+                                key={f.key}
+                                type="button"
+                                className={`filter-pill ${filter === f.key ? 'active' : ''}`}
+                                onClick={() => handleFilterClick(f.key)}
+                            >
+                                {f.label}
+                            </button>
+                        ))}
                     </div>
                 </div>
             </div>
@@ -149,9 +183,9 @@ const Home = () => {
                     {filteredCrosswords.map((crossword, i) => (
                         <Fragment key={crossword._id}>
                             <div className="col-lg-4 col-md-6">
-                                <CrosswordCard crossword={crossword} onDelete={handleDeleteCrossword} showVisibilityBadge={false} />
+                                <CrosswordCard crossword={crossword} onDelete={handleDeleteCrossword} showVisibilityBadge={filter !== 'all'} />
                             </div>
-                            {i === 2 && (
+                            {i === 2 && filter === 'all' && (
                                 <div className="col-lg-4 col-md-6">
                                     <CreateCard
                                         to="/create-crossword"
@@ -163,7 +197,7 @@ const Home = () => {
                             )}
                         </Fragment>
                     ))}
-                    {filteredCrosswords.length > 0 && filteredCrosswords.length < 3 && (
+                    {filter === 'all' && filteredCrosswords.length > 0 && filteredCrosswords.length < 3 && (
                         <div className="col-lg-4 col-md-6">
                             <CreateCard
                                 to="/create-crossword"

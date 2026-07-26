@@ -2,6 +2,8 @@
 import { Fragment, useState, useCallback } from 'react'
 import WordListCard from '../components/cards/WordListCard'
 import CreateCard from '../components/cards/CreateCard'
+import PageHeader from '../components/layout/PageHeader'
+import SearchInput from '../components/forms/SearchInput'
 import { getWordLists, getMyWordLists } from '../services/api'
 import { useAsyncData } from '../hooks/useAsyncData'
 import { useAuth } from '../providers/AuthContext'
@@ -60,29 +62,18 @@ const WordListsBrowser = () => {
 
     return (
         <div className="container py-4">
-            <div className="row">
-                <div className="col-12">
-                    <div className="mb-4">
-                        <h1 className="display-4">רשימות מילים</h1>
-                        <p className="text-muted mb-0">אוספי מילים והגדרות, מוכנים לבניית תשבץ חדש או לעיון חופשי</p>
-                    </div>
-                </div>
-            </div>
+            <PageHeader
+                title="רשימות מילים"
+                subtitle="אוספי מילים והגדרות, מוכנים לבניית תשבץ חדש או לעיון חופשי"
+            />
 
             <div className="row mb-4 g-2">
                 <div className="col-md-8">
-                    <div className="input-group">
-                        <span className="input-group-text">
-                            <i className="bi bi-search"></i>
-                        </span>
-                        <input
-                            type="text"
-                            className="form-control"
-                            placeholder="חפש רשימות מילים..."
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                        />
-                    </div>
+                    <SearchInput
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        placeholder="חפש רשימות מילים..."
+                    />
                 </div>
                 <div className="col-md-4">
                     <div className="filter-pills justify-content-md-end">

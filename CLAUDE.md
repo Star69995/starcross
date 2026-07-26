@@ -26,8 +26,14 @@
 - **Important/counter-intuitive**: this app loads the standard (non-RTL) `bootstrap.min.css` build while `<html>` is `dir="rtl"` (see `index.html`) — so Bootstrap's `ms-*`/`me-*` spacing utilities are **physical** (`ms-*` = `margin-left`, `me-*` = `margin-right`), they do NOT flip for RTL like true logical properties would. Combined with RTL bidi layout, an icon that comes *before* its text in JSX renders on the right with the text to its left — so the gap must come from `ms-*` (not `me-*`, which is the LTR-intuitive but wrong choice here and produces a zero-width gap). An icon that comes *after* its text needs `me-*` instead. When in doubt, check a working example in the same file/area rather than guessing from LTR habit.
 - Prefer flex `gap-*` on the shared container (icon and text as flex children) over per-icon margin when possible — it isn't affected by this physical-vs-logical pitfall at all (see `FormCard.jsx`'s submit button).
 
+## Hebrew-only site / RTL correctness
+- This site is Hebrew-only — every user-facing string (labels, buttons, placeholders, validation/error messages, alt text, aria-labels, toasts, page titles) must be in Hebrew. Don't leave English copy in UI-facing text, even temporarily or as a placeholder.
+- The whole app must fit RTL fully, not just "not look broken" — text alignment, flex/grid ordering, icon placement, form layout, and any directional cue must match how Hebrew is actually read (right-to-left), per the `ms-*`/`me-*` physical-class gotcha in **Icons, not emojis** above and the arrow rules below.
+- Never assume a component is RTL-correct because it inherited `dir="rtl"` from `<html>` — Bootstrap's shipped CSS is the LTR build (see **Icons, not emojis**), so spacing/order bugs are easy to introduce silently.
+- Always verify Hebrew/RTL correctness before considering any new or changed UI done — reading the JSX is not sufficient. Use the same in-browser check described in **Responsiveness** (Playwright, phone + iPad viewports): visually confirm Hebrew text reads right-to-left, icons/arrows sit on the correct side of their text, and nothing is mirrored incorrectly or left in English.
+
 ## RTL arrow direction
-- Hebrew (RTL) is the only language on this site — any directional arrow (character `→`/`←`, or icons like `bi-arrow-left`/`bi-arrow-right`/`bi-chevron-*`) must point the way Hebrew reading actually flows, not the LTR-default direction.
+- Any directional arrow (character `→`/`←`, or icons like `bi-arrow-left`/`bi-arrow-right`/`bi-chevron-*`) must point the way Hebrew reading actually flows, not the LTR-default direction.
   - "Back / return to previous" flows toward the right (reading start) — use a right-pointing arrow (`bi-arrow-right`, `→`).
   - "Forward / next / continue" flows toward the left (reading end) — use a left-pointing arrow (`bi-arrow-left`, `←`).
   - For a non-navigational "maps to" annotation (e.g. a technical identifier next to its Hebrew explanation), order it so the arrow still reads right-to-left: Hebrew explanation first (right), arrow, identifier last (left) — e.g. `פרופילי משתמשים ← users`, not `users → פרופילי משתמשים`.

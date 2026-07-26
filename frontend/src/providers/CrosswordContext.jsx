@@ -137,6 +137,31 @@ export const CrosswordProvider = ({ children }) => {
         return word ? word.isVertical : null;
     };
 
+    // Focuses the first not-yet-correct cell of a word (falling back to its
+    // start cell if the word is already fully answered), so picking a clue
+    // from the definitions list lands the cursor somewhere useful instead of
+    // just highlighting the word with no active input.
+    const focusFirstEmptyCellInWord = (wordData) => {
+        if (!wordData) return;
+        const { row: startRow, col: startCol, isVertical } = wordData;
+        let row = startRow;
+        let col = startCol;
+        let targetRow = startRow;
+        let targetCol = startCol;
+        let foundEmpty = false;
+
+        while (grid[row]?.[col]?.solution) {
+            if (!foundEmpty && grid[row][col].value !== grid[row][col].solution) {
+                targetRow = row;
+                targetCol = col;
+                foundEmpty = true;
+            }
+            if (isVertical) row++; else col++;
+        }
+
+        document.querySelector(`[data-row="${targetRow}"][data-col="${targetCol}"]`)?.focus();
+    };
+
     const setActiveDefinition = (cell = null, inputDefinition = null) => {
         try {
             if (cell && cell.definitions?.length > 0) {
@@ -158,6 +183,10 @@ export const CrosswordProvider = ({ children }) => {
                 };
                 setSelectedDefinition(newDefinition);
                 updateHighlightedCells(newDefinition);
+                const wordData = wordPositions.find(
+                    w => w.definition === inputDefinition && w.isVertical === newDefinition.isVertical
+                );
+                focusFirstEmptyCellInWord(wordData);
             }
         } catch (error) {
             console.error('Error setting active definition:', error);

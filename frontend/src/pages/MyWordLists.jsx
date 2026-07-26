@@ -2,6 +2,7 @@
 import { useState, useCallback } from 'react'
 import { Link } from 'react-router-dom'
 import WordListCard from '../components/cards/WordListCard'
+import PageHeader from '../components/layout/PageHeader'
 import { getMyWordLists } from '../services/api'
 import { useAuth } from '../providers/AuthContext'
 import { useAsyncData } from '../hooks/useAsyncData'
@@ -37,17 +38,15 @@ const MyWordLists = () => {
 
     return (
         <div className="container py-4">
-            <div className="row">
-                <div className="col-12">
-                    <div className="d-flex justify-content-between align-items-center mb-4">
-                        <h1 className="display-4">רשימות המילים שלי</h1>
-                        <Link to="/create-wordlist" className="btn btn-primary">
-                            <i className="bi bi-plus-circle ms-2"></i>
-                            רשימה חדשה
-                        </Link>
-                    </div>
-                </div>
-            </div>
+            <PageHeader
+                title="רשימות המילים שלי"
+                action={(
+                    <Link to="/create-wordlist" className="btn btn-primary">
+                        <i className="bi bi-plus-circle ms-2"></i>
+                        רשימה חדשה
+                    </Link>
+                )}
+            />
 
             <div className="row mb-4">
                 <div className="col-md-6">

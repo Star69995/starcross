@@ -10,9 +10,9 @@ function ActionButtons({
 }) {
     return (<div className="d-flex justify-content-between align-items-center">
 
-        <div className="btn-group btn-group-sm">
+        <div className="d-flex gap-2">
             <button
-                className={`btn ${isLiked ? 'btn-danger' : 'btn-outline-danger'} m-1`}
+                className={`btn btn-sm ${isLiked ? 'btn-danger' : 'btn-outline-danger'}`}
                 onClick={handleLike}
                 disabled={likeLoadingInternal}
                 title={isLiked ? 'Unlike' : 'Like'}
@@ -20,12 +20,12 @@ function ActionButtons({
                 <i className={`bi ${isLiked ? 'bi-heart-fill' : 'bi-heart'}`}></i>
             </button>
             {canEdit && (
-                <button className="btn btn-outline-primary m-1" onClick={onEdit} title="Edit">
+                <button className="btn btn-sm btn-outline-primary" onClick={onEdit} title="Edit">
                     <i className="bi bi-pencil"></i>
                 </button>
             )}
             {canDelete && (
-                <button className="btn btn-outline-danger m-1" onClick={handleDelete} title="Delete">
+                <button className="btn btn-sm btn-outline-danger" onClick={handleDelete} title="Delete">
                     <i className="bi bi-trash"></i>
                 </button>
             )}

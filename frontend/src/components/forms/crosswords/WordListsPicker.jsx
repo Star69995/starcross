@@ -26,33 +26,44 @@ const WordListsPicker = ({
                 </button>
             </div>
         ) : (
-            <div className="border rounded p-3" style={{ maxHeight: 200, overflowY: "auto" }}>
-                {wordLists.map((wordList) => (
-                    <div key={wordList._id} className="form-check mb-2 d-flex flex-row align-items-center">
-                        <input
-                            className="form-check-input ms-2"
-                            type="checkbox"
-                            id={`wordlist-${wordList._id}`}
-                            checked={value.map(String).includes(String(wordList._id))}
-                            onChange={() => {
-                                if (value.map(String).includes(String(wordList._id))) {
-                                    onChange(value.filter((id) => String(id) !== String(wordList._id)));
-                                } else {
-                                    onChange([...value, wordList._id]);
-                                }
-                            }}
-                        />
-                        <label className="form-check-label" htmlFor={`wordlist-${wordList._id}`}>
-                            <div className="d-flex justify-content-between align-items-center">
-                                <span className="fw-bold m-1">{wordList.title}</span>
-                                <small className="text-muted">{wordList.words.length} מילים</small>
-                            </div>
-                            {wordList.description && (
-                                <small className="text-muted d-block">{wordList.description}</small>
-                            )}
+            <div className="list-group" style={{ maxHeight: 220, overflowY: "auto" }}>
+                {wordLists.map((wordList) => {
+                    const isChecked = value.map(String).includes(String(wordList._id));
+                    return (
+                        <label
+                            key={wordList._id}
+                            htmlFor={`wordlist-${wordList._id}`}
+                            className="list-group-item list-group-item-action d-flex align-items-start gap-2"
+                        >
+                            <input
+                                className="form-check-input mt-1 flex-shrink-0"
+                                type="checkbox"
+                                id={`wordlist-${wordList._id}`}
+                                checked={isChecked}
+                                onChange={() => {
+                                    if (isChecked) {
+                                        onChange(value.filter((id) => String(id) !== String(wordList._id)));
+                                    } else {
+                                        onChange([...value, wordList._id]);
+                                    }
+                                }}
+                            />
+                            <span className="flex-grow-1" style={{ minWidth: 0 }}>
+                                <span className="d-flex justify-content-between align-items-center gap-2">
+                                    <span className="fw-bold text-truncate" style={{ minWidth: 0 }}>
+                                        {wordList.title}
+                                    </span>
+                                    <small className="text-muted flex-shrink-0">
+                                        {wordList.words.length} מילים
+                                    </small>
+                                </span>
+                                {wordList.description && (
+                                    <small className="text-muted d-block">{wordList.description}</small>
+                                )}
+                            </span>
                         </label>
-                    </div>
-                ))}
+                    );
+                })}
             </div>
         )}
         {error && <div className="text-danger mt-2">{error}</div>}
