@@ -4,6 +4,7 @@ import { useAuth } from '../providers/AuthContext'
 import { auth } from '../services/firebase'
 import { updateProfile, changePassword, getCrosswords, getMyCrosswords, getMyWordLists } from '../services/api'
 import { useAsyncData } from '../hooks/useAsyncData'
+import Avatar from '../components/layout/Avatar'
 
 // Milestones are just thresholds checked against the real counts below - not a
 // separate achievements system, so nothing here is invented/fake data.
@@ -104,20 +105,12 @@ const Profile = () => {
                     <div className="card shadow profile-cover-motif mb-3">
                         <div className="card-header bg-primary text-white border-0">
                             <div className="d-flex align-items-center">
-                                {user?.photoURL ? (
-                                    <img
-                                        src={user.photoURL}
-                                        alt={user.userName}
-                                        referrerPolicy="no-referrer"
-                                        style={{ width: '48px', height: '48px', borderRadius: '50%', objectFit: 'cover' }}
-                                        className="ms-3 flex-shrink-0"
-                                    />
-                                ) : (
-                                    <i className="bi bi-person-circle fs-3 ms-3"></i>
-                                )}
+                                <span className="ms-3 flex-shrink-0">
+                                    <Avatar photoURL={user?.photoURL} name={user?.userName} size={56} />
+                                </span>
                                 <div className="text-truncate">
                                     <h2 className="card-title mb-0 text-truncate">{user?.userName}</h2>
-                                    <small className="opacity-75">{user?.email}</small>
+                                    <small className="opacity-75 d-block text-truncate" dir="ltr" style={{ textAlign: 'right' }}>{user?.email}</small>
                                 </div>
                             </div>
                         </div>
@@ -125,9 +118,9 @@ const Profile = () => {
 
                     <div className="profile-stats-row mb-3">
                         <div className="profile-stat-card">
-                            <i className="bi bi-check2-circle"></i>
-                            <strong>{solvedCount}</strong>
-                            <span>תשבצים נפתרו</span>
+                            <i className="bi bi-collection"></i>
+                            <strong>{createdWordLists}</strong>
+                            <span>רשימות נוצרו</span>
                         </div>
                         <div className="profile-stat-card">
                             <i className="bi bi-puzzle-fill"></i>
@@ -135,9 +128,9 @@ const Profile = () => {
                             <span>תשבצים נוצרו</span>
                         </div>
                         <div className="profile-stat-card">
-                            <i className="bi bi-collection"></i>
-                            <strong>{createdWordLists}</strong>
-                            <span>רשימות נוצרו</span>
+                            <i className="bi bi-check2-circle"></i>
+                            <strong>{solvedCount}</strong>
+                            <span>תשבצים נפתרו</span>
                         </div>
                     </div>
 
@@ -163,29 +156,29 @@ const Profile = () => {
                         </div>
                     </div>
 
+                    <div className="mb-3">
+                        <div className="filter-pills">
+                            <button
+                                type="button"
+                                className={`filter-pill ${activeTab === 'profile' ? 'active' : ''}`}
+                                onClick={() => setActiveTab('profile')}
+                            >
+                                פרטים אישיים
+                            </button>
+                            {hasPasswordProvider && (
+                                <button
+                                    type="button"
+                                    className={`filter-pill ${activeTab === 'password' ? 'active' : ''}`}
+                                    onClick={() => setActiveTab('password')}
+                                >
+                                    שינוי סיסמה
+                                </button>
+                            )}
+                        </div>
+                    </div>
+
                     <div className="card shadow">
                         <div className="card-body p-0">
-                            <ul className="nav nav-tabs flex-column flex-sm-row" role="tablist">
-                                <li className="nav-item flex-fill text-center" role="presentation">
-                                    <button
-                                        className={`nav-link w-100 ${activeTab === 'profile' ? 'active' : ''}`}
-                                        onClick={() => setActiveTab('profile')}
-                                    >
-                                        פרטים אישיים
-                                    </button>
-                                </li>
-                                {hasPasswordProvider && (
-                                    <li className="nav-item flex-fill text-center" role="presentation">
-                                        <button
-                                            className={`nav-link w-100 ${activeTab === 'password' ? 'active' : ''}`}
-                                            onClick={() => setActiveTab('password')}
-                                        >
-                                            שינוי סיסמה
-                                        </button>
-                                    </li>
-                                )}
-                            </ul>
-
                             <div className="p-3 p-md-4">
                                 {message && (
                                     <div className="alert alert-success" role="alert">

@@ -5,7 +5,7 @@ import ContentCard from './ContentCard';
 import { useNavigate } from 'react-router-dom';
 import { toast } from "react-toastify";
 
-const CrosswordCard = ({ crossword, onDelete }) => {
+const CrosswordCard = ({ crossword, onDelete, showVisibilityBadge = true }) => {
     const { user } = useAuth()
     const navigate = useNavigate()
 
@@ -50,6 +50,7 @@ const CrosswordCard = ({ crossword, onDelete }) => {
                 // more stats if needed
             ]}
             badge={crossword.isPublic}
+            showVisibilityBadge={showVisibilityBadge}
             completed={Boolean(user && crossword.solved?.includes(user._id))}
             liked={crossword.likes.includes(user?._id)}
             onLike={handleLike}
@@ -69,4 +70,5 @@ export default CrosswordCard
 CrosswordCard.propTypes = {
     crossword: PropTypes.object.isRequired,
     onDelete: PropTypes.func,
+    showVisibilityBadge: PropTypes.bool,
 };

@@ -13,6 +13,7 @@ const ContentCard = ({
     stats = [],
     icon = "bi-grid",
     badge,
+    showVisibilityBadge = true,
     completed,
     liked,
     onLike,
@@ -67,7 +68,7 @@ const ContentCard = ({
                         <span className="content-card-icon">
                             <i className={`bi ${icon}`}></i>
                         </span>
-                        <h5 className="card-title text-primary mb-0">{title}</h5>
+                        <h5 className="card-title mb-0">{title}</h5>
                     </div>
                     <div className="d-flex flex-wrap justify-content-end gap-1">
                         {completed && (
@@ -76,10 +77,11 @@ const ContentCard = ({
                                 הושלם
                             </span>
                         )}
-                        {badge
-                            ? <span className="badge bg-success">ציבורית</span>
-                            : <span className="badge bg-secondary">פרטית</span>
-                        }
+                        {showVisibilityBadge && (
+                            badge
+                                ? <span className="badge bg-success">ציבורית</span>
+                                : <span className="badge bg-secondary">פרטית</span>
+                        )}
                     </div>
                 </div>
                 {description && (
@@ -141,6 +143,7 @@ ContentCard.propTypes = {
     stats: PropTypes.array,
     icon: PropTypes.string,
     badge: PropTypes.bool,
+    showVisibilityBadge: PropTypes.bool,
     completed: PropTypes.bool,
     liked: PropTypes.bool,
     onLike: PropTypes.func,

@@ -2,6 +2,7 @@ import { useRef, useEffect } from 'react'; // Import useRef and useEffect
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../providers/AuthContext';
 import { Collapse, Dropdown } from 'bootstrap'; // Import Collapse/Dropdown from bootstrap
+import Avatar from './Avatar';
 
 const Navbar = () => {
     const { user, logout } = useAuth();
@@ -115,13 +116,30 @@ const Navbar = () => {
                     {/* Main navigation links */}
                     <ul className="navbar-nav me-auto mb-2 mb-lg-0">
                         <li className="nav-item">
-                            <Link className="nav-link" to="/about" onClick={hideNavbar}>
+                            <Link
+                                className={`nav-link ${location.pathname === '/about' ? 'active' : ''}`}
+                                to="/about"
+                                onClick={hideNavbar}
+                            >
                                 אודות
                             </Link>
                         </li>
                         <li className="nav-item">
-                            <Link className="nav-link" to="/wordlists" onClick={hideNavbar}>
+                            <Link
+                                className={`nav-link ${location.pathname === '/wordlists' ? 'active' : ''}`}
+                                to="/wordlists"
+                                onClick={hideNavbar}
+                            >
                                 רשימות מילים
+                            </Link>
+                        </li>
+                        <li className="nav-item">
+                            <Link
+                                className={`nav-link ${location.pathname === '/' ? 'active' : ''}`}
+                                to="/"
+                                onClick={hideNavbar}
+                            >
+                                תשבצים
                             </Link>
                         </li>
                     </ul>
@@ -142,16 +160,9 @@ const Navbar = () => {
                                     }}
                                     aria-expanded="false"
                                 >
-                                    {user.photoURL ? (
-                                        <img
-                                            src={user.photoURL}
-                                            alt={user.userName}
-                                            referrerPolicy="no-referrer"
-                                            className="account-avatar ms-2"
-                                        />
-                                    ) : (
-                                        <i className="bi bi-person-circle fs-5 ms-2"></i>
-                                    )}
+                                    <span className="ms-2">
+                                        <Avatar photoURL={user.photoURL} name={user.userName} size={28} />
+                                    </span>
                                     {user.userName}
                                 </a>
                                 {/* dropdown-menu-start (not -end): this build is the standard LTR

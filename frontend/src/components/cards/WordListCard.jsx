@@ -5,7 +5,7 @@ import ContentCard from './ContentCard'
 import { useNavigate } from 'react-router-dom'
 import { toast } from "react-toastify";
 
-const WordListCard = ({ wordList, onDelete }) => {
+const WordListCard = ({ wordList, onDelete, showVisibilityBadge = true }) => {
     const { user } = useAuth()
     const navigate = useNavigate()
 
@@ -53,6 +53,7 @@ const WordListCard = ({ wordList, onDelete }) => {
                 { icon: "bi-list-ul", label: `${wordList.words.length || 0} מילים` }
             ]}
             badge={wordList.isPublic}
+            showVisibilityBadge={showVisibilityBadge}
             liked={wordList.likes.includes(user?._id)}
             onLike={handleLike} // implement in parent or with hooks!
             likesCount={wordList.likes.length || 0}
@@ -69,5 +70,6 @@ const WordListCard = ({ wordList, onDelete }) => {
 WordListCard.propTypes = {
     wordList: PropTypes.object.isRequired,
     onDelete: PropTypes.func,
+    showVisibilityBadge: PropTypes.bool,
 };
 export default WordListCard

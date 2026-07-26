@@ -47,7 +47,7 @@ const FavoriteCrosswords = () => {
             <div className="row">
                 <div className="col-12">
                     <div className="d-flex justify-content-between align-items-center mb-4">
-                        <h1 className="display-4 text-primary">תשבצים אהובים</h1>
+                        <h1 className="display-4">תשבצים אהובים</h1>
                     </div>
                 </div>
             </div>

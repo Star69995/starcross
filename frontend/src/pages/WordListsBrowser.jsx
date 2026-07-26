@@ -1,21 +1,42 @@
 // pages/WordListsBrowser.jsx
-import { useState, useCallback } from 'react'
+import { Fragment, useState, useCallback } from 'react'
 import WordListCard from '../components/cards/WordListCard'
-import { getWordLists } from '../services/api'
+import CreateCard from '../components/cards/CreateCard'
+import { getWordLists, getMyWordLists } from '../services/api'
 import { useAsyncData } from '../hooks/useAsyncData'
+import { useAuth } from '../providers/AuthContext'
+import { toast } from 'react-toastify'
+
+const FILTERS = [
+    { key: 'all', label: 'הכל' },
+    { key: 'mine', label: 'שלי' },
+    { key: 'favorites', label: 'אהובות' },
+]
 
 const WordListsBrowser = () => {
+    const { user } = useAuth()
     const [searchTerm, setSearchTerm] = useState('')
-    const [sortBy, setSortBy] = useState('newest')
+    const [filter, setFilter] = useState('all')
 
     const fetchWordLists = useCallback(async () => {
         try {
-            return await getWordLists({ isPublic: true, sortBy })
+            if (filter === 'mine') {
+                if (!user) return []
+                return await getMyWordLists()
+            }
+            if (filter === 'favorites') {
+                if (!user) return []
+                const [publicLists, myLists] = await Promise.all([getWordLists(), getMyWordLists()])
+                const uniqueMap = new Map()
+                    ;[...publicLists, ...myLists].forEach(list => uniqueMap.set(list._id, list))
+                return Array.from(uniqueMap.values()).filter(list => list.likes.includes(user._id))
+            }
+            return await getWordLists()
         } catch (error) {
             console.error('Error fetching word lists:', error)
             return []
         }
-    }, [sortBy])
+    }, [filter, user])
 
     const { data, loading, setData: setWordLists } = useAsyncData(fetchWordLists)
     const wordLists = data || []
@@ -29,17 +50,26 @@ const WordListsBrowser = () => {
         setWordLists(prev => (prev || []).filter(cw => cw._id !== id));
     };
 
+    const handleFilterClick = (key) => {
+        if (key !== 'all' && !user) {
+            toast.info('כדי לצפות ברשימות שלך או באהובות צריך להתחבר תחילה')
+            return
+        }
+        setFilter(key)
+    }
+
     return (
         <div className="container py-4">
             <div className="row">
                 <div className="col-12">
-                    <div className="d-flex justify-content-between align-items-center mb-4">
-                        <h1 className="display-4 text-primary">רשימות מילים</h1>
+                    <div className="mb-4">
+                        <h1 className="display-4">רשימות מילים</h1>
+                        <p className="text-muted mb-0">אוספי מילים והגדרות, מוכנים לבניית תשבץ חדש או לעיון חופשי</p>
                     </div>
                 </div>
             </div>
 
-            <div className="row mb-4">
+            <div className="row mb-4 g-2">
                 <div className="col-md-8">
                     <div className="input-group">
                         <span className="input-group-text">
@@ -55,16 +85,18 @@ const WordListsBrowser = () => {
                     </div>
                 </div>
                 <div className="col-md-4">
-                    <select
-                        className="form-select"
-                        value={sortBy}
-                        onChange={(e) => setSortBy(e.target.value)}
-                    >
-                        <option value="newest">החדשות ביותר</option>
-                        <option value="oldest">הישנות ביותר</option>
-                        <option value="most_liked">הכי אהובות</option>
-                        <option value="name">לפי שם</option>
-                    </select>
+                    <div className="filter-pills justify-content-md-end">
+                        {FILTERS.map(f => (
+                            <button
+                                key={f.key}
+                                type="button"
+                                className={`filter-pill ${filter === f.key ? 'active' : ''}`}
+                                onClick={() => handleFilterClick(f.key)}
+                            >
+                                {f.label}
+                            </button>
+                        ))}
+                    </div>
                 </div>
             </div>
 
@@ -76,11 +108,33 @@ const WordListsBrowser = () => {
                 </div>
             ) : (
                 <div className="row g-4">
-                    {filteredWordLists.map(wordList => (
-                        <div key={wordList._id} className="col-lg-4 col-md-6">
-                            <WordListCard wordList={wordList} onDelete={handleDeleteWordList}/>
-                        </div>
+                    {filteredWordLists.map((wordList, i) => (
+                        <Fragment key={wordList._id}>
+                            <div className="col-lg-4 col-md-6">
+                                <WordListCard wordList={wordList} onDelete={handleDeleteWordList} showVisibilityBadge={filter !== 'all'} />
+                            </div>
+                            {i === 2 && filter === 'all' && (
+                                <div className="col-lg-4 col-md-6">
+                                    <CreateCard
+                                        to="/create-wordlist"
+                                        title="יצירת רשימת מילים"
+                                        subtitle="אפשר להתחיל מריק או מקובץ"
+                                        buttonText="להתחיל"
+                                    />
+                                </div>
+                            )}
+                        </Fragment>
                     ))}
+                    {filter === 'all' && filteredWordLists.length > 0 && filteredWordLists.length < 3 && (
+                        <div className="col-lg-4 col-md-6">
+                            <CreateCard
+                                to="/create-wordlist"
+                                title="יצירת רשימת מילים"
+                                subtitle="אפשר להתחיל מריק או מקובץ"
+                                buttonText="להתחיל"
+                            />
+                        </div>
+                    )}
                     {filteredWordLists.length === 0 && (
                         <div className="col-12 text-center py-5">
                             <div className="text-muted">

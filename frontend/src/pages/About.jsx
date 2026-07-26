@@ -75,8 +75,8 @@ const About = () => {
         <div className="container py-5" style={{ direction: 'rtl', textAlign: 'right' }}>
             <div className="row mb-4">
                 <div className="col">
-                    <h1 className="text-primary">
-                        <i className="bi bi-puzzle-fill ms-2"></i>משבצת
+                    <h1>
+                        <i className="bi bi-puzzle-fill text-primary ms-2"></i>משבצת
                     </h1>
                     <p className="lead">
                         פלטפורמת תשבצים אינטרנטית המאפשרת יצירה, פתרון ושיתוף של תשבצים –

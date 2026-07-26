@@ -34,6 +34,10 @@ export const CrosswordProvider = ({ children }) => {
     const [definitionsUsed, setDefinitionsUsed] = useState({});
     const [wordPositions, setWordPositions] = useState([]);
     const [selectedDefinition, setSelectedDefinition] = useState(null);
+    // The cell currently focused for typing - shared (rather than local Block
+    // state) so the on-screen mobile keyboard knows where to type without a
+    // DOM element of its own. Kept in sync by each Block's onFocus/onBlur.
+    const [activeCell, setActiveCell] = useState(null);
 
     const setGridData = (data) => {
         setGrid(data.grid);
@@ -160,6 +164,80 @@ export const CrosswordProvider = ({ children }) => {
         }
     };
 
+    // Finds the next focusable (non-black, not-already-correct) cell input in
+    // the given direction and focuses it, so both physical typing (Block) and
+    // the on-screen keyboard advance through a word the same way. DOM-focus
+    // based (not pure state) so physical-keyboard input keeps landing wherever
+    // the user is actually looking, matching the pre-existing behavior this
+    // replaces.
+    const moveFocus = (row, col, isVertical, step) => {
+        let r = row;
+        let c = col;
+        for (; ;) {
+            r = isVertical ? r + step : r;
+            c = isVertical ? c : c + step;
+            if (r < 0 || r >= grid.length || c < 0 || c >= grid[0].length) return;
+            const el = document.querySelector(`[data-row="${r}"][data-col="${c}"]`);
+            if (!el) return;
+            if (!el.disabled && !el.hasAttribute('readonly')) {
+                el.focus();
+                return;
+            }
+        }
+    };
+
+    // Single source of truth for "type a letter into a cell and advance" -
+    // used by Block's physical <input> and the on-screen HebrewKeyboard alike.
+    const typeLetter = (row, col, letter, isVertical) => {
+        updateCell(row, col, letter);
+        moveFocus(row, col, isVertical, 1);
+    };
+
+    // Mirrors the previous Backspace handling: clear the current cell if it has
+    // a value, otherwise step back one cell and clear that one instead.
+    const deleteLetterAt = (row, col, isVertical) => {
+        if (grid[row]?.[col]?.value) {
+            updateCell(row, col, '');
+            return;
+        }
+
+        let r = row;
+        let c = col;
+        for (; ;) {
+            r = isVertical ? r - 1 : r;
+            c = isVertical ? c : c - 1;
+            if (r < 0 || r >= grid.length || c < 0 || c >= grid[0].length) return;
+            const el = document.querySelector(`[data-row="${r}"][data-col="${c}"]`);
+            if (!el) return;
+            if (!el.disabled && !el.hasAttribute('readonly')) {
+                updateCell(r, c, '');
+                setTimeout(() => el.focus(), 10);
+                return;
+            }
+        }
+    };
+
+    // Reveals one correct letter in the active word (the first cell that's still
+    // wrong/empty) - a real single-letter hint, not a full-grid "show solution".
+    const revealHint = () => {
+        if (!selectedDefinition) return;
+        const wordData = wordPositions.find(
+            (w) => w.definition === selectedDefinition.definition && w.isVertical === selectedDefinition.isVertical
+        );
+        if (!wordData) return;
+
+        let { row, col } = wordData;
+        const { isVertical } = wordData;
+        while (grid[row]?.[col]?.solution) {
+            const cell = grid[row][col];
+            if (cell.value !== cell.solution) {
+                updateCell(row, col, cell.solution);
+                return;
+            }
+            if (isVertical) row++; else col++;
+        }
+    };
+
     const isCompleted = useMemo(() => {
         const allDefinitions = [...(definitionsUsed.across || []), ...(definitionsUsed.down || [])];
         return allDefinitions.length > 0 && allDefinitions.every((d) => d.isAnswered);
@@ -176,6 +254,11 @@ export const CrosswordProvider = ({ children }) => {
             // handleNewCustomPuzzle,
             // handleToggleSolution,
             updateCell,
+            typeLetter,
+            deleteLetterAt,
+            revealHint,
+            activeCell,
+            setActiveCell,
             selectedDefinition,
             setActiveDefinition,
             setGridData,

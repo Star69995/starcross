@@ -42,7 +42,7 @@ const MyCrosswords = () => {
             <div className="row">
                 <div className="col-12">
                     <div className="d-flex justify-content-between align-items-center mb-4">
-                        <h1 className="display-4 text-primary">התשבצים שלי</h1>
+                        <h1 className="display-4">התשבצים שלי</h1>
                         <Link to="/create-crossword" className="btn btn-primary">
                             <i className="bi bi-plus-circle ms-2"></i>
                             תשבץ חדש

@@ -1,7 +1,8 @@
 // pages/CrosswordSolver.jsx
-import { useEffect, useCallback, useRef } from 'react'
+import { useEffect, useCallback, useMemo, useRef, useState } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import Crossword from '../components/board/Crossword'
+import HebrewKeyboard from '../components/board/HebrewKeyboard'
 import {
     getCrosswordById,
     deleteCrossword,
@@ -16,15 +17,23 @@ import ActionButtons from '../components/cards/ActionButtons'
 import { useAuth } from '../providers/AuthContext'
 import { toast } from 'react-toastify'
 import { useAsyncData } from '../hooks/useAsyncData'
-import { extractGridValues } from '../utils/gridProgress'
+import { extractGridValues, percentComplete } from '../utils/gridProgress'
 
 const SAVE_DEBOUNCE_MS = 800
+
+const formatElapsed = (totalSeconds) => {
+    const minutes = Math.floor(totalSeconds / 60)
+    const seconds = totalSeconds % 60
+    return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`
+}
 
 const CrosswordSolver = () => {
     const { id } = useParams()
     const navigate = useNavigate()
-    const { grid, isCompleted, loadGridData } = useCrossword()
+    const { grid, isCompleted, loadGridData, revealHint } = useCrossword()
     const { user, loading: authLoading } = useAuth()
+    const [showClueList, setShowClueList] = useState(true)
+    const [elapsedSeconds, setElapsedSeconds] = useState(0)
 
     // Progress sync bookkeeping - not React state on purpose, none of it should
     // trigger a re-render or be written to localStorage; Firestore is the only
@@ -45,6 +54,20 @@ const CrosswordSolver = () => {
     const { data: crossword, loading, error: fetchError, setData: setCrossword } = useAsyncData(fetchCrossword, { enabled: !authLoading })
     const error = fetchError ? 'שגיאה בטעינת התשבץ' : (!loading && !crossword ? 'תשבץ לא נמצא' : '')
     const isLiked = Boolean(crossword?.likes?.includes(user?._id))
+
+    // Session-only solve timer (per CLAUDE.md/plan: not persisted, resets if you
+    // navigate away and back - matches what the mockup visibly shows without
+    // adding a new Firestore field).
+    useEffect(() => {
+        if (loading || !crossword) return
+        const intervalId = setInterval(() => setElapsedSeconds((s) => s + 1), 1000)
+        return () => clearInterval(intervalId)
+    }, [loading, crossword])
+
+    const percent = useMemo(() => {
+        if (!crossword || grid.length === 0) return 0
+        return percentComplete(extractGridValues(grid), grid)
+    }, [grid, crossword])
 
     // Load the grid and, for signed-in users, merge in their previously saved
     // progress from Firestore so solving resumes on any device.
@@ -184,11 +207,45 @@ const CrosswordSolver = () => {
         <div className="container-fluid py-4">
             <div className="row">
                 <div className="col-12">
+                    <div className="solve-toolbar d-flex flex-wrap align-items-center gap-2 mb-2">
+                        <h1 className="display-5 mb-0 text-truncate">
+                            {crossword.title}
+                            <i className="bi bi-puzzle-fill text-primary ms-2"></i>
+                        </h1>
+                        <div className="flex-grow-1"></div>
+                        <span className="solve-toolbar-pill mono">
+                            <i className="bi bi-stopwatch ms-1"></i>
+                            {formatElapsed(elapsedSeconds)}
+                        </span>
+                        <span className="solve-toolbar-pill">
+                            <i className="bi bi-check2-circle ms-1"></i>
+                            {percent}% הושלם
+                        </span>
+                        <button
+                            type="button"
+                            className="solve-toolbar-btn"
+                            onClick={revealHint}
+                            aria-label="רמז"
+                            title="חשיפת אות ברמז"
+                        >
+                            <i className="bi bi-lightbulb"></i>
+                        </button>
+                        <button
+                            type="button"
+                            className="solve-toolbar-btn d-lg-none"
+                            onClick={() => setShowClueList(v => !v)}
+                            aria-label="הצג/הסתר רשימת הגדרות"
+                        >
+                            <i className="bi bi-list-check"></i>
+                        </button>
+                    </div>
+                    <div className="solve-progress-bar mb-3">
+                        <div className="solve-progress-fill" style={{ width: `${percent}%` }}></div>
+                    </div>
                     <div className="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
                         <div>
-                            <h1 className="display-5 text-primary">{crossword.title}</h1>
                             {crossword.description && (
-                                <p className="text-muted">{crossword.description}</p>
+                                <p className="text-muted mb-0">{crossword.description}</p>
                             )}
                         </div>
                         <div className="d-flex align-items-center gap-2">
@@ -224,8 +281,9 @@ const CrosswordSolver = () => {
                 </div>
             )}
 
-            {/* Pass the crossword data to your existing Crossword component */}
-            <Crossword crosswordData={crossword} />
+            <Crossword showClueList={showClueList} />
+            <HebrewKeyboard />
+            <div className="solver-keyboard-spacer"></div>
         </div>
     )
 }

@@ -280,6 +280,63 @@ export const saveCrosswordProgress = async (crosswordId, values, completed) => {
     })
 }
 
+// Lists every progress doc for the signed-in user (not a single getDoc by ID) -
+// used to surface "continue where you left off" / "recently solved" on Home
+// without needing any new fields on the crossword or progress doc shape.
+const listMyProgress = async () => {
+    const uid = requireUid()
+    const snap = await getDocs(collection(db, 'users', uid, 'progress'))
+    return snap.docs.map((d) => ({ crosswordId: d.id, ...d.data() }))
+}
+
+// Most recently touched crossword that isn't finished yet, with the crossword's
+// own title/description/grid attached so the Home page can render a "continue"
+// card without a second round-trip keyed off the caller.
+export const getInProgressCrossword = async () => {
+    const progress = await listMyProgress()
+    const inProgress = progress
+        .filter((p) => !p.completed && Object.keys(p.values || {}).length > 0)
+        .sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt))[0]
+    if (!inProgress) return null
+
+    try {
+        const crossword = await getCrosswordById(inProgress.crosswordId)
+        return { ...inProgress, crossword }
+    } catch {
+        return null // crossword since deleted - nothing to resume
+    }
+}
+
+// Most recently completed crosswords (for a short "recently solved" list), each
+// with its crossword title attached.
+export const getRecentSolves = async (count = 2) => {
+    const progress = await listMyProgress()
+    const solved = progress
+        .filter((p) => p.completed)
+        .sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt))
+        .slice(0, count)
+
+    const withTitles = await Promise.all(
+        solved.map(async (p) => {
+            try {
+                const crossword = await getCrosswordById(p.crosswordId)
+                return { ...p, crossword }
+            } catch {
+                return null // crossword since deleted
+            }
+        })
+    )
+    return withTitles.filter(Boolean)
+}
+
+// Total number of crosswords this user has finished - counted from their own
+// progress subcollection rather than cross-referencing every visible crossword's
+// `solved[]` array, so it's correct even for crosswords no longer public/listed.
+export const getSolvedCount = async () => {
+    const progress = await listMyProgress()
+    return progress.filter((p) => p.completed).length
+}
+
 export const updateCrosswordVisibility = async (id, isPublic) => {
     const ref = doc(crosswordsCol, id)
     await updateDoc(ref, { isPublic: Boolean(isPublic) })

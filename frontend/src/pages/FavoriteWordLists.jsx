@@ -54,7 +54,7 @@ const FavoriteWordLists = () => {
             <div className="row">
                 <div className="col-12">
                     <div className="d-flex justify-content-between align-items-center mb-4">
-                        <h1 className="display-4 text-primary"> רשימות מילים אהובות</h1>
+                        <h1 className="display-4"> רשימות מילים אהובות</h1>
                     </div>
                 </div>
             </div>

@@ -40,7 +40,7 @@ const MyWordLists = () => {
             <div className="row">
                 <div className="col-12">
                     <div className="d-flex justify-content-between align-items-center mb-4">
-                        <h1 className="display-4 text-primary">רשימות המילים שלי</h1>
+                        <h1 className="display-4">רשימות המילים שלי</h1>
                         <Link to="/create-wordlist" className="btn btn-primary">
                             <i className="bi bi-plus-circle ms-2"></i>
                             רשימה חדשה

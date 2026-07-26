@@ -5,9 +5,39 @@
 
 /* Hebrew font optimization */
 body {
-  font-family: 'Segoe UI', 'Arial', sans-serif;
+  font-family: 'Heebo', 'Segoe UI', 'Arial', sans-serif;
   background: var(--paper);
   color: var(--ink);
+}
+
+/* ===== Typography scale =====
+   Bootstrap's display-* classes are sized for a marketing hero (display-4 is
+   3.5rem/900), not a page heading - the mockup's page titles run much smaller
+   and heavier-weighted relative to their size, so left at Bootstrap's defaults
+   these headings read as oversized/generic rather than matching the design. */
+.display-4 {
+  font-size: 1.9rem;
+  font-weight: 800;
+}
+
+.display-5 {
+  font-size: 1.6rem;
+  font-weight: 800;
+}
+
+.card-title {
+  font-weight: 800;
+}
+
+/* Bootstrap's shadow-sm/shadow are a faint 1-2px hairline; the design's cards
+   float with a soft, deeper glow instead. */
+.shadow-sm,
+.content-card {
+  box-shadow: 0 10px 24px rgba(36, 31, 26, 0.09);
+}
+
+.shadow {
+  box-shadow: 0 14px 30px rgba(36, 31, 26, 0.14);
 }
 
 /* ===== Brand palette override =====
@@ -35,8 +65,8 @@ body {
 .btn-primary:hover,
 .btn-primary:focus,
 .btn-primary:active {
-  background-color: var(--accent-dark) !important;
-  border-color: var(--accent-dark) !important;
+  background-color: var(--accent-dark);
+  border-color: var(--accent-dark);
 }
 
 .btn-outline-primary {
@@ -55,9 +85,9 @@ body {
 .btn-check:checked + .btn-outline-primary,
 .btn-outline-primary:active,
 .btn-outline-primary.active {
-  background-color: var(--accent) !important;
-  border-color: var(--accent) !important;
-  color: #fff !important;
+  background-color: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
 }
 
 .form-control:focus {
@@ -79,7 +109,11 @@ body {
 
 /* Rounded corners, reintroduced only where this design wants them - the global
    reset in index.css zeroes border-radius everywhere else. */
-.card,
+.card {
+  border-radius: var(--radius-lg);
+  border-color: var(--line);
+}
+
 .btn,
 .form-control,
 .badge,
@@ -192,20 +226,27 @@ body {
   transform: none;
 }
 
-.home-solved-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  background: var(--bg-soft);
-  color: var(--ink);
-  font-weight: 700;
-  font-size: 0.85rem;
-  padding: 8px 14px;
-  border-radius: var(--radius-sm);
+/* "Continue where you left off" card on Home - reuses .clue-banner's dark/ink
+   treatment so the two dark surfaces in the app read as one visual language. */
+.continue-card {
+  background: var(--ink);
+  color: #fff;
+  border-radius: var(--radius-lg);
+  padding: 18px 20px;
+  box-shadow: 0 10px 24px rgba(36, 31, 26, 0.16);
 }
 
-.home-solved-chip i {
-  color: var(--success);
+.continue-card-progress {
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.18);
+  overflow: hidden;
+}
+
+.continue-card-progress-fill {
+  height: 100%;
+  background: var(--accent-light);
+  border-radius: 999px;
 }
 
 .content-card-icon {
@@ -227,15 +268,111 @@ body {
   transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
 }
 
+.create-card {
+  border: 1px dashed var(--line);
+  background: transparent;
+  box-shadow: none;
+}
+
+.create-card:hover {
+  transform: none;
+  box-shadow: none;
+  border-color: var(--accent);
+}
+
+.create-card-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-sm);
+  background: var(--accent-tint);
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  margin-bottom: 0.75rem;
+}
+
 .content-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
+  box-shadow: 0 16px 32px rgba(36, 31, 26, 0.14);
+}
+
+/* Segmented pill filter (word lists הכל/שלי/אהובות, profile tabs) - a shared
+   black-active-pill look instead of Bootstrap's default nav-tabs/underline. */
+.filter-pills {
+  display: inline-flex;
+  gap: 4px;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 4px;
+}
+
+.filter-pill {
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  font-weight: 600;
+  font-size: 0.85rem;
+  padding: 6px 16px;
+  border-radius: 999px;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.filter-pill.active {
+  background: var(--deep);
+  color: #fff;
 }
 
 /* Crossword grid styling */
 .crossword-container {
   max-width: 600px;
   margin: 0 auto;
+}
+
+/* Solve-page toolbar (list toggle, hint, percent/timer pills) */
+.solve-toolbar-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  background: #fff;
+  color: var(--ink);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.solve-toolbar-pill {
+  display: inline-flex;
+  align-items: center;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 8px 14px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+
+.solve-toolbar-pill i {
+  color: var(--success);
+}
+
+.solve-progress-bar {
+  height: 8px;
+  border-radius: 999px;
+  background: var(--bg-soft);
+  overflow: hidden;
+}
+
+.solve-progress-fill {
+  height: 100%;
+  background: var(--accent-light);
+  border-radius: 999px;
+  transition: width 0.2s ease;
 }
 
 .grid-wrap {
@@ -258,6 +395,23 @@ body {
   text-align: center;
   font-weight: 600;
   box-shadow: 0 10px 22px rgba(36, 31, 26, 0.16);
+}
+
+.clue-nav-btn {
+  width: 30px;
+  height: 30px;
+  flex-shrink: 0;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.14);
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.clue-nav-btn:disabled {
+  opacity: 0.4;
 }
 
 .defs-tabs {
@@ -341,10 +495,6 @@ body {
 
 /* Responsive improvements */
 @media (max-width: 768px) {
-  .display-4 {
-    font-size: 2rem;
-  }
-
   .btn-group {
     display: flex;
     flex-wrap: wrap;
@@ -370,11 +520,19 @@ body {
   word-break: break-word;
 }
 
-.account-avatar {
-  width: 28px;
-  height: 28px;
+.app-avatar {
   border-radius: 50%;
   object-fit: cover;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.app-avatar-fallback {
+  background: var(--deep);
+  color: #fff;
+  font-weight: 700;
 }
 
 /* Like buttons use their own pink-red (--like) rather than the brand accent blue -
@@ -406,7 +564,6 @@ body {
    Bootstrap, so none of the overrides above touch it. */
 .Toastify__toast {
   border-radius: var(--radius-md);
-  font-family: 'Segoe UI', 'Arial', sans-serif;
 }
 
 .Toastify__toast--success,
@@ -476,8 +633,19 @@ body {
   color: var(--ink);
 }
 
+.app-navbar .nav-link.active {
+  background: var(--deep);
+  color: #fff;
+  border-radius: 999px;
+}
+
+.app-navbar .nav-link.active:hover {
+  background: var(--deep);
+  color: #fff;
+}
+
 .app-navbar .navbar-brand {
-  color: var(--ink) !important;
+  color: var(--ink);
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -573,6 +741,59 @@ body {
   }
 }
 
-/* i{
-  margin: 10px;
-} */
+/* Docked on-screen Hebrew keyboard, shown only on the solver page (rendered
+   there directly, not in Navbar) and only under the same breakpoint the
+   bottom-nav uses - the two never compete for the same space since the
+   bottom-nav is already hidden on this route (see Navbar.jsx's isSolving). */
+.hebrew-keyboard {
+  display: none;
+}
+
+.solver-keyboard-spacer {
+  display: none;
+}
+
+@media (max-width: 900px) {
+  .hebrew-keyboard {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    position: fixed;
+    bottom: 0;
+    inset-inline: 0;
+    z-index: 1030;
+    background: #fff;
+    border-top: 1px solid var(--line);
+    padding: 8px 6px calc(8px + env(safe-area-inset-bottom));
+    box-shadow: 0 -8px 24px rgba(36, 31, 26, 0.08);
+  }
+
+  .hebrew-keyboard-row {
+    display: flex;
+    gap: 4px;
+    justify-content: center;
+  }
+
+  .hebrew-keyboard-key {
+    flex: 1;
+    max-width: 40px;
+    height: 42px;
+    border: none;
+    border-radius: var(--radius-sm);
+    background: var(--bg-soft);
+    color: var(--ink);
+    font-weight: 700;
+    font-size: 1rem;
+  }
+
+  .hebrew-keyboard-backspace {
+    max-width: 48px;
+    background: var(--accent-tint);
+    color: var(--accent);
+  }
+
+  .solver-keyboard-spacer {
+    display: block;
+    height: 160px;
+  }
+}
