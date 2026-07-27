@@ -5,14 +5,14 @@ import { Link } from 'react-router-dom';
 // lists browse pages) so creating new content is one click away from browsing it,
 // instead of buried in the navbar/account dropdown only.
 const CreateCard = ({ to, title, subtitle, buttonText, icon = 'bi-plus-lg' }) => (
-    <div className="card content-card create-card h-100">
-        <div className="card-body d-flex flex-column align-items-center justify-content-center text-center">
+    <div className="panel content-card create-card h-100">
+        <div className="panel-body flex flex-col items-center justify-center text-center">
             <span className="create-card-icon">
                 <i className={`bi ${icon}`}></i>
             </span>
-            <h5 className="card-title mb-1">{title}</h5>
-            <p className="card-text text-muted small mb-3">{subtitle}</p>
-            <Link to={to} className="btn btn-outline-secondary btn-sm">
+            <h5 className="panel-title mb-1">{title}</h5>
+            <p className="panel-text text-muted small mb-3">{subtitle}</p>
+            <Link to={to} className="button button-outline-secondary button-sm">
                 {buttonText}
             </Link>
         </div>

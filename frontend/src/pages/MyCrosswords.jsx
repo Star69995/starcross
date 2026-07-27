@@ -43,32 +43,32 @@ const MyCrosswords = () => {
             <PageHeader
                 title="התשבצים שלי"
                 action={(
-                    <Link to="/create-crossword" className="btn btn-primary">
-                        <i className="bi bi-plus-circle ms-2"></i>
+                    <Link to="/create-crossword" className="button button-primary">
+                        <i className="bi bi-plus-circle ml-2"></i>
                         תשבץ חדש
                     </Link>
                 )}
             />
 
-            <div className="row mb-4">
-                <div className="col-md-8">
-                    <div className="btn-group" role="group">
-                        <input type="radio" className="btn-check" name="filter" id="all-crosswords"
+            <div className="grid-row mb-4">
+                <div className="col-8-md">
+                    <div className="button-group" role="group">
+                        <input type="radio" className="button-toggle-input" name="filter" id="all-crosswords"
                             checked={filter === 'all'} onChange={() => setFilter('all')} />
-                        <label className="btn btn-outline-primary" htmlFor="all-crosswords">הכל</label>
+                        <label className="button button-outline" htmlFor="all-crosswords">הכל</label>
 
-                        <input type="radio" className="btn-check" name="filter" id="public-crosswords"
+                        <input type="radio" className="button-toggle-input" name="filter" id="public-crosswords"
                             checked={filter === 'public'} onChange={() => setFilter('public')} />
-                        <label className="btn btn-outline-primary" htmlFor="public-crosswords">ציבוריים</label>
+                        <label className="button button-outline" htmlFor="public-crosswords">ציבוריים</label>
 
-                        <input type="radio" className="btn-check" name="filter" id="private-crosswords"
+                        <input type="radio" className="button-toggle-input" name="filter" id="private-crosswords"
                             checked={filter === 'private'} onChange={() => setFilter('private')} />
-                        <label className="btn btn-outline-primary" htmlFor="private-crosswords">פרטיים</label>
+                        <label className="button button-outline" htmlFor="private-crosswords">פרטיים</label>
                     </div>
                 </div>
-                <div className="col-md-4 text-md-end">
+                <div className="col-4-md text-end-md">
                     <div className="text-muted">
-                        <i className="bi bi-puzzle ms-1"></i>
+                        <i className="bi bi-puzzle ml-1"></i>
                         {filteredCrosswords.length} תשבצים
                     </div>
                 </div>
@@ -76,15 +76,15 @@ const MyCrosswords = () => {
 
             {loading ? (
                 <div className="text-center py-5">
-                    <div className="spinner-border text-primary" role="status">
+                    <div className="loader text-accent" role="status">
                         <span className="visually-hidden">טוען...</span>
                     </div>
                 </div>
             ) : (
-                <div className="row g-4">
+                <div className="grid-row grid-row-gap-4">
                     {Array.isArray(filteredCrosswords) && filteredCrosswords.length > 0 ? (
                         filteredCrosswords.map(crossword => (
-                            <div key={crossword._id} className="col-lg-4 col-md-6">
+                            <div key={crossword._id} className="col-4-lg col-6-md">
                                 <CrosswordCard
                                     crossword={crossword}
                                     showActions={true}
@@ -96,11 +96,11 @@ const MyCrosswords = () => {
                     ) : (
                         <div className="col-12 text-center py-5">
                             <div className="text-muted">
-                                <i className="bi bi-puzzle fs-1 d-block mb-3"></i>
+                                <i className="bi bi-puzzle text-size-1 block mb-3"></i>
                                 <h4>אין לך עדיין תשבצים</h4>
                                 <p>התחל ליצור את התשבץ הראשון שלך</p>
-                                <Link to="/create-crossword" className="btn btn-primary">
-                                    <i className="bi bi-plus-circle ms-2"></i>
+                                <Link to="/create-crossword" className="button button-primary">
+                                    <i className="bi bi-plus-circle ml-2"></i>
                                     צור תשבץ חדש
                                 </Link>
                             </div>

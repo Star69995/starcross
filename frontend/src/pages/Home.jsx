@@ -98,25 +98,25 @@ const Home = () => {
             />
 
             {hasActivity && (
-                <div className="row g-3 mb-4">
-                    <div className="col-lg-5">
-                        <div className="card content-card h-100 shadow-sm">
-                            <div className="card-body">
-                                <div className="d-flex align-items-center gap-2 mb-3">
+                <div className="grid-row grid-row-gap-3 mb-4">
+                    <div className="col-5-lg">
+                        <div className="panel content-card h-100 shadow-sm">
+                            <div className="panel-body">
+                                <div className="flex items-center gap-2 mb-3">
                                     <span className="content-card-icon">
                                         <i className="bi bi-check2-circle"></i>
                                     </span>
                                     <div>
-                                        <strong className="fs-4 d-block lh-1">{activity.solvedCount}</strong>
+                                        <strong className="text-size-4 block line-tight">{activity.solvedCount}</strong>
                                         <span className="text-muted small">תשבצים נפתרו עד כה</span>
                                     </div>
                                 </div>
                                 {activity.recentSolves.length > 0 && (
                                     <ul className="list-unstyled mb-0 small content-card-footer">
                                         {activity.recentSolves.map(solve => (
-                                            <li key={solve.crosswordId} className="d-flex align-items-center gap-2 py-1">
+                                            <li key={solve.crosswordId} className="flex items-center gap-2 py-1">
                                                 <i className="bi bi-check-circle-fill text-success"></i>
-                                                <span className="text-truncate flex-grow-1" style={{ minWidth: 0 }}>{solve.crossword.title}</span>
+                                                <span className="text-truncate grow" style={{ minWidth: 0 }}>{solve.crossword.title}</span>
                                                 <span className="text-muted text-nowrap">{formatRelativeDate(solve.updatedAt)}</span>
                                             </li>
                                         ))}
@@ -126,10 +126,10 @@ const Home = () => {
                         </div>
                     </div>
                     {activity.inProgress?.crossword && (
-                        <div className="col-lg-7">
+                        <div className="col-7-lg">
                             <div className="continue-card h-100">
-                                <div className="fw-bold mb-2">
-                                    <i className="bi bi-play-circle ms-1"></i>
+                                <div className="font-bold mb-2">
+                                    <i className="bi bi-play-circle ml-1"></i>
                                     ממשיכים מאיפה שהפסקת
                                 </div>
                                 <div className="mb-2">
@@ -138,8 +138,8 @@ const Home = () => {
                                 <div className="continue-card-progress mb-3">
                                     <div className="continue-card-progress-fill" style={{ width: `${inProgressPercent}%` }}></div>
                                 </div>
-                                <Link className="btn btn-primary btn-sm" to={`/crossword/${activity.inProgress.crosswordId}`}>
-                                    <i className="bi bi-arrow-left ms-1"></i>
+                                <Link className="button button-primary button-sm" to={`/crossword/${activity.inProgress.crosswordId}`}>
+                                    <i className="bi bi-arrow-left ml-1"></i>
                                     להמשיך לפתור
                                 </Link>
                             </div>
@@ -148,16 +148,16 @@ const Home = () => {
                 </div>
             )}
 
-            <div className="row mb-4 g-2">
-                <div className="col-md-8">
+            <div className="grid-row grid-row-gap-2 mb-4">
+                <div className="col-8-md">
                     <SearchInput
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                         placeholder="חיפוש תשבץ לפי שם..."
                     />
                 </div>
-                <div className="col-md-4">
-                    <div className="filter-pills justify-content-md-end">
+                <div className="col-4-md">
+                    <div className="filter-pills justify-end-md">
                         {FILTERS.map(f => (
                             <button
                                 key={f.key}
@@ -174,19 +174,19 @@ const Home = () => {
 
             {loading ? (
                 <div className="text-center py-5">
-                    <div className="spinner-border text-primary" role="status">
+                    <div className="loader text-accent" role="status">
                         <span className="visually-hidden">טוען...</span>
                     </div>
                 </div>
             ) : (
-                <div className="row g-4">
+                <div className="grid-row grid-row-gap-4">
                     {filteredCrosswords.map((crossword, i) => (
                         <Fragment key={crossword._id}>
-                            <div className="col-lg-4 col-md-6">
+                            <div className="col-4-lg col-6-md">
                                 <CrosswordCard crossword={crossword} onDelete={handleDeleteCrossword} showVisibilityBadge={filter !== 'all'} />
                             </div>
                             {i === 2 && filter === 'all' && (
-                                <div className="col-lg-4 col-md-6">
+                                <div className="col-4-lg col-6-md">
                                     <CreateCard
                                         to="/create-crossword"
                                         title="יצירת תשבץ חדש"
@@ -198,7 +198,7 @@ const Home = () => {
                         </Fragment>
                     ))}
                     {filter === 'all' && filteredCrosswords.length > 0 && filteredCrosswords.length < 3 && (
-                        <div className="col-lg-4 col-md-6">
+                        <div className="col-4-lg col-6-md">
                             <CreateCard
                                 to="/create-crossword"
                                 title="יצירת תשבץ חדש"
@@ -211,13 +211,13 @@ const Home = () => {
                         <>
                             <div className="col-12 text-center py-5">
                                 <div className="text-muted">
-                                    <i className="bi bi-puzzle fs-1 d-block mb-3"></i>
+                                    <i className="bi bi-puzzle text-size-1 block mb-3"></i>
                                     <h4>לא נמצאו תשבצים</h4>
                                     <p>נסה לשנות את החיפוש או חזור מאוחר יותר</p>
                                 </div>
                             </div>
                             {filter === 'all' && (
-                                <div className="col-lg-4 col-md-6 mx-auto">
+                                <div className="col-4-lg col-6-md mx-auto">
                                     <CreateCard
                                         to="/create-crossword"
                                         title="יצירת תשבץ חדש"

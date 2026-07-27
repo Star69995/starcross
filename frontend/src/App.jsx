@@ -28,9 +28,9 @@ import FavoriteWordLists from './pages/FavoriteWordLists'
 function App() {
   return (
     <Router>
-      <div className="App d-flex flex-column min-vh-100">
+      <div className="App flex flex-col min-vh-100">
         <Navbar />
-        <main className="container-fluid flex-grow-1">
+        <main className="container-fluid grow">
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/about" element={<About />} />

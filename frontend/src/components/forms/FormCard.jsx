@@ -33,17 +33,17 @@ const FormCard = ({
             {fields.map((field) => (
                 <div className="mb-3" key={field.name}>
                     {field.type === "checkbox" ? (
-                        <div className="form-check d-flex flex-row align-items-center">
+                        <div className="field-check flex flex-row items-center">
                             <input
                                 type="checkbox"
-                                className="form-check-input ms-2"
+                                className="field-check-input ml-2"
                                 id={field.name}
                                 name={field.name}
                                 checked={!!formData[field.name]}
                                 onChange={handleInput}
                             />
                             <label
-                                className="form-check-label"
+                                className="field-check-label"
                                 htmlFor={field.name}
                                 style={{ fontWeight: "normal" }}
                             >
@@ -52,11 +52,11 @@ const FormCard = ({
                         </div>
                     ) : field.type === "textarea" ? (
                         <>
-                            <label htmlFor={field.name} className="form-label">
+                            <label htmlFor={field.name} className="field-label">
                                 {field.label}
                             </label>
                             <textarea
-                                className="form-control"
+                                className="field-input"
                                 id={field.name}
                                 name={field.name}
                                 rows={field.rows || 3}
@@ -67,12 +67,12 @@ const FormCard = ({
                         </>
                     ) : (
                         <>
-                            <label htmlFor={field.name} className="form-label">
+                            <label htmlFor={field.name} className="field-label">
                                 {field.label}
                             </label>
                             <input
                                 type={field.type}
-                                className="form-control"
+                                className="field-input"
                                 id={field.name}
                                 name={field.name}
                                 value={formData[field.name] || ""}
@@ -88,20 +88,20 @@ const FormCard = ({
             {children}
 
             {error && (
-                <div className="alert alert-danger mt-2" role="alert">
+                <div className="banner banner-danger mt-2" role="alert">
                     {error}
                 </div>
             )}
 
-            <div className="d-flex gap-2 mt-3">
+            <div className="flex gap-2 mt-3">
                 <button
                     type="submit"
-                    className="btn btn-primary d-inline-flex align-items-center gap-2"
+                    className="button button-primary inline-flex items-center gap-2"
                     disabled={loading}
                 >
                     {loading ? (
                         <>
-                            <span className="spinner-border spinner-border-sm" role="status"></span>
+                            <span className="loader loader-sm" role="status"></span>
                             שומר...
                         </>
                     ) : (
@@ -112,7 +112,7 @@ const FormCard = ({
                     )}
                 </button>
                 {onCancel && (
-                    <button type="button" className="btn btn-secondary d-inline-flex align-items-center" onClick={onCancel}>
+                    <button type="button" className="button button-secondary inline-flex items-center" onClick={onCancel}>
                         {cancelLabel}
                     </button>
                 )}

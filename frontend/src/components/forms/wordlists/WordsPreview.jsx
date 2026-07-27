@@ -2,11 +2,11 @@
 import PropTypes from 'prop-types';
 const WordsPreview = ({ words }) =>
     words.length > 0 && (
-        <div className="card mt-4">
-            <div className="card-header">
+        <div className="panel mt-4">
+            <div className="panel-header">
                 <h5 className="mb-0">תצוגה מקדימה</h5>
             </div>
-            <div className="card-body">
+            <div className="panel-body">
                 <div className="table-responsive">
                     <table className="table table-sm">
                         <thead>
@@ -18,7 +18,7 @@ const WordsPreview = ({ words }) =>
                         <tbody>
                             {words.slice(0, 10).map((word, index) => (
                                 <tr key={index}>
-                                    <td className="fw-bold">{word.solution}</td>
+                                    <td className="font-bold">{word.solution}</td>
                                     <td>{word.definition || "-"}</td>
                                 </tr>
                             ))}

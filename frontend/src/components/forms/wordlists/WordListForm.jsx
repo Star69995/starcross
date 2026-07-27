@@ -180,15 +180,15 @@ const WordListForm = ({ initialData, onSubmit }) => {
 
     return (
         <div className="container py-4">
-            <div className="row justify-content-center">
-                <div className="col-lg-8">
-                    <div className="card shadow">
-                        <div className="card-header bg-primary text-white">
-                            <h2 className="card-title mb-0">
+            <div className="grid-row justify-center">
+                <div className="col-8-lg">
+                    <div className="panel shadow">
+                        <div className="panel-header bg-accent text-white">
+                            <h2 className="panel-title mb-0">
                                 {isEdit ? "עריכת רשימת מילים" : "יצירת רשימת מילים חדשה"}
                             </h2>
                         </div>
-                        <div className="card-body">
+                        <div className="panel-body">
                             <FormCard
                                 fields={fields}
                                 initialValues={fieldsState}

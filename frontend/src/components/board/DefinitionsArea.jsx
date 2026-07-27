@@ -17,7 +17,7 @@ function DefinitionsArea() {
     }
 
     return (
-        <div className="mt-1 d-flex flex-column gap-2 py-2 py-md-3 defs-panel">
+        <div className="mt-1 flex flex-col gap-2 py-2 py-md-3 defs-panel">
             <h2 className="text-center">הגדרות:</h2>
 
             <div className="defs-tabs">
@@ -37,10 +37,10 @@ function DefinitionsArea() {
                 </button>
             </div>
 
-            <div className="row">
+            <div className="grid-row">
                 <div className={`col-6 defs-column ${activeTab === "across" ? "active" : ""}`}>
-                    <h3 className="d-none d-lg-block">מאוזן:</h3>
-                    <ul className="list-unstyled" style={{ textAlign: "right" }}>
+                    <h3 className="hidden block-lg">מאוזן:</h3>
+                    <ul className="list-none" style={{ textAlign: "right" }}>
                         {definitionsUsed.across.map((def) => (
                             <Definition
                                 key={def.number}
@@ -51,8 +51,8 @@ function DefinitionsArea() {
                 </div>
 
                 <div className={`col-6 defs-column ${activeTab === "down" ? "active" : ""}`}>
-                    <h3 className="d-none d-lg-block">מאונך:</h3>
-                    <ul className="list-unstyled" style={{ textAlign: "right" }}>
+                    <h3 className="hidden block-lg">מאונך:</h3>
+                    <ul className="list-none" style={{ textAlign: "right" }}>
                         {definitionsUsed.down.map((def) => (
                             <Definition
                                 key={def.number}

@@ -10,33 +10,33 @@ const WordListsPicker = ({
     onCreateNew,
 }) => (
     <div className="mb-3">
-        <label className="form-label fw-bold">
+        <label className="field-label font-bold">
             בחר רשימות מילים
-            {required && <span className="text-danger"> *</span>}
+            {required && <span className="text-like"> *</span>}
         </label>
         {wordLists.length === 0 ? (
-            <div className="alert alert-info">
+            <div className="banner banner-info">
                 <p className="mb-2">אין לך רשימות מילים עדיין.</p>
                 <button
                     type="button"
-                    className="btn btn-sm btn-primary"
+                    className="button button-sm button-primary"
                     onClick={onCreateNew}
                 >
                     צור רשימת מילים חדשה
                 </button>
             </div>
         ) : (
-            <div className="list-group" style={{ maxHeight: 220, overflowY: "auto" }}>
+            <div className="item-list" style={{ maxHeight: 220, overflowY: "auto" }}>
                 {wordLists.map((wordList) => {
                     const isChecked = value.map(String).includes(String(wordList._id));
                     return (
                         <label
                             key={wordList._id}
                             htmlFor={`wordlist-${wordList._id}`}
-                            className="list-group-item list-group-item-action d-flex align-items-start gap-2"
+                            className="item-list-item item-list-item-action flex items-start gap-2"
                         >
                             <input
-                                className="form-check-input mt-1 flex-shrink-0"
+                                className="field-check-input mt-1 shrink-0"
                                 type="checkbox"
                                 id={`wordlist-${wordList._id}`}
                                 checked={isChecked}
@@ -48,17 +48,17 @@ const WordListsPicker = ({
                                     }
                                 }}
                             />
-                            <span className="flex-grow-1" style={{ minWidth: 0 }}>
-                                <span className="d-flex justify-content-between align-items-center gap-2">
-                                    <span className="fw-bold text-truncate" style={{ minWidth: 0 }}>
+                            <span className="grow" style={{ minWidth: 0 }}>
+                                <span className="flex justify-between items-center gap-2">
+                                    <span className="font-bold text-truncate" style={{ minWidth: 0 }}>
                                         {wordList.title}
                                     </span>
-                                    <small className="text-muted flex-shrink-0">
+                                    <small className="text-muted shrink-0">
                                         {wordList.words.length} מילים
                                     </small>
                                 </span>
                                 {wordList.description && (
-                                    <small className="text-muted d-block">{wordList.description}</small>
+                                    <small className="text-muted block">{wordList.description}</small>
                                 )}
                             </span>
                         </label>
@@ -66,7 +66,7 @@ const WordListsPicker = ({
                 })}
             </div>
         )}
-        {error && <div className="text-danger mt-2">{error}</div>}
+        {error && <div className="text-like mt-2">{error}</div>}
     </div>
 );
 

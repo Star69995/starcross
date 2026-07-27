@@ -1,7 +1,6 @@
-import { useRef, useEffect } from 'react'; // Import useRef and useEffect
+import { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../providers/AuthContext';
-import { Collapse, Dropdown } from 'bootstrap'; // Import Collapse/Dropdown from bootstrap
 import Avatar from './Avatar';
 
 const Navbar = () => {
@@ -12,69 +11,24 @@ const Navbar = () => {
     // viewport height - a plain back-to-list action lives on that page instead.
     const isSolving = location.pathname.startsWith('/crossword/');
 
-    const accountToggleRef = useRef(null); // Ref for the account dropdown toggle link
-    const bsDropdownRef = useRef(null); // Ref to store the bootstrap Dropdown instance
+    const [navOpen, setNavOpen] = useState(false);
+    const [accountOpen, setAccountOpen] = useState(false);
 
-    useEffect(() => {
-        if (accountToggleRef.current) {
-            // Bootstrap disables Popper positioning for dropdowns inside a navbar
-            // (regardless of the `display` option), so the menu is placed via plain
-            // CSS below; width/wrap styles on the menu keep it from clipping.
-            bsDropdownRef.current = new Dropdown(accountToggleRef.current);
-        }
-        return () => {
-            if (bsDropdownRef.current) {
-                bsDropdownRef.current.dispose();
-                bsDropdownRef.current = null;
-            }
-        };
-    }, [user]);
-
-    const toggleAccountMenu = () => {
-        if (bsDropdownRef.current) {
-            bsDropdownRef.current.toggle();
-        }
-    };
-
-    const collapseRef = useRef(null); // Ref for the collapsible div
-    const bsCollapseRef = useRef(null); // Ref to store the bootstrap Collapse instance
-
-    const toggleNavbar = () => {
-        if (bsCollapseRef.current) {
-            bsCollapseRef.current.toggle();
-        }
-    };
-    useEffect(() => {
-        if (collapseRef.current) {
-            // Create a new Collapse instance but prevent it from toggling on initialization
-            bsCollapseRef.current = new Collapse(collapseRef.current, { toggle: false });
-        }
-
-        // Cleanup function to dispose the instance when the component unmounts
-        return () => {
-            if (bsCollapseRef.current) {
-                bsCollapseRef.current.dispose();
-            }
-        };
-    }, []);
+    const toggleNavbar = () => setNavOpen((open) => !open);
+    const toggleAccountMenu = () => setAccountOpen((open) => !open);
 
     const hideNavbar = () => {
-        if (bsCollapseRef.current) {
-            bsCollapseRef.current.hide();
-        }
-        if (bsDropdownRef.current) {
-            bsDropdownRef.current.hide();
-        }
+        setNavOpen(false);
+        setAccountOpen(false);
     };
 
-    // This is the original logout handler, now with the hideNavbar call
     const handleLogout = () => {
         hideNavbar(); // Close the menu
         logout();
         navigate('/');
     };
 
-    // Bonus: Handle clicks outside the navbar to close it
+    // Handle clicks outside the navbar to close it
     const navbarRef = useRef(null);
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -94,28 +48,28 @@ const Navbar = () => {
 
     return (
         <>
-        <nav ref={navbarRef} className="navbar navbar-expand-lg sticky-top app-navbar">
+        <nav ref={navbarRef} className="top-nav top-nav--expand-lg sticky-top app-navbar">
             <div className="container-fluid">
-                <Link className="navbar-brand fw-bold" to="/" onClick={hideNavbar}>
+                <Link className="top-nav-brand font-bold" to="/" onClick={hideNavbar}>
                     <span className="app-brand-mark"><i className="bi bi-grid-3x3-gap-fill"></i></span>
                     משבצת
                 </Link>
 
                 <button
-                    className="navbar-toggler"
+                    className="top-nav-toggle"
                     type="button"
                     onClick={toggleNavbar}
                     aria-controls="navbarNav"
-                    aria-expanded="false"
+                    aria-expanded={navOpen}
                     aria-label="Toggle navigation"
                 >
-                    <span className="navbar-toggler-icon"></span>
+                    <span className="top-nav-toggle-icon"></span>
                 </button>
 
-                <div ref={collapseRef} className="collapse navbar-collapse" id="navbarNav">
+                <div className={`top-nav-collapse ${navOpen ? 'show' : ''}`} id="navbarNav">
                     {/* Main navigation links */}
-                    <ul className="navbar-nav me-auto mb-2 mb-lg-0">
-                        <li className="nav-item">
+                    <ul className="top-nav-list mr-auto mb-2 mb-lg-0">
+                        <li className="nav-list-item">
                             <Link
                                 className={`nav-link ${location.pathname === '/about' ? 'active' : ''}`}
                                 to="/about"
@@ -124,7 +78,7 @@ const Navbar = () => {
                                 אודות
                             </Link>
                         </li>
-                        <li className="nav-item">
+                        <li className="nav-list-item">
                             <Link
                                 className={`nav-link ${location.pathname === '/wordlists' ? 'active' : ''}`}
                                 to="/wordlists"
@@ -133,7 +87,7 @@ const Navbar = () => {
                                 רשימות מילים
                             </Link>
                         </li>
-                        <li className="nav-item">
+                        <li className="nav-list-item">
                             <Link
                                 className={`nav-link ${location.pathname === '/' ? 'active' : ''}`}
                                 to="/"
@@ -145,12 +99,11 @@ const Navbar = () => {
                     </ul>
 
                     {/* User-related links */}
-                    <ul className="navbar-nav">
+                    <ul className="top-nav-list">
                         {user ? (
-                            <li className="nav-item dropdown">
+                            <li className="nav-list-item has-menu">
                                 <a
-                                    ref={accountToggleRef}
-                                    className="nav-link dropdown-toggle d-flex align-items-center"
+                                    className="nav-link menu-toggle flex items-center"
                                     href="#"
                                     id="accountDropdown"
                                     role="button"
@@ -158,64 +111,64 @@ const Navbar = () => {
                                         e.preventDefault();
                                         toggleAccountMenu();
                                     }}
-                                    aria-expanded="false"
+                                    aria-expanded={accountOpen}
                                 >
-                                    <span className="ms-2">
+                                    <span className="ml-2">
                                         <Avatar photoURL={user.photoURL} name={user.userName} size={28} />
                                     </span>
                                     {user.userName}
                                 </a>
-                                {/* dropdown-menu-start (not -end): this build is the standard LTR
-                                    bootstrap.min.css under dir="rtl" (see CLAUDE.md), so -end is
-                                    physical right:0 - but RTL flex mirroring plus the physical
-                                    me-auto above already pushes this toggle to the visual left
-                                    edge, so right:0 pushed the menu off the left side of the
-                                    viewport. start (left:0) grows it back into the page. */}
-                                <ul className="dropdown-menu dropdown-menu-start account-dropdown-menu" aria-labelledby="accountDropdown">
+                                {/* menu--start (not the default right-anchored menu): this design
+                                    keeps ml-/mr- physical (see CLAUDE.md), and RTL flex mirroring
+                                    plus the physical mr-auto above already pushes this toggle to
+                                    the visual left edge, so right:0 pushed the menu off the left
+                                    side of the viewport. menu--start (left:0) grows it back into
+                                    the page. */}
+                                <ul className={`menu menu--start account-dropdown-menu ${accountOpen ? 'show' : ''}`} aria-labelledby="accountDropdown">
                                     <li>
-                                        <Link className="dropdown-item account-dropdown-item" to="/profile" onClick={hideNavbar}>
+                                        <Link className="menu-item account-dropdown-item" to="/profile" onClick={hideNavbar}>
                                             הפרופיל שלי
                                         </Link>
                                     </li>
                                     <li>
-                                        <Link className="dropdown-item account-dropdown-item" to="/favorite-crosswords" onClick={hideNavbar}>
+                                        <Link className="menu-item account-dropdown-item" to="/favorite-crosswords" onClick={hideNavbar}>
                                             תשבצים אהובים
                                         </Link>
                                     </li>
                                     <li>
-                                        <Link className="dropdown-item account-dropdown-item" to="/favorite-wordlists" onClick={hideNavbar}>
+                                        <Link className="menu-item account-dropdown-item" to="/favorite-wordlists" onClick={hideNavbar}>
                                             רשימות מילים אהובות
                                         </Link>
                                     </li>
                                     <li>
-                                        <hr className="dropdown-divider" />
+                                        <hr className="menu-divider" />
                                     </li>
                                     <li>
-                                        <Link className="dropdown-item account-dropdown-item" to="/my-crosswords" onClick={hideNavbar}>
+                                        <Link className="menu-item account-dropdown-item" to="/my-crosswords" onClick={hideNavbar}>
                                             התשבצים שלי
                                         </Link>
                                     </li>
                                     <li>
-                                        <Link className="dropdown-item account-dropdown-item" to="/my-wordlists" onClick={hideNavbar}>
+                                        <Link className="menu-item account-dropdown-item" to="/my-wordlists" onClick={hideNavbar}>
                                             רשימות המילים שלי
                                         </Link>
                                     </li>
                                     <li>
-                                        <Link className="dropdown-item account-dropdown-item" to="/create-crossword" onClick={hideNavbar}>
+                                        <Link className="menu-item account-dropdown-item" to="/create-crossword" onClick={hideNavbar}>
                                             יצירת תשבץ
                                         </Link>
                                     </li>
                                     <li>
-                                        <Link className="dropdown-item account-dropdown-item" to="/create-wordlist" onClick={hideNavbar}>
+                                        <Link className="menu-item account-dropdown-item" to="/create-wordlist" onClick={hideNavbar}>
                                             יצירת רשימת מילים
                                         </Link>
                                     </li>
                                     <li>
-                                        <hr className="dropdown-divider" />
+                                        <hr className="menu-divider" />
                                     </li>
                                     <li>
                                         <button
-                                            className="dropdown-item account-dropdown-item"
+                                            className="menu-item account-dropdown-item"
                                             onClick={handleLogout} // The handler already calls hideNavbar
                                         >
                                             התנתקות
@@ -225,7 +178,7 @@ const Navbar = () => {
                             </li>
                         ) : (
                             <>
-                                <li className="nav-item">
+                                <li className="nav-list-item">
                                     <Link className="nav-link" to="/login" onClick={hideNavbar}>
                                         התחברות
                                     </Link>

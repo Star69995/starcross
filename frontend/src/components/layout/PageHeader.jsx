@@ -8,9 +8,9 @@ import PropTypes from 'prop-types';
 // (Profile, WordListView) and the compact in-toolbar heading on the solver
 // page are a different pattern and don't use this.
 const PageHeader = ({ title, subtitle, action }) => (
-    <div className="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-4">
+    <div className="flex justify-between items-start wrap gap-2 mb-4">
         <div>
-            <h1 className="display-4 mb-1">{title}</h1>
+            <h1 className="heading-lg mb-1">{title}</h1>
             {subtitle && <p className="text-muted mb-0">{subtitle}</p>}
         </div>
         {action}

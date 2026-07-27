@@ -61,44 +61,44 @@ const ContentCard = ({
         
     }
     return (
-        <div className="card content-card h-100 shadow-sm">
-            <div className="card-body">
-                <div className="d-flex justify-content-between align-items-start mb-2">
-                    <div className="d-flex align-items-center gap-2">
+        <div className="panel content-card h-100 shadow-sm">
+            <div className="panel-body">
+                <div className="flex justify-between items-start mb-2">
+                    <div className="flex items-center gap-2">
                         <span className="content-card-icon">
                             <i className={`bi ${icon}`}></i>
                         </span>
-                        <h5 className="card-title mb-0">{title}</h5>
+                        <h5 className="panel-title mb-0">{title}</h5>
                     </div>
-                    <div className="d-flex flex-wrap justify-content-end gap-1">
+                    <div className="flex wrap justify-end gap-1">
                         {completed && (
-                            <span className="badge bg-success">
-                                <i className="bi bi-check-circle-fill ms-1"></i>
+                            <span className="tag tag-success">
+                                <i className="bi bi-check-circle-fill ml-1"></i>
                                 הושלם
                             </span>
                         )}
                         {showVisibilityBadge && (
                             badge
-                                ? <span className="badge bg-success">ציבורית</span>
-                                : <span className="badge bg-secondary">פרטית</span>
+                                ? <span className="tag tag-success">ציבורית</span>
+                                : <span className="tag tag-muted">פרטית</span>
                         )}
                     </div>
                 </div>
                 {description && (
-                    <p className="card-text text-muted small">{description}</p>
+                    <p className="panel-text text-muted small">{description}</p>
                 )}
-                <div className="mb-3 d-flex align-items-center gap-3">
-                    <small className="text-muted d-flex align-items-center gap-1" style={{ minWidth: 0 }}>
-                        <i className="bi bi-person flex-shrink-0"></i>
+                <div className="mb-3 flex items-center gap-3">
+                    <small className="text-muted flex items-center gap-1" style={{ minWidth: 0 }}>
+                        <i className="bi bi-person shrink-0"></i>
                         <span className="text-truncate" dir="ltr" style={{ textAlign: 'right' }}>{creator}</span>
                     </small>
-                    <small className="text-muted d-flex align-items-center gap-1 flex-shrink-0">
+                    <small className="text-muted flex items-center gap-1 shrink-0">
                         <i className="bi bi-calendar"></i>
                         {createdAt}
                     </small>
                 </div>
-                <div className="d-flex justify-content-between align-items-center mb-3">
-                    <div className="d-flex flex-wrap gap-2">
+                <div className="flex justify-between items-center mb-3">
+                    <div className="flex wrap gap-2">
                         {stats.map((stat, i) =>
                             <small key={i} className="content-card-stat">
                                 <i className={`bi ${stat.icon}`}></i>
@@ -112,10 +112,10 @@ const ContentCard = ({
                     </div>
                     {children}
                 </div>
-                <div className="d-flex justify-content-between align-items-center content-card-footer">
+                <div className="flex justify-between items-center content-card-footer">
                     {viewUrl && (
-                        <Link to={viewUrl} className="btn btn-primary btn-sm">
-                            <i className="bi bi-play-circle ms-1"></i>{viewText}
+                        <Link to={viewUrl} className="button button-primary button-sm">
+                            <i className="bi bi-play-circle ml-1"></i>{viewText}
                         </Link>
                     )}
 

@@ -10,22 +10,18 @@ body {
   color: var(--ink);
 }
 
-/* ===== Typography scale =====
-   Bootstrap's display-* classes are sized for a marketing hero (display-4 is
-   3.5rem/900), not a page heading - the mockup's page titles run much smaller
-   and heavier-weighted relative to their size, so left at Bootstrap's defaults
-   these headings read as oversized/generic rather than matching the design. */
-.display-4 {
+/* ===== Typography scale ===== */
+.heading-lg {
   font-size: 1.9rem;
   font-weight: 800;
 }
 
-.display-5 {
+.heading-md {
   font-size: 1.6rem;
   font-weight: 800;
 }
 
-.card-title {
+.panel-title {
   font-weight: 800;
 }
 
@@ -40,57 +36,32 @@ body {
   box-shadow: 0 14px 30px rgba(36, 31, 26, 0.14);
 }
 
-/* ===== Brand palette override =====
-   Bootstrap's primary is compiled at build time into bootstrap.min.css, so simply
-   redefining --bs-primary in :root doesn't retint .btn-primary/.bg-primary/etc. -
-   these rules override the specific utility classes actually used in the app instead,
-   pointing them at the accent blue taken from public/logo.svg. */
-.text-primary {
-  color: var(--accent) !important;
-}
-
-.bg-primary {
-  background-color: var(--accent) !important;
-}
-
-.border-primary {
-  border-color: var(--accent) !important;
-}
-
-.btn-primary {
-  background-color: var(--accent);
-  border-color: var(--accent);
-}
-
-.btn-primary:hover,
-.btn-primary:focus,
-.btn-primary:active {
+/* ===== Brand palette hover/active states =====
+   Resting-state colors for .button-primary/.button-outline/.text-accent/etc. live
+   directly in styles/components.css and styles/layout.css now (no compiled default
+   to fight anymore) - this is only the interactive-state layer on top of them. */
+.button-primary:hover,
+.button-primary:focus,
+.button-primary:active {
   background-color: var(--accent-dark);
   border-color: var(--accent-dark);
 }
 
-.btn-outline-primary {
-  color: var(--accent);
-  border-color: var(--accent);
-}
-
-.btn-outline-primary:hover {
-  background-color: var(--accent);
-  border-color: var(--accent);
-}
-
-/* Bootstrap reads its "checked/active" fill from --bs-btn-active-bg (baked in as
-   #0d6efd), not from the color rules above, so the currently-selected filter
-   toggle (see MyCrosswords/MyWordLists) needs its own override. */
-.btn-check:checked + .btn-outline-primary,
-.btn-outline-primary:active,
-.btn-outline-primary.active {
+.button-outline:hover {
   background-color: var(--accent);
   border-color: var(--accent);
   color: #fff;
 }
 
-.form-control:focus {
+.button-toggle-input:checked + .button-outline,
+.button-outline:active,
+.button-outline.active {
+  background-color: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+.field-input:focus {
   border-color: var(--accent);
   box-shadow: 0 0 0 0.25rem var(--accent-tint);
 }
@@ -111,91 +82,68 @@ body {
    transform - so buttons had a color-fade but no physical "press" feeling.
    This adds a light lift on hover and a quick scale-down on press/active,
    using --ease-snappy so it reads as responsive rather than sluggish. */
-.btn {
+.button {
   transition: transform 0.15s var(--ease-snappy), box-shadow 0.2s var(--ease-smooth),
     background-color 0.2s var(--ease-smooth), border-color 0.2s var(--ease-smooth),
     color 0.2s var(--ease-smooth);
 }
 
-.btn:hover:not(:disabled) {
+.button:hover:not(:disabled) {
   transform: translateY(-1px);
 }
 
-.btn:active:not(:disabled),
-.btn.active:not(:disabled) {
+.button:active:not(:disabled),
+.button.active:not(:disabled) {
   transform: translateY(0) scale(0.96);
   transition-duration: 0.08s;
 }
 
-.btn:disabled {
+.button:disabled {
   transform: none;
 }
 
-.btn-primary:hover:not(:disabled),
-.btn-danger:hover:not(:disabled),
-.btn-success:hover:not(:disabled),
-.btn-check:checked + .btn-outline-primary:hover {
+.button-primary:hover:not(:disabled),
+.button-danger:hover:not(:disabled),
+.button-toggle-input:checked + .button-outline:hover {
   box-shadow: 0 8px 16px rgba(36, 31, 26, 0.16);
 }
 
-.dropdown-item {
+.menu-item {
   transition: background-color 0.15s var(--ease-smooth), color 0.15s var(--ease-smooth);
 }
 
-.nav-tabs .nav-link.active {
+.tab-nav .nav-link.active {
   color: var(--accent);
   border-color: var(--line) var(--line) #fff;
 }
 
-.dropdown-item:hover,
-.dropdown-item:focus,
-.dropdown-item.active {
+.menu-item:hover,
+.menu-item:focus,
+.menu-item.active {
   background-color: var(--accent-tint);
   color: var(--ink);
 }
 
 /* Rounded corners, reintroduced only where this design wants them - the global
    reset in index.css zeroes border-radius everywhere else. */
-.card {
+.panel {
   border-radius: var(--radius-lg);
-  border-color: var(--line);
 }
 
-.btn,
-.form-control,
-.badge,
-.alert,
-.dropdown-menu,
-.input-group-text {
+.button,
+.field-input,
+.tag,
+.banner,
+.menu {
   border-radius: var(--radius-md);
 }
 
-.btn-sm {
+.button-sm {
   border-radius: var(--radius-sm);
 }
 
-/* Bootstrap's alert-info bakes in its own cyan palette (#cff4fc bg / #055160 text),
-   unrelated to the warm paper/ink/accent-blue palette used everywhere else - recolor
-   it to the accent tint so info banners read as part of the same design language. */
-.alert-info {
-  background-color: var(--accent-tint);
-  border-color: var(--accent-tint);
-  color: var(--ink);
-}
-
-/* Public/private + completed badges, recolored to the new palette (still the same
-   real isPublic/completed data - only the styling changed here). */
-.badge.bg-success {
-  background-color: var(--success) !important;
-}
-
-.badge.bg-secondary {
-  background-color: var(--bg-soft) !important;
-  color: var(--muted) !important;
-}
-
 /* ===== Profile page ===== */
-.profile-cover-motif .card-header {
+.profile-cover-motif .panel-header {
   position: relative;
   background-color: var(--deep) !important;
   background-image:
@@ -637,18 +585,18 @@ body {
 
 /* Responsive improvements */
 @media (max-width: 768px) {
-  .btn-group {
+  .button-group {
     display: flex;
     flex-wrap: wrap;
   }
 }
 
-/* Account dropdown in the navbar: Bootstrap floats it (position: absolute) only
-   from lg up (see .navbar-expand-lg .navbar-nav .dropdown-menu); below that it
-   collapses into the nav and becomes position: static. Cap its width to the
-   viewport only while floating - applying that cap while static made it wider
-   than the collapsed nav's own column and pushed the page into horizontal
-   overflow on phones. */
+/* Account dropdown in the navbar: styles/components.css floats it (position:
+   absolute) only from lg up (see .top-nav--expand-lg .top-nav-list .menu);
+   below that it collapses into the nav and stays position: static. Cap its
+   width to the viewport only while floating - applying that cap while static
+   made it wider than the collapsed nav's own column and pushed the page into
+   horizontal overflow on phones. */
 @media (min-width: 992px) {
   .account-dropdown-menu {
     width: max-content;
@@ -678,30 +626,14 @@ body {
 }
 
 /* Like buttons use their own pink-red (--like) rather than the brand accent blue -
-   hearts read as red/pink almost universally regardless of a site's brand color. */
-.btn-danger {
+   hearts read as red/pink almost universally regardless of a site's brand color.
+   Resting-state colors live in styles/components.css/layout.css directly now
+   (.button-danger, .button-outline-danger, .text-like) - this is just the hover
+   state that needs the matching fill/text-color flip. */
+.button-outline-danger:hover {
+  background-color: var(--like);
+  border-color: var(--like);
   color: #fff;
-  background-color: var(--like);
-  border-color: var(--like);
-}
-
-.text-danger {
-  color: var(--like) !important;
-}
-
-.btn-outline-danger {
-  color: var(--like);
-  border-color: var(--like);
-}
-
-.btn-outline-danger:hover {
-  background-color: var(--like);
-  border-color: var(--like);
-}
-
-.bi-heart-fill.text-danger,
-.text-danger.bi-heart {
-  color: var(--like) !important;
 }
 
 /* ===== react-toastify ===== react-toastify ships its own CSS (imported
@@ -741,7 +673,7 @@ body {
 }
 
 /* Like button animation */
-.btn-danger .bi-heart-fill {
+.button-danger .bi-heart-fill {
   animation: heartBeat 0.3s ease-in-out;
 }
 
@@ -790,7 +722,7 @@ body {
   color: #fff;
 }
 
-.app-navbar .navbar-brand {
+.app-navbar .top-nav-brand {
   color: var(--ink);
   display: flex;
   align-items: center;
@@ -977,7 +909,7 @@ body {
    of forcing every user through them. */
 @media (prefers-reduced-motion: reduce) {
 
-  .btn,
+  .button,
   .content-card,
   .create-card,
   .filter-pill,
@@ -987,7 +919,7 @@ body {
   .bn-fab,
   .hebrew-keyboard-key,
   .fade-in,
-  .btn-danger .bi-heart-fill {
+  .button-danger .bi-heart-fill {
     transition: none !important;
     animation: none !important;
     transform: none !important;

@@ -10,7 +10,7 @@ const ProtectedRoute = ({ children }) => {
         return (
             <div className="container py-5">
                 <div className="text-center">
-                    <div className="spinner-border text-primary" role="status">
+                    <div className="loader text-accent" role="status">
                         <span className="visually-hidden">טוען...</span>
                     </div>
                 </div>

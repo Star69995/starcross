@@ -24,7 +24,7 @@ function CurrentDef() {
     const def = selectedDefinition?.definition || 'כאן תופיעה ההגדרה המסומנת';
 
     return (
-        <div className="clue-banner d-flex align-items-center gap-2">
+        <div className="clue-banner flex items-center gap-2">
             {/* previous flows toward reading-start (right, per CLAUDE.md RTL arrow rule) */}
             <button
                 type="button"
@@ -35,7 +35,7 @@ function CurrentDef() {
             >
                 <i className="bi bi-chevron-right"></i>
             </button>
-            <span className="flex-grow-1 text-center">{def}</span>
+            <span className="grow text-center">{def}</span>
             {/* next flows toward reading-end (left) */}
             <button
                 type="button"

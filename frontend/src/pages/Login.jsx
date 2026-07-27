@@ -85,27 +85,27 @@ const Login = () => {
 
     return (
         <div className="container py-5">
-            <div className="row justify-content-center">
+            <div className="grid-row justify-center">
                 <div className="col-12 auth-card-col">
-                    <div className="card shadow">
-                        <div className="card-body p-5">
+                    <div className="panel shadow">
+                        <div className="panel-body p-5">
                             <div className="text-center mb-4">
-                                <i className="bi bi-person-circle fs-1 text-primary"></i>
-                                <h2 className="card-title">התחברות</h2>
+                                <i className="bi bi-person-circle text-size-1 text-accent"></i>
+                                <h2 className="panel-title">התחברות</h2>
                             </div>
 
                             {error && (
-                                <div className="alert alert-danger" role="alert">
+                                <div className="banner banner-danger" role="alert">
                                     {error}
                                 </div>
                             )}
 
                             <form onSubmit={handleSubmit}>
                                 <div className="mb-3">
-                                    <label htmlFor="email" className="form-label">אימייל</label>
+                                    <label htmlFor="email" className="field-label">אימייל</label>
                                     <input
                                         type="email"
-                                        className="form-control"
+                                        className="field-input"
                                         id="email"
                                         name="email"
                                         value={formData.email}
@@ -116,10 +116,10 @@ const Login = () => {
                                 </div>
 
                                 <div className="mb-4">
-                                    <label htmlFor="password" className="form-label">סיסמה</label>
+                                    <label htmlFor="password" className="field-label">סיסמה</label>
                                     <input
                                         type="password"
-                                        className="form-control"
+                                        className="field-input"
                                         id="password"
                                         name="password"
                                         value={formData.password}
@@ -130,12 +130,12 @@ const Login = () => {
 
                                 <button
                                     type="submit"
-                                    className="btn btn-primary w-100 mb-3"
+                                    className="button button-primary w-100 mb-3"
                                     disabled={loading}
                                 >
                                     {loading ? (
                                         <>
-                                            <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                                            <span className="loader loader-sm mr-2" role="status" aria-hidden="true"></span>
                                             מתחבר...
                                         </>
                                     ) : (
@@ -144,26 +144,26 @@ const Login = () => {
                                 </button>
                             </form>
 
-                            <div className="d-flex align-items-center my-3">
-                                <hr className="flex-grow-1" />
+                            <div className="flex items-center my-3">
+                                <hr className="grow" />
                                 <span className="px-2 text-muted small">או</span>
-                                <hr className="flex-grow-1" />
+                                <hr className="grow" />
                             </div>
 
                             <button
                                 type="button"
-                                className="btn btn-outline-secondary w-100 mb-3"
+                                className="button button-outline-secondary w-100 mb-3"
                                 onClick={handleGoogleLogin}
                                 disabled={googleLoading}
                             >
                                 {googleLoading ? (
                                     <>
-                                        <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                                        <span className="loader loader-sm mr-2" role="status" aria-hidden="true"></span>
                                         מתחבר...
                                     </>
                                 ) : (
                                     <>
-                                        <i className="bi bi-google ms-2"></i>
+                                        <i className="bi bi-google ml-2"></i>
                                         התחברות עם גוגל
                                     </>
                                 )}

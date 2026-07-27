@@ -4,23 +4,23 @@ const GenericFormField = ({ name, label, value='', type = 'text', onChange, chil
     return (
         <div>
             {type === 'checkbox' ? (
-                <div className="form-check d-flex flex-row align-items-center mb-3">
+                <div className="field-check flex flex-row items-center mb-3">
                     <input
-                        className="form-check-input ms-2"
+                        className="field-check-input ml-2"
                         type={type}
                         id={name}
                         name={name}
                         value={value}
                         onChange={onChange}
                     />
-                    <label className="form-check-label" htmlFor={name}>{label}</label>
+                    <label className="field-check-label" htmlFor={name}>{label}</label>
                     {children}
                 </div>
             ) : (
                 <div className="mb-3">
-                    <label className="form-label" htmlFor={name}>{label}</label>
+                    <label className="field-label" htmlFor={name}>{label}</label>
                     <input
-                        className="form-control"
+                        className="field-input"
                         type={type}
                         id={name}
                         name={name}

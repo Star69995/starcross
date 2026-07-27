@@ -41,32 +41,32 @@ const MyWordLists = () => {
             <PageHeader
                 title="רשימות המילים שלי"
                 action={(
-                    <Link to="/create-wordlist" className="btn btn-primary">
-                        <i className="bi bi-plus-circle ms-2"></i>
+                    <Link to="/create-wordlist" className="button button-primary">
+                        <i className="bi bi-plus-circle ml-2"></i>
                         רשימה חדשה
                     </Link>
                 )}
             />
 
-            <div className="row mb-4">
-                <div className="col-md-6">
-                    <div className="btn-group" role="group">
-                        <input type="radio" className="btn-check" name="filter" id="all-lists"
+            <div className="grid-row mb-4">
+                <div className="col-6-md">
+                    <div className="button-group" role="group">
+                        <input type="radio" className="button-toggle-input" name="filter" id="all-lists"
                             checked={filter === 'all'} onChange={() => setFilter('all')} />
-                        <label className="btn btn-outline-primary" htmlFor="all-lists">הכל</label>
+                        <label className="button button-outline" htmlFor="all-lists">הכל</label>
 
-                        <input type="radio" className="btn-check" name="filter" id="public-lists"
+                        <input type="radio" className="button-toggle-input" name="filter" id="public-lists"
                             checked={filter === 'public'} onChange={() => setFilter('public')} />
-                        <label className="btn btn-outline-primary" htmlFor="public-lists">ציבוריות</label>
+                        <label className="button button-outline" htmlFor="public-lists">ציבוריות</label>
 
-                        <input type="radio" className="btn-check" name="filter" id="private-lists"
+                        <input type="radio" className="button-toggle-input" name="filter" id="private-lists"
                             checked={filter === 'private'} onChange={() => setFilter('private')} />
-                        <label className="btn btn-outline-primary" htmlFor="private-lists">פרטיות</label>
+                        <label className="button button-outline" htmlFor="private-lists">פרטיות</label>
                     </div>
                 </div>
-                <div className="col-md-6 text-md-end">
+                <div className="col-6-md text-end-md">
                     <div className="text-muted">
-                        <i className="bi bi-list-ul ms-1"></i>
+                        <i className="bi bi-list-ul ml-1"></i>
                         {filteredWordLists.length} רשימות
                     </div>
                 </div>
@@ -74,25 +74,25 @@ const MyWordLists = () => {
 
             {loading ? (
                 <div className="text-center py-5">
-                    <div className="spinner-border text-primary" role="status">
+                    <div className="loader text-accent" role="status">
                         <span className="visually-hidden">טוען...</span>
                     </div>
                 </div>
             ) : (
-                <div className="row g-4">
+                <div className="grid-row grid-row-gap-4">
                     {filteredWordLists.map(wordList => (
-                        <div key={wordList._id} className="col-lg-4 col-md-6">
+                        <div key={wordList._id} className="col-4-lg col-6-md">
                             <WordListCard wordList={wordList} onDelete={handleDeleteWordList}/>
                         </div>
                     ))}
                     {filteredWordLists.length === 0 && (
                         <div className="col-12 text-center py-5">
                             <div className="text-muted">
-                                <i className="bi bi-list-ul fs-1 d-block mb-3"></i>
+                                <i className="bi bi-list-ul text-size-1 block mb-3"></i>
                                 <h4>אין לך עדיין רשימות מילים</h4>
                                 <p>התחל ליצור את הרשימה הראשונה שלך</p>
-                                <Link to="/create-wordlist" className="btn btn-primary">
-                                    <i className="bi bi-plus-circle ms-2"></i>
+                                <Link to="/create-wordlist" className="button button-primary">
+                                    <i className="bi bi-plus-circle ml-2"></i>
                                     צור רשימה חדשה
                                 </Link>
                             </div>

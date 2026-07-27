@@ -44,7 +44,7 @@ const CrosswordEditor = () => {
         return <div>טוען...</div>;
     }
     if (loadError) {
-        return <div className="alert alert-danger">{loadError}</div>;
+        return <div className="banner banner-danger">{loadError}</div>;
     }
 
     return (

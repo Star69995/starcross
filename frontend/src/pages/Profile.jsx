@@ -100,17 +100,17 @@ const Profile = () => {
 
     return (
         <div className="container py-4">
-            <div className="row justify-content-center">
-                <div className="col-lg-8">
-                    <div className="card shadow profile-cover-motif mb-3">
-                        <div className="card-header bg-primary text-white border-0">
-                            <div className="d-flex align-items-center">
-                                <span className="ms-3 flex-shrink-0">
+            <div className="grid-row justify-center">
+                <div className="col-8-lg">
+                    <div className="panel shadow profile-cover-motif mb-3">
+                        <div className="panel-header bg-accent text-white border-0">
+                            <div className="flex items-center">
+                                <span className="ml-3 shrink-0">
                                     <Avatar photoURL={user?.photoURL} name={user?.userName} size={56} />
                                 </span>
                                 <div className="text-truncate">
-                                    <h2 className="card-title mb-0 text-truncate">{user?.userName}</h2>
-                                    <small className="opacity-75 d-block text-truncate" dir="ltr" style={{ textAlign: 'right' }}>{user?.email}</small>
+                                    <h2 className="panel-title mb-0 text-truncate">{user?.userName}</h2>
+                                    <small className="opacity-75 block text-truncate" dir="ltr" style={{ textAlign: 'right' }}>{user?.email}</small>
                                 </div>
                             </div>
                         </div>
@@ -177,16 +177,16 @@ const Profile = () => {
                         </div>
                     </div>
 
-                    <div className="card shadow">
-                        <div className="card-body p-0">
-                            <div className="p-3 p-md-4">
+                    <div className="panel shadow">
+                        <div className="panel-body p-0">
+                            <div className="p-3 p-4-md">
                                 {message && (
-                                    <div className="alert alert-success" role="alert">
+                                    <div className="banner banner-success" role="alert">
                                         {message}
                                     </div>
                                 )}
                                 {error && (
-                                    <div className="alert alert-danger" role="alert">
+                                    <div className="banner banner-danger" role="alert">
                                         {error}
                                     </div>
                                 )}
@@ -194,10 +194,10 @@ const Profile = () => {
                                 {activeTab === 'profile' && (
                                     <form onSubmit={handleProfileSubmit}>
                                         <div className="mb-3">
-                                            <label htmlFor="userName" className="form-label">שם משתמש</label>
+                                            <label htmlFor="userName" className="field-label">שם משתמש</label>
                                             <input
                                                 type="text"
-                                                className="form-control"
+                                                className="field-input"
                                                 id="userName"
                                                 value={profileData.userName}
                                                 onChange={(e) => setProfileData({ ...profileData, userName: e.target.value })}
@@ -207,17 +207,17 @@ const Profile = () => {
 
                                         <button
                                             type="submit"
-                                            className="btn btn-primary w-100 w-sm-auto"
+                                            className="button button-primary w-100"
                                             disabled={loading}
                                         >
                                             {loading ? (
                                                 <>
-                                                    <span className="spinner-border spinner-border-sm ms-2"></span>
+                                                    <span className="loader loader-sm ml-2"></span>
                                                     שומר...
                                                 </>
                                             ) : (
                                                 <>
-                                                    <i className="bi bi-check-circle ms-2"></i>
+                                                    <i className="bi bi-check-circle ml-2"></i>
                                                     שמור שינויים
                                                 </>
                                             )}
@@ -228,10 +228,10 @@ const Profile = () => {
                                 {activeTab === 'password' && hasPasswordProvider && (
                                     <form onSubmit={handlePasswordSubmit}>
                                         <div className="mb-3">
-                                            <label htmlFor="currentPassword" className="form-label">סיסמה נוכחית</label>
+                                            <label htmlFor="currentPassword" className="field-label">סיסמה נוכחית</label>
                                             <input
                                                 type="password"
-                                                className="form-control"
+                                                className="field-input"
                                                 id="currentPassword"
                                                 value={passwordData.currentPassword}
                                                 onChange={(e) => setPasswordData({ ...passwordData, currentPassword: e.target.value })}
@@ -240,10 +240,10 @@ const Profile = () => {
                                         </div>
 
                                         <div className="mb-3">
-                                            <label htmlFor="newPassword" className="form-label">סיסמה חדשה</label>
+                                            <label htmlFor="newPassword" className="field-label">סיסמה חדשה</label>
                                             <input
                                                 type="password"
-                                                className="form-control"
+                                                className="field-input"
                                                 id="newPassword"
                                                 value={passwordData.newPassword}
                                                 onChange={(e) => setPasswordData({ ...passwordData, newPassword: e.target.value })}
@@ -253,10 +253,10 @@ const Profile = () => {
                                         </div>
 
                                         <div className="mb-4">
-                                            <label htmlFor="confirmPassword" className="form-label">אישור סיסמה חדשה</label>
+                                            <label htmlFor="confirmPassword" className="field-label">אישור סיסמה חדשה</label>
                                             <input
                                                 type="password"
-                                                className="form-control"
+                                                className="field-input"
                                                 id="confirmPassword"
                                                 value={passwordData.confirmPassword}
                                                 onChange={(e) => setPasswordData({ ...passwordData, confirmPassword: e.target.value })}
@@ -266,17 +266,17 @@ const Profile = () => {
 
                                         <button
                                             type="submit"
-                                            className="btn btn-primary w-100 w-sm-auto"
+                                            className="button button-primary w-100"
                                             disabled={loading}
                                         >
                                             {loading ? (
                                                 <>
-                                                    <span className="spinner-border spinner-border-sm ms-2"></span>
+                                                    <span className="loader loader-sm ml-2"></span>
                                                     משנה...
                                                 </>
                                             ) : (
                                                 <>
-                                                    <i className="bi bi-shield-check ms-2"></i>
+                                                    <i className="bi bi-shield-check ml-2"></i>
                                                     שנה סיסמה
                                                 </>
                                             )}

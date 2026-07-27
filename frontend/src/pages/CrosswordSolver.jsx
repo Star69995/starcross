@@ -162,7 +162,7 @@ const CrosswordSolver = () => {
         return (
             <div className="container py-5">
                 <div className="text-center">
-                    <div className="spinner-border text-primary" role="status">
+                    <div className="loader text-accent" role="status">
                         <span className="visually-hidden">טוען תשבץ...</span>
                     </div>
                     <p className="mt-2 text-muted">טוען תשבץ...</p>
@@ -175,10 +175,10 @@ const CrosswordSolver = () => {
         return (
             <div className="container py-5">
                 <div className="text-center">
-                    <div className="alert alert-danger" role="alert">
-                        <h4 className="alert-heading">שגיאה</h4>
+                    <div className="banner banner-danger" role="alert">
+                        <h4 className="banner-heading">שגיאה</h4>
                         <p>{error || 'תשבץ לא נמצא'}</p>
-                        <button className="btn btn-primary" onClick={() => navigate('/')}>
+                        <button className="button button-primary" onClick={() => navigate('/')}>
                             חזור לדף הבית
                         </button>
                     </div>
@@ -189,16 +189,16 @@ const CrosswordSolver = () => {
 
     return (
         <div className="container-fluid py-4">
-            <div className="row">
+            <div className="grid-row">
                 <div className="col-12">
-                    <div className="solve-toolbar d-flex flex-wrap align-items-center gap-2 mb-2">
-                        <h1 className="display-5 mb-0 text-truncate">
+                    <div className="solve-toolbar flex wrap items-center gap-2 mb-2">
+                        <h1 className="heading-md mb-0 text-truncate">
                             {crossword.title}
-                            <i className="bi bi-puzzle-fill text-primary me-2"></i>
+                            <i className="bi bi-puzzle-fill text-accent mr-2"></i>
                         </h1>
-                        <div className="flex-grow-1"></div>
+                        <div className="grow"></div>
                         <span className="solve-toolbar-pill">
-                            <i className="bi bi-check2-circle ms-1"></i>
+                            <i className="bi bi-check2-circle ml-1"></i>
                             {percent}% הושלם
                         </span>
                         <button
@@ -212,7 +212,7 @@ const CrosswordSolver = () => {
                         </button>
                         <button
                             type="button"
-                            className="solve-toolbar-btn d-lg-none"
+                            className="solve-toolbar-btn hidden-lg"
                             onClick={() => setShowClueList(v => !v)}
                             aria-label="הצג/הסתר רשימת הגדרות"
                         >
@@ -222,13 +222,13 @@ const CrosswordSolver = () => {
                     <div className="solve-progress-bar mb-3">
                         <div className="solve-progress-fill" style={{ width: `${percent}%` }}></div>
                     </div>
-                    <div className="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
+                    <div className="flex wrap justify-between items-center gap-2 mb-4">
                         <div>
                             {crossword.description && (
                                 <p className="text-muted mb-0">{crossword.description}</p>
                             )}
                         </div>
-                        <div className="d-flex align-items-center gap-2">
+                        <div className="flex items-center gap-2">
                             <ActionButtons
                                 isLiked={isLiked}
                                 canEdit={crossword.creator._id === user?._id}
@@ -238,10 +238,10 @@ const CrosswordSolver = () => {
                                 handleDelete={handleDelete}
                             />
                             <button
-                                className="btn btn-outline-secondary"
+                                className="button button-outline-secondary"
                                 onClick={() => navigate('/')}
                             >
-                                <i className="bi bi-arrow-right ms-2"></i>
+                                <i className="bi bi-arrow-right ml-2"></i>
                                 חזור
                             </button>
                         </div>
@@ -250,12 +250,12 @@ const CrosswordSolver = () => {
             </div>
 
             {!user && !authLoading && (
-                <div className="alert alert-info d-flex flex-wrap align-items-center justify-content-between gap-2 mb-4" role="alert">
+                <div className="banner banner-info flex wrap items-center justify-between gap-2 mb-4" role="alert">
                     <span>
-                        <i className="bi bi-info-circle-fill ms-2"></i>
+                        <i className="bi bi-info-circle-fill ml-2"></i>
                         ההתקדמות בפתרון תשבץ נשמרת אוטומטית רק למשתמשים מחוברים. הירשם כדי שההתקדמות שלך תישמר ותיטען מכל מכשיר.
                     </span>
-                    <Link to="/register" className="btn btn-primary btn-sm">
+                    <Link to="/register" className="button button-primary button-sm">
                         הרשמה
                     </Link>
                 </div>

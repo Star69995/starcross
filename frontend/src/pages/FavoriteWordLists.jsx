@@ -55,17 +55,17 @@ const FavoriteWordLists = () => {
         <div className="container py-4">
             <PageHeader title="רשימות מילים אהובות" />
 
-            <div className="row mb-4">
-                <div className="col-md-8">
+            <div className="grid-row mb-4">
+                <div className="col-8-md">
                     <SearchInput
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                         placeholder="חפש רשימות מילים..."
                     />
                 </div>
-                <div className="col-md-4">
+                <div className="col-4-md">
                     <select
-                        className="form-select"
+                        className="field-select"
                         value={sortBy}
                         onChange={(e) => setSortBy(e.target.value)}
                     >
@@ -79,21 +79,21 @@ const FavoriteWordLists = () => {
 
             {loading ? (
                 <div className="text-center py-5">
-                    <div className="spinner-border text-primary" role="status">
+                    <div className="loader text-accent" role="status">
                         <span className="visually-hidden">טוען...</span>
                     </div>
                 </div>
             ) : (
-                <div className="row g-4">
+                <div className="grid-row grid-row-gap-4">
                     {filteredWordLists.map(wordList => (
-                        <div key={wordList._id} className="col-lg-4 col-md-6">
+                        <div key={wordList._id} className="col-4-lg col-6-md">
                             <WordListCard wordList={wordList} onDelete={handleDeleteWordList} />
                         </div>
                     ))}
                     {filteredWordLists.length === 0 && (
                         <div className="col-12 text-center py-5">
                             <div className="text-muted">
-                                <i className="bi bi-list-ul fs-1 d-block mb-3"></i>
+                                <i className="bi bi-list-ul text-size-1 block mb-3"></i>
                                 <h4>לא נמצאו רשימות מילים</h4>
                                 <p>נסה לשנות את החיפוש או הפילטר</p>
                             </div>

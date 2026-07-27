@@ -1,0 +1,316 @@
+/* ===== Buttons ===== */
+.button {
+  display: inline-block;
+  font-weight: 400;
+  line-height: 1.5;
+  text-align: center;
+  text-decoration: none;
+  vertical-align: middle;
+  cursor: pointer;
+  user-select: none;
+  background-color: transparent;
+  border: 1px solid transparent;
+  padding: 0.375rem 0.75rem;
+  font-size: 1rem;
+  color: var(--ink);
+}
+.button:disabled { opacity: .65; cursor: default; }
+.button-sm { padding: 0.25rem 0.5rem; font-size: 0.875rem; }
+
+.button-primary { color: #fff; background-color: var(--accent); border-color: var(--accent); }
+.button-secondary { color: #fff; background-color: #6c757d; border-color: #6c757d; }
+.button-outline { color: var(--accent); background-color: transparent; border-color: var(--accent); }
+.button-outline-secondary { color: #6c757d; background-color: transparent; border-color: #6c757d; }
+.button-outline-secondary:hover { color: #fff; background-color: #6c757d; border-color: #6c757d; }
+.button-danger { color: #fff; background-color: var(--like); border-color: var(--like); }
+.button-outline-danger { color: var(--like); background-color: transparent; border-color: var(--like); }
+
+.button-toggle-input {
+  position: absolute;
+  clip: rect(0, 0, 0, 0);
+  pointer-events: none;
+}
+
+.button-group { display: inline-flex; vertical-align: middle; }
+.button-group > .button { position: relative; flex: 1 1 auto; }
+.button-group > .button:not(:first-of-type) { margin-left: -1px; }
+.button-group-sm > .button { padding: 0.25rem 0.5rem; font-size: 0.875rem; }
+
+/* ===== Panels (cards) ===== */
+.panel {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  word-wrap: break-word;
+  background-color: #fff;
+  border: 1px solid var(--line);
+}
+.panel-header {
+  padding: 0.5rem 1rem;
+  margin-bottom: 0;
+  background-color: rgba(0, 0, 0, .03);
+  border-bottom: 1px solid var(--line);
+}
+.panel-body { flex: 1 1 auto; padding: 1rem; }
+.panel-title { margin-bottom: 0.5rem; }
+.panel-text { margin-bottom: 1rem; }
+.panel-footer {
+  padding: 0.5rem 1rem;
+  background-color: rgba(0, 0, 0, .03);
+  border-top: 1px solid var(--line);
+}
+
+/* ===== Forms ===== */
+.field-input {
+  display: block;
+  width: 100%;
+  padding: 0.375rem 0.75rem;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: var(--ink);
+  background-color: #fff;
+  border: 1px solid #ced4da;
+  transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+}
+.field-input:focus { outline: 0; }
+.field-label { margin-bottom: 0.5rem; display: inline-block; }
+.field-help { margin-top: 0.25rem; font-size: .875em; color: var(--muted); }
+.field-select {
+  display: block;
+  width: 100%;
+  padding: 0.375rem 0.75rem;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: var(--ink);
+  background-color: #fff;
+  border: 1px solid #ced4da;
+}
+.field-check {
+  display: block;
+  min-height: 1.5rem;
+  padding-left: 1.5em;
+  margin-bottom: 0.125rem;
+}
+.field-check-input {
+  width: 1em;
+  height: 1em;
+  margin-top: 0.25em;
+  vertical-align: top;
+  background-color: #fff;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  border: 1px solid rgba(0, 0, 0, .25);
+  appearance: none;
+  flex-shrink: 0;
+}
+.field-check-input[type="checkbox"] { border-radius: 0.25em; }
+.field-check-input[type="radio"] { border-radius: 50%; }
+.field-check-input:checked {
+  background-color: var(--accent);
+  border-color: var(--accent);
+}
+.field-check-input[type="checkbox"]:checked {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3cpath fill='none' stroke='%23fff' stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='M6 10l3 3l6-6'/%3e%3c/svg%3e");
+}
+.field-check-input[type="radio"]:checked {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='2' fill='%23fff'/%3e%3c/svg%3e");
+}
+
+/* ===== Feedback ===== */
+.banner { position: relative; padding: 1rem; border: 1px solid transparent; }
+.banner-heading { margin-top: 0; color: inherit; }
+.banner-info { background-color: var(--accent-tint); border-color: var(--accent-tint); color: var(--ink); }
+.banner-danger { background-color: #f8d7da; border-color: #f5c2c7; color: #842029; }
+.banner-success { background-color: var(--success-tint); border-color: var(--success-tint); color: var(--ink); }
+
+.tag {
+  display: inline-block;
+  padding: 0.35em 0.65em;
+  font-size: 0.75em;
+  font-weight: 700;
+  line-height: 1;
+  color: #fff;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: baseline;
+}
+.tag-success { background-color: var(--success) !important; color: #fff; }
+.tag-muted { background-color: var(--bg-soft) !important; color: var(--muted) !important; }
+
+/* ===== Loader ===== */
+.loader {
+  display: inline-block;
+  width: 2rem;
+  height: 2rem;
+  vertical-align: text-bottom;
+  border: 0.25em solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: loader-spin .75s linear infinite;
+}
+.loader-sm { width: 1rem; height: 1rem; border-width: .2em; }
+
+@keyframes loader-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ===== Tables ===== */
+.table {
+  width: 100%;
+  margin-bottom: 1rem;
+  color: var(--ink);
+  vertical-align: top;
+  border-color: var(--line);
+  border-collapse: collapse;
+}
+.table > :not(caption) > * > * {
+  padding: 0.5rem 0.5rem;
+  border-bottom-width: 1px;
+}
+.table-bordered > :not(caption) > * { border-width: 1px 0; }
+.table-bordered > :not(caption) > * > * { border-width: 0 1px; }
+.table-striped > tbody > tr:nth-of-type(odd) > * { background-color: rgba(0, 0, 0, .025); }
+.table-hover > tbody > tr:hover > * { background-color: rgba(0, 0, 0, .05); }
+.table-sm > :not(caption) > * > * { padding: 0.25rem 0.25rem; }
+.table-responsive { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+
+/* ===== Item list ===== */
+.item-list { display: flex; flex-direction: column; border: 1px solid var(--line); }
+.item-list-item {
+  display: block;
+  padding: 0.5rem 1rem;
+  color: var(--ink);
+  background-color: #fff;
+  border-bottom: 1px solid var(--line);
+}
+.item-list-item:last-child { border-bottom: 0; }
+.item-list-item-action { cursor: pointer; }
+.item-list-item-action:hover { background-color: var(--bg-soft); }
+
+/* ===== Nav / tabs ===== */
+.nav-list { display: flex; flex-wrap: wrap; padding-left: 0; margin-bottom: 0; list-style: none; }
+.nav-link {
+  display: block;
+  padding: 0.5rem 1rem;
+  color: var(--accent);
+  text-decoration: none;
+  transition: color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out;
+}
+.tab-nav { display: flex; flex-wrap: wrap; list-style: none; border-bottom: 1px solid var(--line); }
+.tab-nav .nav-link { border: 1px solid transparent; }
+
+/* ===== Top nav (navbar) ===== */
+.top-nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+}
+.top-nav-brand {
+  padding-top: 0.3125rem;
+  padding-bottom: 0.3125rem;
+  font-size: 1.25rem;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.top-nav-toggle {
+  padding: 0.25rem 0.75rem;
+  font-size: 1.25rem;
+  line-height: 1;
+  background-color: transparent;
+  border: 1px solid transparent;
+  cursor: pointer;
+}
+.top-nav-toggle:focus {
+  outline: 0;
+  box-shadow: 0 0 0 0.25rem rgba(0, 0, 0, .15);
+}
+.top-nav-toggle-icon {
+  display: inline-block;
+  width: 1.5em;
+  height: 1.5em;
+  vertical-align: middle;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(0,0,0,0.55)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 100%;
+}
+.top-nav-list {
+  display: flex;
+  flex-direction: column;
+  padding-left: 0;
+  margin-bottom: 0;
+  list-style: none;
+}
+.top-nav-collapse {
+  display: none;
+  flex-basis: 100%;
+  flex-grow: 1;
+  align-items: center;
+}
+.top-nav-collapse.show { display: block; }
+
+@media (min-width: 992px) {
+  .top-nav--expand-lg .top-nav-toggle { display: none; }
+  .top-nav--expand-lg .top-nav-collapse {
+    display: flex !important;
+    flex-basis: auto;
+  }
+  .top-nav--expand-lg .top-nav-list { flex-direction: row; }
+}
+
+/* ===== Dropdown menu =====
+   Base .menu floats (position:absolute) for standalone use (e.g. CurrentDef).
+   Inside a top-nav it's static by default (flows inline in the collapsed nav)
+   and only floats once the navbar itself is in its expanded (>=992px) state -
+   mirrors the original Bootstrap navbar-dropdown positioning split documented
+   in App.css for .account-dropdown-menu. */
+.has-menu { position: relative; }
+.menu {
+  position: absolute;
+  z-index: 1000;
+  display: none;
+  min-width: 10rem;
+  padding: 0.5rem 0;
+  margin: 0;
+  font-size: 1rem;
+  color: var(--ink);
+  text-align: right;
+  list-style: none;
+  background-color: #fff;
+  background-clip: padding-box;
+  border: 1px solid rgba(0, 0, 0, .15);
+  top: 100%;
+  right: 0;
+}
+.menu--start { right: auto; left: 0; }
+.menu.show { display: block; }
+.top-nav-list .menu { position: static; }
+
+@media (min-width: 992px) {
+  .top-nav--expand-lg .top-nav-list .menu { position: absolute; }
+}
+
+.menu-item {
+  display: block;
+  width: 100%;
+  padding: 0.25rem 1rem;
+  clear: both;
+  font-weight: 400;
+  color: var(--ink);
+  text-align: inherit;
+  white-space: nowrap;
+  background-color: transparent;
+  border: 0;
+  cursor: pointer;
+}
+.menu-divider {
+  height: 0;
+  margin: 0.5rem 0;
+  border-top: 1px solid var(--line);
+}
+.menu-toggle { cursor: pointer; }

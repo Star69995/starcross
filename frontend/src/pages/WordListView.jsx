@@ -34,7 +34,7 @@ const WordListView = () => {
     }, [id, user, authLoading]);
 
     if (loading) return <div>טוען...</div>;
-    if (loadError) return <div className="alert alert-danger">{loadError}</div>;
+    if (loadError) return <div className="banner banner-danger">{loadError}</div>;
     if (!wordList) return <div>לא נמצאה רשימה</div>;
 
     // הרשאת עריכה
@@ -78,19 +78,19 @@ const WordListView = () => {
     }
     return (
         <div className="container py-4">
-            <div className="row justify-content-center">
-                <div className="col-lg-8">
-                    <div className="card shadow">
-                        <div className="card-header bg-primary text-white">
-                            <h2 className="card-title mb-0">{wordList.title}</h2>
+            <div className="grid-row justify-center">
+                <div className="col-8-lg">
+                    <div className="panel shadow">
+                        <div className="panel-header bg-accent text-white">
+                            <h2 className="panel-title mb-0">{wordList.title}</h2>
                             <div className="small">
                                 יוצר: {wordList.creator?.userName || "לא ידוע"} |{" "}
                                 {new Date(wordList.createdAt).toLocaleDateString("he-IL")}
-                                {wordList.isPublic && <span className="badge bg-light text-dark me-2">ציבורית</span>}
+                                {wordList.isPublic && <span className="tag bg-subtle text-dark mr-2">ציבורית</span>}
                             </div>
                         </div>
-                        <div className="card-body">
-                            <div className="d-flex justify-content-between align-items-center mb-3">
+                        <div className="panel-body">
+                            <div className="flex justify-between items-center mb-3">
                                 <p className="mb-0">{wordList.description}</p>
                                 <ActionButtons
                                     isLiked={isLiked}
@@ -120,7 +120,7 @@ const WordListView = () => {
                                         ) : (
                                             wordList.words.map((word, idx) => (
                                                 <tr key={word._id || idx}>
-                                                    <td className="fw-bold">{word.solution}</td>
+                                                    <td className="font-bold">{word.solution}</td>
                                                     <td>{word.definition || "-"}</td>
                                                 </tr>
                                             ))

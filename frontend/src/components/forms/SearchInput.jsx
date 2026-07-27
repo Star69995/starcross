@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types'
 
 const SearchInput = ({ value, onChange, placeholder, className = '' }) => (
-    <div className={`search-bar d-flex align-items-center gap-2 ${className}`}>
+    <div className={`search-bar flex items-center gap-2 ${className}`}>
         <i className="bi bi-search"></i>
         <input
             type="text"

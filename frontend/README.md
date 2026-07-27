@@ -8,7 +8,7 @@ project setup, and deploy instructions.
 ## Stack
 
 - React 19 + Vite
-- Bootstrap 5 + Bootstrap Icons (no Tailwind, no CSS-in-JS — see [../CLAUDE.md](../CLAUDE.md))
+- A hand-rolled CSS design system (`src/styles/layout.css` + `src/styles/components.css`) + Bootstrap Icons for icons only (no Bootstrap CSS/JS framework, no Tailwind, no CSS-in-JS — see [../CLAUDE.md](../CLAUDE.md))
 - Firebase SDK (Firestore, Authentication)
 - React Router, Joi (form validation), react-toastify
 
@@ -18,6 +18,7 @@ project setup, and deploy instructions.
 - `src/components/{auth,board,cards,forms,layout}/` — shared/reusable UI pieces
 - `src/providers/` — `AuthContext` (Firebase auth state), `CrosswordContext` (solver board state)
 - `src/services/` — `firebase.js` (SDK init), `api.js` (all Firestore/Auth calls)
+- `src/styles/` — `layout.css` (grid + utility classes), `components.css` (buttons, panels, forms, feedback, nav/menu)
 - `src/utils/` — grid generation, validators, sound helpers
 
 ## Scripts

@@ -49,21 +49,21 @@ const FavoriteCrosswords = () => {
 
             {loading ? (
                 <div className="text-center py-5">
-                    <div className="spinner-border text-primary" role="status">
+                    <div className="loader text-accent" role="status">
                         <span className="visually-hidden">טוען...</span>
                     </div>
                 </div>
             ) : (
-                <div className="row g-4">
+                <div className="grid-row grid-row-gap-4">
                     {crosswords.map(crossword => (
-                        <div key={crossword._id} className="col-lg-4 col-md-6">
+                        <div key={crossword._id} className="col-4-lg col-6-md">
                             <CrosswordCard crossword={crossword} onDelete={handleDeleteCrossword} />
                         </div>
                     ))}
                     {crosswords.length === 0 && (
                         <div className="col-12 text-center py-5">
                             <div className="text-muted">
-                                <i className="bi bi-puzzle fs-1 d-block mb-3"></i>
+                                <i className="bi bi-puzzle text-size-1 block mb-3"></i>
                                 <h4>לא נמצאו תשבצים</h4>
                                 <p>נסה לשנות את הפילטר או חזור מאוחר יותר</p>
                             </div>

@@ -7,31 +7,31 @@ const WordListTextArea = ({
     handleExport,
 }) => (
     <div className="mb-3">
-        <div className="d-flex justify-content-between align-items-center mb-2">
-            <label htmlFor="words" className="form-label mb-0">מילים</label>
-            <div className="btn-group btn-group-sm">
+        <div className="flex justify-between items-center mb-2">
+            <label htmlFor="words" className="field-label mb-0">מילים</label>
+            <div className="button-group button-group-sm">
                 <input
                     type="file"
-                    className="d-none"
+                    className="hidden"
                     id="import-file"
                     accept=".txt"
                     onChange={handleImport}
                 />
-                <label htmlFor="import-file" className="btn btn-outline-secondary">
-                    <i className="bi bi-upload ms-1"></i>יבוא
+                <label htmlFor="import-file" className="button button-outline-secondary">
+                    <i className="bi bi-upload ml-1"></i>יבוא
                 </label>
                 <button
                     type="button"
-                    className="btn btn-outline-secondary"
+                    className="button button-outline-secondary"
                     onClick={handleExport}
                     disabled={!wordsText.trim()}
                 >
-                    <i className="bi bi-download ms-1"></i>יצוא
+                    <i className="bi bi-download ml-1"></i>יצוא
                 </button>
             </div>
         </div>
         <textarea
-            className="form-control font-monospace"
+            className="field-input font-monospace"
             id="words"
             rows="12"
             placeholder={`מילה|הגדרה
@@ -44,7 +44,7 @@ const WordListTextArea = ({
             onChange={(e) => setWordsText(e.target.value)}
             style={{ minHeight: "200px" }}
         />
-        <div className="form-text">
+        <div className="field-help">
             נמצאו {parseWordsFromText(wordsText).length} מילים
         </div>
     </div>
