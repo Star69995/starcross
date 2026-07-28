@@ -180,7 +180,7 @@ const WordListForm = ({ initialData, onSubmit }) => {
     const isEdit = !!initialData;
 
     return (
-        <div className="container py-4">
+        <div className="container py-4 text-end">
             <PageHeader
                 title={isEdit ? "עריכת רשימת מילים" : "יצירת רשימת מילים חדשה"}
                 subtitle={

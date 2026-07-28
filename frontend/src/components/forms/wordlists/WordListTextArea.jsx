@@ -30,7 +30,7 @@ const WordListTextArea = ({
                 </button>
             </div>
         </div>
-        <div className="form-text mt-0 mb-2">
+        <div className="form-text text-end mt-0 mb-2">
             כל מילה בשורה נפרדת, בפורמט <code>מילה|הגדרה</code>
         </div>
         <textarea
@@ -44,7 +44,7 @@ const WordListTextArea = ({
             onChange={(e) => setWordsText(e.target.value)}
             style={{ minHeight: "200px" }}
         />
-        <div className="form-text">
+        <div className="form-text text-end">
             נמצאו {parseWordsFromText(wordsText).length} מילים
         </div>
     </div>

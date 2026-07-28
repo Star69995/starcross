@@ -167,7 +167,7 @@ const CrosswordForm = ({ initialData, onSubmit }) => {
     };
 
     return (
-        <div className="container py-4">
+        <div className="container py-4 text-end">
             <PageHeader
                 title={isEdit ? "עריכת תשבץ" : "יצירת תשבץ חדש"}
                 subtitle={

@@ -86,7 +86,7 @@ const FormCard = ({
                                 placeholder={field.placeholder}
                             />
                             {field.helpText && (
-                                <div className="form-text">{field.helpText}</div>
+                                <div className="form-text text-end">{field.helpText}</div>
                             )}
                         </>
                     )}

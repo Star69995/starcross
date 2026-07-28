@@ -24,10 +24,17 @@ const HebrewKeyboard = () => {
         orderedDefinitions, goToAdjacentDefinition,
     } = useCrossword();
     const keyboardRef = useRef(null);
-    // The clue row's height varies (a long clue can wrap to several lines,
-    // and the "show clue" preference can remove it entirely), so the spacer
-    // that reserves room for this fixed-position bar in the page's normal
-    // flow is measured live instead of assuming a fixed height.
+    const spacerRef = useRef(null);
+    // The spacer only needs to reserve as much room as isn't already free
+    // below the page's real content - a short crossword (few clues) already
+    // leaves blank space above the keyboard on its own, and reserving the
+    // keyboard's full height on top of that would double the gap. The page's
+    // Footer (outside this component, rendered on every route) sits right
+    // after this reserved spacer and already provides scrollable room of its
+    // own, which counts the same way - so both are netted out against how
+    // much the keyboard actually needs. Recomputed live since the keyboard's
+    // own height varies too (a long clue can wrap to several lines, and the
+    // "show clue" preference can remove that row entirely).
     const [spacerHeight, setSpacerHeight] = useState(0);
 
     useEffect(() => {
@@ -36,11 +43,32 @@ const HebrewKeyboard = () => {
             return undefined;
         }
         const el = keyboardRef.current;
-        const updateHeight = () => setSpacerHeight(el.getBoundingClientRect().height);
+        const updateHeight = () => {
+            const kbHeight = el.getBoundingClientRect().height;
+            const spacerContribution = spacerRef.current?.getBoundingClientRect().height || 0;
+            const footerHeight = document.querySelector('footer')?.getBoundingClientRect().height || 0;
+            const clientHeight = document.documentElement.clientHeight;
+            const realContentEnd = document.documentElement.scrollHeight - spacerContribution - footerHeight;
+
+            // Scrolling always lets real content's own bottom edge reach the
+            // physical bottom of the viewport on its own - reserved space is
+            // only needed for the extra kbHeight-worth of scroll past that,
+            // to bring it up above the keyboard instead. Not needed at all
+            // if the content was already short enough to fit above the
+            // keyboard with no scrolling in the first place.
+            const contentOverflowsAboveKeyboard = realContentEnd > clientHeight - kbHeight;
+            const neededSpacer = contentOverflowsAboveKeyboard ? Math.max(0, kbHeight - footerHeight) : 0;
+            setSpacerHeight(neededSpacer);
+        };
         updateHeight();
         const observer = new ResizeObserver(updateHeight);
         observer.observe(el);
-        return () => observer.disconnect();
+        observer.observe(document.body);
+        window.addEventListener('resize', updateHeight);
+        return () => {
+            observer.disconnect();
+            window.removeEventListener('resize', updateHeight);
+        };
     }, [isKeyboardOpen]);
 
     // Docked only while a cell is focused (see CrosswordContext's
@@ -140,7 +168,7 @@ const HebrewKeyboard = () => {
                     </div>
                 ))}
             </div>
-            <div className="solver-keyboard-spacer" style={{ height: spacerHeight }}></div>
+            <div className="solver-keyboard-spacer" style={{ height: spacerHeight }} ref={spacerRef}></div>
         </>
     );
 };
