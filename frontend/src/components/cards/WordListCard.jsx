@@ -1,5 +1,6 @@
 import { useAuth } from '../../providers/AuthContext'
 import { toggleLikeWordList, deleteWordList } from '../../services/api'
+import { canManage } from '../../utils/permissions'
 import PropTypes from 'prop-types';
 import ContentCard from './ContentCard'
 import { useNavigate } from 'react-router-dom'
@@ -39,7 +40,7 @@ const WordListCard = ({ wordList, onDelete, showVisibilityBadge = true }) => {
         navigate(`/edit-wordlist/${wordList._id}/`)
     }
 
-    const canEdit = user?._id === wordList.creator._id
+    const canEdit = canManage(user, wordList.creator._id)
 
     return (
         <ContentCard

@@ -41,10 +41,22 @@ const CrosswordEditor = () => {
     };
 
     if (loading) {
-        return <div>טוען...</div>;
+        return (
+            <div className="container py-5">
+                <div className="text-center">
+                    <div className="spinner-border text-primary" role="status">
+                        <span className="visually-hidden">טוען...</span>
+                    </div>
+                </div>
+            </div>
+        );
     }
     if (loadError) {
-        return <div className="alert alert-danger">{loadError}</div>;
+        return (
+            <div className="container py-4">
+                <div className="alert alert-danger">{loadError}</div>
+            </div>
+        );
     }
 
     return (

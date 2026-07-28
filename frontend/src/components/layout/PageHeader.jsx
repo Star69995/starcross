@@ -5,8 +5,10 @@ import PropTypes from 'prop-types';
 // WordListsBrowser, MyCrosswords, MyWordLists, FavoriteCrosswords,
 // FavoriteWordLists) so title size/weight and spacing stay identical across
 // them instead of drifting per page. Detail pages with their own card-header
-// (Profile, WordListView) and the compact in-toolbar heading on the solver
-// page are a different pattern and don't use this.
+// (Profile, WordListView, and the create/edit forms - CrosswordForm/
+// WordListForm - which share the same .cover-motif dark header treatment as
+// Profile) and the compact in-toolbar heading on the solver page are a
+// different pattern and don't use this.
 const PageHeader = ({ title, subtitle, action }) => (
     <div className="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-4">
         <div>

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { getWordListById, deleteWordList, toggleLikeWordList } from "../services/api";
 import { useAuth } from "../providers/AuthContext";
+import { canManage } from "../utils/permissions";
 import ActionButtons from "../components/cards/ActionButtons";
 import { toast } from "react-toastify";
 
@@ -38,8 +39,7 @@ const WordListView = () => {
     if (!wordList) return <div>לא נמצאה רשימה</div>;
 
     // הרשאת עריכה
-    const canEdit =
-        user && (user._id === wordList.creator._id); // תמיכה גם במקרים בהם creator הוא רק id
+    const canEdit = canManage(user, wordList.creator._id)
 
     const handleLike = async () => {
         if (!user) {

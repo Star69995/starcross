@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { playCorrectSound } from '../utils/sound';
+import { lettersMatch, normalizeFinalLetter } from '../utils/hebrew';
 
 const CrosswordContext = createContext();
 
@@ -22,7 +23,7 @@ const isWordFullyAnswered = (grid, wordData) => {
 
     while (grid[row]?.[col]?.solution) {
         hasCell = true;
-        if (grid[row][col].value !== grid[row][col].solution) return false;
+        if (!lettersMatch(grid[row][col].value, grid[row][col].solution)) return false;
         if (isVertical) row++; else col++;
     }
 
@@ -151,7 +152,7 @@ export const CrosswordProvider = ({ children }) => {
         let foundEmpty = false;
 
         while (grid[row]?.[col]?.solution) {
-            if (!foundEmpty && grid[row][col].value !== grid[row][col].solution) {
+            if (!foundEmpty && !lettersMatch(grid[row][col].value, grid[row][col].solution)) {
                 targetRow = row;
                 targetCol = col;
                 foundEmpty = true;
@@ -217,8 +218,12 @@ export const CrosswordProvider = ({ children }) => {
 
     // Single source of truth for "type a letter into a cell and advance" -
     // used by Block's physical <input> and the on-screen HebrewKeyboard alike.
+    // Final letters (ך/ם/ן/ף/ץ) - which the on-screen keyboard has dedicated
+    // keys for, and some OS keyboards insert automatically - are normalized to
+    // their medial form, since a grid cell can sit mid-word at an intersection
+    // regardless of where the across/down word ends.
     const typeLetter = (row, col, letter, isVertical) => {
-        updateCell(row, col, letter);
+        updateCell(row, col, normalizeFinalLetter(letter));
         moveFocus(row, col, isVertical, 1);
     };
 
@@ -259,7 +264,7 @@ export const CrosswordProvider = ({ children }) => {
         const { isVertical } = wordData;
         while (grid[row]?.[col]?.solution) {
             const cell = grid[row][col];
-            if (cell.value !== cell.solution) {
+            if (!lettersMatch(cell.value, cell.solution)) {
                 updateCell(row, col, cell.solution);
                 return;
             }

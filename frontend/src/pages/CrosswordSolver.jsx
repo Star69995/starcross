@@ -3,6 +3,7 @@ import { useEffect, useCallback, useMemo, useRef, useState } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import Crossword from '../components/board/Crossword'
 import HebrewKeyboard from '../components/board/HebrewKeyboard'
+import SoundSettings from '../components/board/SoundSettings'
 import {
     getCrosswordById,
     deleteCrossword,
@@ -15,6 +16,7 @@ import {
 import { useCrossword } from '../providers/CrosswordContext'
 import ActionButtons from '../components/cards/ActionButtons'
 import { useAuth } from '../providers/AuthContext'
+import { canManage } from '../utils/permissions'
 import { toast } from 'react-toastify'
 import { useAsyncData } from '../hooks/useAsyncData'
 import { extractGridValues, percentComplete } from '../utils/gridProgress'
@@ -27,6 +29,7 @@ const CrosswordSolver = () => {
     const { grid, isCompleted, loadGridData, revealHint } = useCrossword()
     const { user, loading: authLoading } = useAuth()
     const [showClueList, setShowClueList] = useState(true)
+    const [showLoginBanner, setShowLoginBanner] = useState(true)
 
     // Progress sync bookkeeping - not React state on purpose, none of it should
     // trigger a re-render or be written to localStorage; Firestore is the only
@@ -210,6 +213,7 @@ const CrosswordSolver = () => {
                         >
                             <i className="bi bi-lightbulb"></i>
                         </button>
+                        <SoundSettings />
                         <button
                             type="button"
                             className="solve-toolbar-btn d-lg-none"
@@ -231,8 +235,8 @@ const CrosswordSolver = () => {
                         <div className="d-flex align-items-center gap-2">
                             <ActionButtons
                                 isLiked={isLiked}
-                                canEdit={crossword.creator._id === user?._id}
-                                canDelete={crossword.creator._id === user?._id}
+                                canEdit={canManage(user, crossword.creator._id)}
+                                canDelete={canManage(user, crossword.creator._id)}
                                 onEdit={handleEdit}
                                 handleLike={handleLike}
                                 handleDelete={handleDelete}
@@ -249,15 +253,23 @@ const CrosswordSolver = () => {
                 </div>
             </div>
 
-            {!user && !authLoading && (
+            {!user && !authLoading && showLoginBanner && (
                 <div className="alert alert-info d-flex flex-wrap align-items-center justify-content-between gap-2 mb-4" role="alert">
                     <span>
                         <i className="bi bi-info-circle-fill ms-2"></i>
                         ההתקדמות בפתרון תשבץ נשמרת אוטומטית רק למשתמשים מחוברים. הירשם כדי שההתקדמות שלך תישמר ותיטען מכל מכשיר.
                     </span>
-                    <Link to="/register" className="btn btn-primary btn-sm">
-                        הרשמה
-                    </Link>
+                    <div className="d-flex align-items-center gap-2">
+                        <Link to="/register" className="btn btn-primary btn-sm">
+                            הרשמה
+                        </Link>
+                        <button
+                            type="button"
+                            className="btn-close"
+                            aria-label="סגור"
+                            onClick={() => setShowLoginBanner(false)}
+                        ></button>
+                    </div>
                 </div>
             )}
 

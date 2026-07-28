@@ -1,5 +1,6 @@
 import { useRef } from 'react';
 import { useCrossword } from '../../providers/CrosswordContext';
+import { lettersMatch } from '../../utils/hebrew';
 import PropTypes from 'prop-types';
 
 
@@ -73,17 +74,17 @@ const Block = ({ row, col }) => {
                     fontSize: '24px',
                     border: 'none',
                     backgroundColor: isBlack ? 'var(--ink)' :
-                        isFocused && cell.value === cell.solution ? '#D8E9C9' : // focused + correct
+                        isFocused && lettersMatch(cell.value, cell.solution) ? '#D8E9C9' : // focused + correct
                             isFocused ? 'var(--highlight-tint)' : // focused (highlighter-pen tint)
-                                (cell.isHighlighted && cell.value === cell.solution) ? '#EAF6DE' : // active word + correct
+                                (cell.isHighlighted && lettersMatch(cell.value, cell.solution)) ? '#EAF6DE' : // active word + correct
                                     cell.isHighlighted ? 'var(--accent-tint)' : // active word
-                                        (cell.value === cell.solution || (showSolution && cell.solution)) ? 'var(--success-tint)' :
+                                        (lettersMatch(cell.value, cell.solution) || (showSolution && cell.solution)) ? 'var(--success-tint)' :
                                             'white',
                     outline: 'none',
                     opacity: isBlack || (showSolution && cell.solution) ? 1 : undefined,
                 }}
                 disabled={isBlack}
-                readOnly={cell.value === cell.solution || showSolution && cell.solution}
+                readOnly={lettersMatch(cell.value, cell.solution) || showSolution && cell.solution}
                 onFocus={(e) => {
                     if (!showSolution) {
                         e.target.select();

@@ -102,7 +102,7 @@ const Profile = () => {
         <div className="container py-4">
             <div className="row justify-content-center">
                 <div className="col-lg-8">
-                    <div className="card shadow profile-cover-motif mb-3">
+                    <div className="card shadow cover-motif mb-3">
                         <div className="card-header bg-primary text-white border-0">
                             <div className="d-flex align-items-center">
                                 <span className="ms-3 flex-shrink-0">

@@ -182,11 +182,21 @@ const WordListForm = ({ initialData, onSubmit }) => {
         <div className="container py-4">
             <div className="row justify-content-center">
                 <div className="col-lg-8">
-                    <div className="card shadow">
-                        <div className="card-header bg-primary text-white">
-                            <h2 className="card-title mb-0">
-                                {isEdit ? "עריכת רשימת מילים" : "יצירת רשימת מילים חדשה"}
-                            </h2>
+                    <div className="card shadow cover-motif">
+                        <div className="card-header bg-primary text-white border-0 d-flex align-items-center gap-3">
+                            <span className="cover-motif-icon">
+                                <i className="bi bi-collection-fill" />
+                            </span>
+                            <div className="text-truncate">
+                                <h2 className="card-title mb-0">
+                                    {isEdit ? "עריכת רשימת מילים" : "יצירת רשימת מילים חדשה"}
+                                </h2>
+                                <small className="opacity-75 d-block">
+                                    {isEdit
+                                        ? "עדכנו את פרטי הרשימה והמילים שבה"
+                                        : "כתבו את שם הרשימה והמילים שבה"}
+                                </small>
+                            </div>
                         </div>
                         <div className="card-body">
                             <FormCard

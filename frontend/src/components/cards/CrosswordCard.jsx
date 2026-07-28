@@ -1,5 +1,6 @@
 import { useAuth } from '../../providers/AuthContext'
 import { toggleLikeCrossword, deleteCrossword } from '../../services/api'
+import { canManage } from '../../utils/permissions'
 import PropTypes from 'prop-types';
 import ContentCard from './ContentCard';
 import { useNavigate } from 'react-router-dom';
@@ -56,8 +57,8 @@ const CrosswordCard = ({ crossword, onDelete, showVisibilityBadge = true }) => {
             onLike={handleLike}
             likesCount={crossword.likes.length || 0}
             // likeLoading={loading}
-            canEdit={user?._id === crossword.creator._id}
-            canDelete={user?._id === crossword.creator._id}
+            canEdit={canManage(user, crossword.creator._id)}
+            canDelete={canManage(user, crossword.creator._id)}
             onEdit={handleEdit}
             onDelete={handleDelete}
             viewUrl={`/crossword/${crossword._id}`}
