@@ -3,6 +3,7 @@ import { useEffect, useCallback, useMemo, useRef, useState } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import Crossword from '../components/board/Crossword'
 import HebrewKeyboard from '../components/board/HebrewKeyboard'
+import SoundSettings from '../components/board/SoundSettings'
 import {
     getCrosswordById,
     deleteCrossword,
@@ -15,6 +16,7 @@ import {
 import { useCrossword } from '../providers/CrosswordContext'
 import ActionButtons from '../components/cards/ActionButtons'
 import { useAuth } from '../providers/AuthContext'
+import { canManage } from '../utils/permissions'
 import { toast } from 'react-toastify'
 import { useAsyncData } from '../hooks/useAsyncData'
 import { extractGridValues, percentComplete } from '../utils/gridProgress'
@@ -210,6 +212,7 @@ const CrosswordSolver = () => {
                         >
                             <i className="bi bi-lightbulb"></i>
                         </button>
+                        <SoundSettings />
                         <button
                             type="button"
                             className="solve-toolbar-btn d-lg-none"
@@ -231,8 +234,8 @@ const CrosswordSolver = () => {
                         <div className="d-flex align-items-center gap-2">
                             <ActionButtons
                                 isLiked={isLiked}
-                                canEdit={crossword.creator._id === user?._id}
-                                canDelete={crossword.creator._id === user?._id}
+                                canEdit={canManage(user, crossword.creator._id)}
+                                canDelete={canManage(user, crossword.creator._id)}
                                 onEdit={handleEdit}
                                 handleLike={handleLike}
                                 handleDelete={handleDelete}

@@ -33,17 +33,12 @@ const HebrewKeyboard = () => {
         <div className="hebrew-keyboard">
             {ROWS.map((row, i) => (
                 <div key={i} className="hebrew-keyboard-row">
-                    {row.map((letter) => (
-                        <button
-                            key={letter}
-                            type="button"
-                            className="hebrew-keyboard-key"
-                            onMouseDown={preventBlur}
-                            onClick={() => handleKey(letter)}
-                        >
-                            {letter}
-                        </button>
-                    ))}
+                    {/* The row above renders under the page's inherited dir="rtl",
+                        which flips flexbox's visual child order right-to-left. ROWS
+                        is written left-to-right to match the physical keyboard, so
+                        the DOM order fed to it here is reversed to compensate -
+                        putting the backspace button first so it lands on the far
+                        right instead of the far left. */}
                     {i === ROWS.length - 1 && (
                         <button
                             type="button"
@@ -55,6 +50,17 @@ const HebrewKeyboard = () => {
                             <i className="bi bi-backspace"></i>
                         </button>
                     )}
+                    {[...row].reverse().map((letter) => (
+                        <button
+                            key={letter}
+                            type="button"
+                            className="hebrew-keyboard-key"
+                            onMouseDown={preventBlur}
+                            onClick={() => handleKey(letter)}
+                        >
+                            {letter}
+                        </button>
+                    ))}
                 </div>
             ))}
         </div>

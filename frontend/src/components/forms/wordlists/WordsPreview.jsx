@@ -3,12 +3,19 @@ import PropTypes from 'prop-types';
 const WordsPreview = ({ words }) =>
     words.length > 0 && (
         <div className="card mt-4">
-            <div className="card-header">
-                <h5 className="mb-0">תצוגה מקדימה</h5>
+            <div className="card-header d-flex align-items-center justify-content-between gap-2">
+                <h5 className="mb-0 d-flex align-items-center gap-2">
+                    <i className="bi bi-eye text-primary" />
+                    תצוגה מקדימה
+                </h5>
+                <span className="content-card-stat">
+                    <i className="bi bi-list-ul" />
+                    {words.length} מילים
+                </span>
             </div>
             <div className="card-body">
                 <div className="table-responsive">
-                    <table className="table table-sm">
+                    <table className="table table-sm mb-0">
                         <thead>
                             <tr>
                                 <th>מילה</th>
@@ -25,7 +32,7 @@ const WordsPreview = ({ words }) =>
                         </tbody>
                     </table>
                     {words.length > 10 && (
-                        <div className="text-center text-muted">
+                        <div className="text-center text-muted small pt-2">
                             ועוד {words.length - 10} מילים...
                         </div>
                     )}

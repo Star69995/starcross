@@ -3,6 +3,7 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../providers/AuthContext';
 import { Collapse, Dropdown } from 'bootstrap'; // Import Collapse/Dropdown from bootstrap
 import Avatar from './Avatar';
+import { isAdmin } from '../../utils/permissions';
 
 const Navbar = () => {
     const { user, logout } = useAuth();
@@ -210,6 +211,18 @@ const Navbar = () => {
                                             יצירת רשימת מילים
                                         </Link>
                                     </li>
+                                    {isAdmin(user) && (
+                                        <>
+                                            <li>
+                                                <hr className="dropdown-divider" />
+                                            </li>
+                                            <li>
+                                                <Link className="dropdown-item account-dropdown-item" to="/admin/users" onClick={hideNavbar}>
+                                                    <i className="bi bi-shield-lock ms-2"></i>ניהול מערכת
+                                                </Link>
+                                            </li>
+                                        </>
+                                    )}
                                     <li>
                                         <hr className="dropdown-divider" />
                                     </li>

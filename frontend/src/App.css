@@ -106,6 +106,108 @@ body {
   max-width: 420px;
 }
 
+/* Password field show/hide toggle (Register) - absolutely positioned with the
+   logical inset-inline-end property (not left/right, not ms-* / me-*) so it lands
+   on the correct side under RTL without the physical-utility-class pitfall noted
+   above; avoids Bootstrap's .input-group entirely since its merged-border layout
+   also assumes LTR (see .search-bar for the same reasoning). */
+.password-field-wrap {
+  position: relative;
+}
+
+.password-field-wrap .form-control {
+  padding-inline-end: 2.75rem;
+}
+
+.password-toggle-btn {
+  position: absolute;
+  inset-inline-end: 4px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 34px;
+  height: 34px;
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.15s var(--ease-smooth), color 0.15s var(--ease-smooth);
+}
+
+.password-toggle-btn:hover {
+  background: var(--bg-soft);
+  color: var(--ink);
+}
+
+.password-toggle-btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Live password requirements checklist (Register) - replaces a single wall-of-text
+   error that only appeared after a failed submit with an always-visible list that
+   updates per keystroke, so it's clear at a glance which specific requirement is
+   still missing instead of re-reading one long sentence. */
+.password-requirements-box {
+  background: var(--bg-soft);
+  border-radius: var(--radius-md);
+  padding: 12px 14px;
+  margin-top: 8px;
+  transition: background-color 0.2s var(--ease-smooth);
+}
+
+.password-requirements-box.is-complete {
+  background: var(--success-tint);
+}
+
+.password-requirements-title,
+.password-requirements-count {
+  font-size: 0.78rem;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.password-requirements-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.password-requirement {
+  font-size: 0.82rem;
+  color: var(--muted);
+  transition: color 0.2s var(--ease-smooth);
+}
+
+.password-requirement i {
+  font-size: 0.9rem;
+  color: var(--muted);
+  transition: color 0.2s var(--ease-smooth);
+}
+
+.password-requirement.is-met {
+  color: var(--ink);
+}
+
+.password-requirement.is-met i {
+  color: var(--success);
+}
+
+.password-match-hint {
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.password-match-hint.is-match {
+  color: var(--success);
+}
+
+.password-match-hint.is-mismatch {
+  color: var(--like);
+}
+
 /* ===== Button feedback =====
    Bootstrap's .btn only transitions color/background/border/box-shadow, not
    transform - so buttons had a color-fade but no physical "press" feeling.
@@ -154,6 +256,16 @@ body {
   color: var(--ink);
 }
 
+/* Word-list picker checklist rows (CrosswordForm) - match the accent-tint
+   hover used by .dropdown-item/.filter-pill instead of Bootstrap's default
+   gray .list-group-item-action hover. Bootstrap's own rule is scoped
+   `:not(.active):hover` (specificity 0,0,3,0) so matching that shape here
+   (not just `:hover`) is required for this to actually win the cascade. */
+.list-group-item-action:not(.active):hover,
+.list-group-item-action:not(.active):focus {
+  background-color: var(--accent-tint);
+}
+
 /* Rounded corners, reintroduced only where this design wants them - the global
    reset in index.css zeroes border-radius everywhere else. */
 .card {
@@ -194,14 +306,34 @@ body {
   color: var(--muted) !important;
 }
 
-/* ===== Profile page ===== */
-.profile-cover-motif .card-header {
+/* Dark textured header treatment shared by any detail/form page with its own
+   card-header identity bar (Profile, CrosswordForm, WordListForm) - keeps
+   these full-width banners on the --deep/dot-grid tone reserved for banner
+   surfaces app-wide, instead of the accent blue (bg-primary) that's otherwise
+   only used for buttons/badges/active pills. */
+.cover-motif .card-header {
   position: relative;
   background-color: var(--deep) !important;
   background-image:
     linear-gradient(rgba(255, 255, 255, .07) 1px, transparent 1px),
     linear-gradient(90deg, rgba(255, 255, 255, .07) 1px, transparent 1px);
   background-size: 27px 27px;
+}
+
+/* Translucent circular icon chip for use inside a .cover-motif header - same
+   circular-badge motif as .app-brand-mark/.profile-badge-circle, just a
+   see-through variant that sits on the dark textured background. */
+.cover-motif-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  flex-shrink: 0;
 }
 
 .profile-stats-row {
@@ -491,6 +623,17 @@ body {
 
 .solve-toolbar-pill i {
   color: var(--success);
+}
+
+/* Sound settings dropdown (solve toolbar) - capped so it never pushes the
+   page into horizontal overflow on narrow phone widths. */
+.sound-settings-menu {
+  width: 260px;
+  max-width: calc(100vw - 2rem);
+}
+
+.sound-option-btn {
+  text-align: right;
 }
 
 .solve-progress-bar {

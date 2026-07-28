@@ -70,13 +70,20 @@ const CrosswordForm = ({ initialData, onSubmit }) => {
         {
             name: "size",
             label: "גודל הלוח",
-            type: "text",
+            type: "number",
+            min: 5,
+            max: 25,
+            placeholder: "לדוגמה: 13",
+            helpText: "מספר משבצות בכל צד של הלוח (בין 5 ל-25)",
             required: true,
         },
         {
             name: "maxWords",
             label: "מספר מילים מקסימלי שיופיע בתשבץ",
-            type: "text",
+            type: "number",
+            min: 1,
+            placeholder: "לדוגמה: 8",
+            helpText: "כמה מילים לכל היותר ישולבו בתשבץ",
             required: true,
         },
         {
@@ -162,11 +169,21 @@ const CrosswordForm = ({ initialData, onSubmit }) => {
         <div className="container py-4">
             <div className="row justify-content-center">
                 <div className="col-lg-8">
-                    <div className="card shadow">
-                        <div className="card-header bg-primary text-white">
-                            <h2 className="card-title mb-0">
-                                {isEdit ? "עריכת תשבץ" : "יצירת תשבץ חדש"}
-                            </h2>
+                    <div className="card shadow cover-motif">
+                        <div className="card-header bg-primary text-white border-0 d-flex align-items-center gap-3">
+                            <span className="cover-motif-icon">
+                                <i className="bi bi-puzzle-fill" />
+                            </span>
+                            <div className="text-truncate">
+                                <h2 className="card-title mb-0">
+                                    {isEdit ? "עריכת תשבץ" : "יצירת תשבץ חדש"}
+                                </h2>
+                                <small className="opacity-75 d-block">
+                                    {isEdit
+                                        ? "עדכנו את פרטי התשבץ"
+                                        : "מלאו את פרטי התשבץ ובחרו את רשימות המילים שישולבו בו"}
+                                </small>
+                            </div>
                         </div>
                         <div className="card-body">
                             <FormCard

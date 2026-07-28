@@ -7,6 +7,7 @@ import {
     signInWithPopup,
     reauthenticateWithCredential,
     updatePassword as firebaseUpdatePassword,
+    sendPasswordResetEmail,
 } from 'firebase/auth'
 import {
     collection,
@@ -21,6 +22,7 @@ import {
     where,
     arrayUnion,
     arrayRemove,
+    writeBatch,
 } from 'firebase/firestore'
 import { auth, db } from './firebase'
 import MakeGrid from '../utils/MakeGrid'
@@ -54,6 +56,7 @@ const toClientUser = (uid, data) => ({
     email: data.email,
     photoURL: data.photoURL || null,
     createdAt: data.createdAt,
+    role: data.role || 'user',
 })
 
 // Firestore rejects arrays-of-arrays, so MakeGrid's `grid` (an array of row
@@ -98,6 +101,7 @@ export const register = async (userData) => {
         email: userData.email,
         photoURL: null,
         createdAt: new Date().toISOString(),
+        role: 'user',
     }
     await setDoc(doc(usersCol, credential.user.uid), profile)
 
@@ -131,6 +135,7 @@ export const loginWithGoogle = async () => {
             email: credential.user.email,
             photoURL: credential.user.photoURL || null,
             createdAt: new Date().toISOString(),
+            role: 'user',
         }
         await setDoc(userRef, profile)
     }
@@ -157,6 +162,43 @@ export const updateProfile = async (userId, profileData) => {
     return toClientUser(userId, snap.data())
 }
 
+// Admin-only: every user profile doc, unfiltered (Firestore rules gate this to
+// admins - `list` on /users is otherwise self-only).
+export const getAllUsers = async () => {
+    const snap = await getDocs(usersCol)
+    return snap.docs.map((d) => toClientUser(d.id, d.data()))
+}
+
+export const updateUserRole = async (uid, role) => {
+    await updateDoc(doc(usersCol, uid), { role })
+}
+
+// Admin-only: deletes a user's profile plus every crossword/word list they
+// created, in one batch. There's no Cloud Functions backend on this project's
+// Spark plan, so the underlying Firebase Auth account can't be deleted from
+// here - it's left orphaned (no profile doc -> getCurrentUser() returns null
+// -> the app treats them as signed out).
+export const deleteUserCascade = async (uid) => {
+    const [crosswordsSnap, wordListsSnap] = await Promise.all([
+        getDocs(query(crosswordsCol, where('creatorId', '==', uid))),
+        getDocs(query(wordListsCol, where('creatorId', '==', uid))),
+    ])
+    const batch = writeBatch(db)
+    crosswordsSnap.docs.forEach((d) => batch.delete(d.ref))
+    wordListsSnap.docs.forEach((d) => batch.delete(d.ref))
+    batch.delete(doc(usersCol, uid))
+    await batch.commit()
+}
+
+export const resetPassword = async (email) => {
+    try {
+        await sendPasswordResetEmail(auth, email)
+    } catch (error) {
+        throw authError(error)
+    }
+    return { message: 'Password reset email sent' }
+}
+
 export const changePassword = async (currentPassword, newPassword) => {
     const credential = EmailAuthProvider.credential(auth.currentUser.email, currentPassword)
     await reauthenticateWithCredential(auth.currentUser, credential)
@@ -174,6 +216,13 @@ export const getCrosswordById = async (id) => {
     const snap = await getDoc(doc(crosswordsCol, id))
     if (!snap.exists()) throw new Error('Crossword not found or you are not the creator')
     return toClientDoc(snap)
+}
+
+// Admin-only: every crossword regardless of isPublic/creator (Firestore rules
+// gate this - non-admins can only list public docs or their own).
+export const getAllCrosswords = async () => {
+    const snap = await getDocs(crosswordsCol)
+    return snap.docs.map(toClientDoc)
 }
 
 export const getMyCrosswords = async () => {
@@ -374,6 +423,13 @@ export const getWordListById = async (id) => {
     const snap = await getDoc(doc(wordListsCol, id))
     if (!snap.exists()) throw new Error('Word list not found or you are not the creator')
     return toClientDoc(snap)
+}
+
+// Admin-only: every word list regardless of isPublic/creator (Firestore rules
+// gate this - non-admins can only list public docs or their own).
+export const getAllWordLists = async () => {
+    const snap = await getDocs(wordListsCol)
+    return snap.docs.map(toClientDoc)
 }
 
 export const getMyWordLists = async () => {

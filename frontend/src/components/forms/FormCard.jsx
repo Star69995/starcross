@@ -33,22 +33,26 @@ const FormCard = ({
             {fields.map((field) => (
                 <div className="mb-3" key={field.name}>
                     {field.type === "checkbox" ? (
-                        <div className="form-check d-flex flex-row align-items-center">
+                        <div className="form-check d-flex align-items-center gap-2 ps-0">
                             <input
                                 type="checkbox"
-                                className="form-check-input ms-2"
+                                className="form-check-input flex-shrink-0 float-none m-0"
                                 id={field.name}
                                 name={field.name}
                                 checked={!!formData[field.name]}
                                 onChange={handleInput}
                             />
                             <label
-                                className="form-check-label"
+                                className="form-check-label d-flex align-items-center gap-2 flex-grow-1"
                                 htmlFor={field.name}
                                 style={{ fontWeight: "normal" }}
                             >
+                                <i className={`bi ${formData[field.name] ? "bi-globe2" : "bi-lock-fill"}`} />
                                 {field.label}
                             </label>
+                            <span className={`badge ${formData[field.name] ? "bg-success" : "bg-secondary"}`}>
+                                {formData[field.name] ? "ציבורית" : "פרטית"}
+                            </span>
                         </div>
                     ) : field.type === "textarea" ? (
                         <>
@@ -78,7 +82,13 @@ const FormCard = ({
                                 value={formData[field.name] || ""}
                                 onChange={handleInput}
                                 required={field.required}
+                                min={field.min}
+                                max={field.max}
+                                placeholder={field.placeholder}
                             />
+                            {field.helpText && (
+                                <div className="form-text">{field.helpText}</div>
+                            )}
                         </>
                     )}
                 </div>

@@ -19,8 +19,9 @@ export const db = getFirestore(app)
 // Local dev against the Firebase emulator suite (no real project needed).
 // Enabled via VITE_USE_FIREBASE_EMULATOR=true in frontend/.env.
 if (import.meta.env.VITE_USE_FIREBASE_EMULATOR === 'true') {
-    connectAuthEmulator(auth, 'http://127.0.0.1:9099', { disableWarnings: true })
-    connectFirestoreEmulator(db, '127.0.0.1', 8080)
+    const emulatorHost = window.location.hostname
+    connectAuthEmulator(auth, `http://${emulatorHost}:9099`, { disableWarnings: true })
+    connectFirestoreEmulator(db, emulatorHost, 8080)
 }
 
 export default app

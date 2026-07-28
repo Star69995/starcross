@@ -6,6 +6,14 @@ service cloud.firestore {
       return request.auth != null;
     }
 
+    // true if the caller's own users/{uid} doc has role == 'admin'. get() here
+    // reads data directly and does not re-trigger rule evaluation, so this is
+    // safe to call from within the users/{uid} match block below too.
+    function isAdmin() {
+      return isSignedIn()
+          && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+
     // true if the only field(s) that changed are exactly `fields`
     function onlyFieldsChanged(fields) {
       return request.resource.data.diff(resource.data).affectedKeys().hasOnly(fields);
@@ -19,11 +27,19 @@ service cloud.firestore {
           && after.difference(before).hasOnly([request.auth.uid]);
     }
 
-    // users/{uid} — strictly self-only, matching the Express app's
-    // authMD-gated, self-only /users routes.
+    // users/{uid} — self-only, plus an admin bypass for the admin user-management panel.
+    // `role` is carved out of self-service: only an admin may set/change it, so a
+    // signed-in user can't grant themselves admin via a direct Firestore write that
+    // skips the app's UI (which never lets a user touch their own `role`).
     match /users/{uid} {
-      allow read, update, delete: if isSignedIn() && request.auth.uid == uid;
-      allow create: if isSignedIn() && request.auth.uid == uid;
+      allow get, delete: if isSignedIn() && (request.auth.uid == uid || isAdmin());
+      allow update: if isAdmin()
+                 || (isSignedIn()
+                 && request.auth.uid == uid
+                 && !('role' in request.resource.data.diff(resource.data).affectedKeys()));
+      allow list: if isSignedIn() && isAdmin();
+      allow create: if isSignedIn() && request.auth.uid == uid
+                 && (!('role' in request.resource.data) || request.resource.data.role == 'user');
 
       // per-user crossword solving progress - strictly self-only
       match /progress/{crosswordId} {
@@ -33,22 +49,24 @@ service cloud.firestore {
 
     match /crosswords/{id} {
       allow get, list: if resource.data.isPublic == true
-                 || (isSignedIn() && resource.data.creatorId == request.auth.uid);
+                 || (isSignedIn() && resource.data.creatorId == request.auth.uid)
+                 || isAdmin();
 
       allow create: if isSignedIn()
                  && request.resource.data.creatorId == request.auth.uid
                  && request.resource.data.likes.size() == 0
                  && request.resource.data.solved.size() == 0;
 
-      // full edit — creator only
-      allow update: if isSignedIn()
+      // full edit — creator or admin
+      allow update: if isAdmin()
+                 || (isSignedIn()
                  && resource.data.creatorId == request.auth.uid
-                 && request.resource.data.creatorId == resource.data.creatorId;
+                 && request.resource.data.creatorId == resource.data.creatorId);
 
-      // visibility toggle — creator only, isPublic is the only field allowed to change
+      // visibility toggle — creator or admin, isPublic is the only field allowed to change
       allow update: if isSignedIn()
-                 && resource.data.creatorId == request.auth.uid
-                 && onlyFieldsChanged(['isPublic']);
+                 && onlyFieldsChanged(['isPublic'])
+                 && (resource.data.creatorId == request.auth.uid || isAdmin());
 
       // like toggle — any signed-in user, only their own uid may enter/leave `likes`
       allow update: if isSignedIn()
@@ -60,25 +78,27 @@ service cloud.firestore {
                  && onlyFieldsChanged(['solved'])
                  && selfToggleOnly('solved');
 
-      allow delete: if isSignedIn()
-                 && resource.data.creatorId == request.auth.uid;
+      allow delete: if isAdmin()
+                 || (isSignedIn() && resource.data.creatorId == request.auth.uid);
     }
 
     match /wordLists/{id} {
       allow get, list: if resource.data.isPublic == true
-                 || (isSignedIn() && resource.data.creatorId == request.auth.uid);
+                 || (isSignedIn() && resource.data.creatorId == request.auth.uid)
+                 || isAdmin();
 
       allow create: if isSignedIn()
                  && request.resource.data.creatorId == request.auth.uid
                  && request.resource.data.likes.size() == 0;
 
-      allow update: if isSignedIn()
+      allow update: if isAdmin()
+                 || (isSignedIn()
                  && resource.data.creatorId == request.auth.uid
-                 && request.resource.data.creatorId == resource.data.creatorId;
+                 && request.resource.data.creatorId == resource.data.creatorId);
 
       allow update: if isSignedIn()
-                 && resource.data.creatorId == request.auth.uid
-                 && onlyFieldsChanged(['isPublic']);
+                 && onlyFieldsChanged(['isPublic'])
+                 && (resource.data.creatorId == request.auth.uid || isAdmin());
 
       allow update: if isSignedIn()
                  && onlyFieldsChanged(['likes'])
@@ -86,8 +106,8 @@ service cloud.firestore {
 
       // no `solved` rule branch — the current app has no wordList /:id/solved route
 
-      allow delete: if isSignedIn()
-                 && resource.data.creatorId == request.auth.uid;
+      allow delete: if isAdmin()
+                 || (isSignedIn() && resource.data.creatorId == request.auth.uid);
     }
   }
 }

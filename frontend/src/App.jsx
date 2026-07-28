@@ -7,6 +7,7 @@ import Navbar from './components/layout/Navbar'
 import Home from './pages/Home'
 import Login from './pages/Login'
 import Register from './pages/Register'
+import ForgotPassword from './pages/ForgotPassword'
 import Profile from './pages/Profile'
 import CrosswordSolver from './pages/CrosswordSolver'
 import CrosswordCreator from './pages/CrosswordCreator'
@@ -15,6 +16,10 @@ import MyWordLists from './pages/MyWordLists'
 import WordListsBrowser from './pages/WordListsBrowser'
 import WordListCreator from './pages/WordListCreator'
 import ProtectedRoute from './components/auth/ProtectedRoute'
+import RequireAdmin from './components/auth/RequireAdmin'
+import AdminUsers from './pages/AdminUsers'
+import AdminCrosswords from './pages/AdminCrosswords'
+import AdminWordLists from './pages/AdminWordLists'
 import CrosswordEditor from './pages/CrosswordEditor'
 import WordListEditor from './pages/WordListEditor'
 import WordListView from './pages/WordListView'
@@ -36,6 +41,7 @@ function App() {
             <Route path="/about" element={<About />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/crossword/:id" element={<CrosswordSolver />} />
             <Route path="/wordlist/:id" element={<WordListView />} />
             <Route path="/favorite-crosswords" element={<FavoriteCrosswords />} />
@@ -82,6 +88,24 @@ function App() {
               <ProtectedRoute>
                 <WordListCreator />
               </ProtectedRoute>
+            } />
+
+            <Route path="/admin/users" element={
+              <RequireAdmin>
+                <AdminUsers />
+              </RequireAdmin>
+            } />
+
+            <Route path="/admin/crosswords" element={
+              <RequireAdmin>
+                <AdminCrosswords />
+              </RequireAdmin>
+            } />
+
+            <Route path="/admin/wordlists" element={
+              <RequireAdmin>
+                <AdminWordLists />
+              </RequireAdmin>
             } />
           </Routes>
           <ToastContainer

@@ -116,7 +116,10 @@ const Login = () => {
                                 </div>
 
                                 <div className="mb-4">
-                                    <label htmlFor="password" className="form-label">סיסמה</label>
+                                    <div className="d-flex justify-content-between align-items-center">
+                                        <label htmlFor="password" className="form-label">סיסמה</label>
+                                        <Link to="/forgot-password" className="text-decoration-none small">שכחתי סיסמה</Link>
+                                    </div>
                                     <input
                                         type="password"
                                         className="form-control"
