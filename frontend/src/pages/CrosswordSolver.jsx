@@ -29,6 +29,7 @@ const CrosswordSolver = () => {
     const { grid, isCompleted, loadGridData, revealHint } = useCrossword()
     const { user, loading: authLoading } = useAuth()
     const [showClueList, setShowClueList] = useState(true)
+    const [showLoginBanner, setShowLoginBanner] = useState(true)
 
     // Progress sync bookkeeping - not React state on purpose, none of it should
     // trigger a re-render or be written to localStorage; Firestore is the only
@@ -252,15 +253,23 @@ const CrosswordSolver = () => {
                 </div>
             </div>
 
-            {!user && !authLoading && (
+            {!user && !authLoading && showLoginBanner && (
                 <div className="alert alert-info d-flex flex-wrap align-items-center justify-content-between gap-2 mb-4" role="alert">
                     <span>
                         <i className="bi bi-info-circle-fill ms-2"></i>
                         ההתקדמות בפתרון תשבץ נשמרת אוטומטית רק למשתמשים מחוברים. הירשם כדי שההתקדמות שלך תישמר ותיטען מכל מכשיר.
                     </span>
-                    <Link to="/register" className="btn btn-primary btn-sm">
-                        הרשמה
-                    </Link>
+                    <div className="d-flex align-items-center gap-2">
+                        <Link to="/register" className="btn btn-primary btn-sm">
+                            הרשמה
+                        </Link>
+                        <button
+                            type="button"
+                            className="btn-close"
+                            aria-label="סגור"
+                            onClick={() => setShowLoginBanner(false)}
+                        ></button>
+                    </div>
                 </div>
             )}
 

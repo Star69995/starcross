@@ -29,6 +29,7 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import FavoriteCrosswords from './pages/FavoriteCrosswords'
 import FavoriteWordLists from './pages/FavoriteWordLists'
+import DebugSolverTest from './pages/__DebugSolverTest'
 
 function App() {
   return (
@@ -38,6 +39,7 @@ function App() {
         <main className="container-fluid flex-grow-1">
           <Routes>
             <Route path="/" element={<Home />} />
+            <Route path="/__debug-solver-test" element={<DebugSolverTest />} />
             <Route path="/about" element={<About />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
