@@ -10,6 +10,28 @@ body {
   color: var(--ink);
 }
 
+/* ===== Text alignment baseline =====
+   Under dir="rtl" with no text-align set, block text resolves to "start"
+   (plain right-alignment) - that reads as an unstyled default rather than a
+   deliberate choice. Every text block on the site should instead be either
+   centered or, for flowing multi-line copy, justified - never a bare
+   left/right default. */
+p {
+  text-align: justify;
+}
+
+/* Data-entry fields keep natural RTL alignment - centering text while it's
+   being typed is disorienting and isn't what "site text" alignment refers to. */
+.form-control,
+.form-select,
+textarea {
+  text-align: right;
+}
+
+body {
+  text-align: center;
+}
+
 /* ===== Typography scale =====
    Bootstrap's display-* classes are sized for a marketing hero (display-4 is
    3.5rem/900), not a page heading - the mockup's page titles run much smaller
@@ -306,34 +328,14 @@ body {
   color: var(--muted) !important;
 }
 
-/* Dark textured header treatment shared by any detail/form page with its own
-   card-header identity bar (Profile, CrosswordForm, WordListForm) - keeps
-   these full-width banners on the --deep/dot-grid tone reserved for banner
-   surfaces app-wide, instead of the accent blue (bg-primary) that's otherwise
-   only used for buttons/badges/active pills. */
-.cover-motif .card-header {
+/* ===== Profile page ===== */
+.profile-cover-motif .card-header {
   position: relative;
   background-color: var(--deep) !important;
   background-image:
     linear-gradient(rgba(255, 255, 255, .07) 1px, transparent 1px),
     linear-gradient(90deg, rgba(255, 255, 255, .07) 1px, transparent 1px);
   background-size: 27px 27px;
-}
-
-/* Translucent circular icon chip for use inside a .cover-motif header - same
-   circular-badge motif as .app-brand-mark/.profile-badge-circle, just a
-   see-through variant that sits on the dark textured background. */
-.cover-motif-icon {
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.15);
-  color: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.3rem;
-  flex-shrink: 0;
 }
 
 .profile-stats-row {
@@ -625,13 +627,16 @@ body {
   color: var(--success);
 }
 
-/* Sound settings dropdown (solve toolbar) - capped so it never pushes the
-   page into horizontal overflow on narrow phone widths. */
-.sound-settings-menu {
+/* Solve toolbar's settings dropdowns (sound, keyboard) - capped so they never
+   push the page into horizontal overflow on narrow phone widths. */
+.toolbar-dropdown-menu {
   width: 260px;
   max-width: calc(100vw - 2rem);
 }
 
+/* Label sits in a flex-grow span next to a leading icon (see SoundSettings) -
+   keeps the text hugging the icon instead of centering into the middle of
+   the growing span and reading as detached from it. */
 .sound-option-btn {
   text-align: right;
 }
@@ -650,6 +655,10 @@ body {
   transition: width 0.2s ease;
 }
 
+.grid-wrap-outer {
+  width: 100%;
+}
+
 .grid-wrap {
   background: #fff;
   border-radius: var(--radius-lg);
@@ -657,7 +666,13 @@ body {
   box-shadow: 0 10px 24px rgba(36, 31, 26, 0.09);
   border: 1px solid var(--line);
   width: fit-content;
+  max-width: 100%;
   margin: 0 auto;
+  /* Cells never shrink below MIN_CELL (see Grid.jsx) - once a grid is too wide
+     to fit, it scrolls within this box instead of the cells getting squished
+     or the whole page overflowing horizontally. */
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .clue-banner {
@@ -697,44 +712,6 @@ body {
 
 .clue-nav-btn:disabled {
   opacity: 0.4;
-}
-
-.defs-tabs {
-  display: none;
-}
-
-@media (max-width: 991px) {
-  .defs-tabs {
-    display: flex;
-    gap: 6px;
-    margin-bottom: 10px;
-  }
-
-  .defs-tab {
-    flex: 1;
-    text-align: center;
-    padding: 10px;
-    border-radius: var(--radius-sm);
-    font-weight: 700;
-    font-size: 0.9rem;
-    color: var(--muted);
-    background: var(--bg-soft);
-    border: none;
-    cursor: pointer;
-  }
-
-  .defs-tab.active {
-    background: var(--accent-tint);
-    color: var(--accent);
-  }
-
-  .defs-column {
-    display: none;
-  }
-
-  .defs-column.active {
-    display: block;
-  }
 }
 
 /* Custom scrollbar for word lists */
@@ -1054,10 +1031,6 @@ body {
   display: none;
 }
 
-.solver-keyboard-spacer {
-  display: none;
-}
-
 @media (max-width: 900px) {
   .hebrew-keyboard {
     display: flex;
@@ -1077,6 +1050,53 @@ body {
     display: flex;
     gap: 4px;
     justify-content: center;
+  }
+
+  .hebrew-keyboard-clue {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0 4px;
+  }
+
+  /* Long clues wrap instead of truncating, capped and internally scrollable
+     so an unusually long one can't push the keys too far up the viewport. */
+  .hebrew-keyboard-clue-text {
+    flex-grow: 1;
+    max-height: 4.4em;
+    overflow-y: auto;
+    text-align: center;
+    font-weight: 600;
+    line-height: 1.3;
+    color: var(--ink);
+  }
+
+  .hebrew-keyboard-clue-nav,
+  .hebrew-keyboard-close {
+    flex-shrink: 0;
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+    border: none;
+    border-radius: 50%;
+    background: var(--accent-tint);
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    transition: transform 0.08s var(--ease-snappy);
+  }
+
+  .hebrew-keyboard-clue-nav:active,
+  .hebrew-keyboard-close:active {
+    background: var(--accent);
+    color: #fff;
+    transform: scale(0.9);
+  }
+
+  .hebrew-keyboard-clue-nav:disabled {
+    opacity: 0.4;
   }
 
   .hebrew-keyboard-key {
@@ -1108,11 +1128,6 @@ body {
     background: var(--accent);
     color: #fff;
   }
-
-  .solver-keyboard-spacer {
-    display: block;
-    height: 160px;
-  }
 }
 
 /* Respect the OS-level "reduce motion" setting - disable the transform-based
@@ -1129,6 +1144,8 @@ body {
   .bn-item,
   .bn-fab,
   .hebrew-keyboard-key,
+  .hebrew-keyboard-close,
+  .hebrew-keyboard-clue-nav,
   .fade-in,
   .btn-danger .bi-heart-fill {
     transition: none !important;

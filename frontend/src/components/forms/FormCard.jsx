@@ -48,16 +48,14 @@ const FormCard = ({
                                 style={{ fontWeight: "normal" }}
                             >
                                 <i className={`bi ${formData[field.name] ? "bi-globe2" : "bi-lock-fill"}`} />
-                                {field.label}
+                                {formData[field.name] ? field.label : (field.uncheckedLabel || field.label)}
                             </label>
-                            <span className={`badge ${formData[field.name] ? "bg-success" : "bg-secondary"}`}>
-                                {formData[field.name] ? "ציבורית" : "פרטית"}
-                            </span>
                         </div>
                     ) : field.type === "textarea" ? (
                         <>
                             <label htmlFor={field.name} className="form-label">
                                 {field.label}
+                                {field.required && <span className="text-danger"> *</span>}
                             </label>
                             <textarea
                                 className="form-control"
@@ -73,6 +71,7 @@ const FormCard = ({
                         <>
                             <label htmlFor={field.name} className="form-label">
                                 {field.label}
+                                {field.required && <span className="text-danger"> *</span>}
                             </label>
                             <input
                                 type={field.type}
@@ -87,7 +86,7 @@ const FormCard = ({
                                 placeholder={field.placeholder}
                             />
                             {field.helpText && (
-                                <div className="form-text">{field.helpText}</div>
+                                <div className="form-text text-end">{field.helpText}</div>
                             )}
                         </>
                     )}

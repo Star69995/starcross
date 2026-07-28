@@ -5,11 +5,14 @@ import CurrentDef from './CurrentDef.jsx';
 
 const Crossword = ({ showClueList = true }) => {
     return (
-        <div className="container-fluid py-3 py-md-4">
-            <div className="row justify-content-center align-items-start">
+        <div className="py-3 py-md-4">
+            {/* gx-0 on mobile: the page's own container-fluid already provides
+                horizontal padding, so a gutter here just eats into the width
+                available for the grid (see CrosswordSolver's container-fluid) */}
+            <div className="row gx-0 gx-lg-3 justify-content-center align-items-start">
                 {/* Grid area */}
                 <div className="col-12 col-lg-6 mb-4 mb-lg-0 d-flex justify-content-center">
-                    <div>
+                    <div className="w-100">
                         <CurrentDef />
                         <Grid />
                     </div>

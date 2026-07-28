@@ -4,6 +4,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom'
 import Crossword from '../components/board/Crossword'
 import HebrewKeyboard from '../components/board/HebrewKeyboard'
 import SoundSettings from '../components/board/SoundSettings'
+import KeyboardSettings from '../components/board/KeyboardSettings'
 import {
     getCrosswordById,
     deleteCrossword,
@@ -214,6 +215,7 @@ const CrosswordSolver = () => {
                             <i className="bi bi-lightbulb"></i>
                         </button>
                         <SoundSettings />
+                        <KeyboardSettings />
                         <button
                             type="button"
                             className="solve-toolbar-btn d-lg-none"
@@ -254,28 +256,23 @@ const CrosswordSolver = () => {
             </div>
 
             {!user && !authLoading && showLoginBanner && (
-                <div className="alert alert-info d-flex flex-wrap align-items-center justify-content-between gap-2 mb-4" role="alert">
-                    <span>
-                        <i className="bi bi-info-circle-fill ms-2"></i>
-                        ההתקדמות בפתרון תשבץ נשמרת אוטומטית רק למשתמשים מחוברים. הירשם כדי שההתקדמות שלך תישמר ותיטען מכל מכשיר.
-                    </span>
-                    <div className="d-flex align-items-center gap-2">
-                        <Link to="/register" className="btn btn-primary btn-sm">
-                            הרשמה
-                        </Link>
-                        <button
-                            type="button"
-                            className="btn-close"
-                            aria-label="סגור"
-                            onClick={() => setShowLoginBanner(false)}
-                        ></button>
-                    </div>
+                <div className="alert alert-info position-relative ps-5 mb-4" role="alert" style={{ textAlign: 'justify' }}>
+                    <button
+                        type="button"
+                        className="btn-close position-absolute top-0 start-0 m-2"
+                        aria-label="סגור"
+                        onClick={() => setShowLoginBanner(false)}
+                    ></button>
+                    <i className="bi bi-info-circle-fill ms-2"></i>
+                    ההתקדמות בפתרון תשבץ נשמרת אוטומטית רק למשתמשים מחוברים. הירשם כדי שההתקדמות שלך תישמר ותיטען מכל מכשיר.
+                    <Link to="/register" className="btn btn-primary btn-sm me-2">
+                        הרשמה
+                    </Link>
                 </div>
             )}
 
             <Crossword showClueList={showClueList} />
             <HebrewKeyboard />
-            <div className="solver-keyboard-spacer"></div>
         </div>
     )
 }
