@@ -113,7 +113,7 @@ const AdminUsers = () => {
                                                     <span>{u.userName}</span>
                                                 </div>
                                             </td>
-                                            <td dir="ltr" style={{ textAlign: 'right' }}>{u.email}</td>
+                                            <td dir="ltr" style={{ textAlign: 'center' }}>{u.email}</td>
                                             <td>
                                                 {isAdmin(u)
                                                     ? <span className="badge bg-primary">מנהל</span>

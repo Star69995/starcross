@@ -127,7 +127,7 @@ const WordListView = () => {
                                         )}
                                     </tbody>
                                 </table>
-                                <div className="text-end text-muted small">
+                                <div className="text-center text-muted small">
                                     {wordList.words?.length || 0} מילים
                                 </div>
                             </div>

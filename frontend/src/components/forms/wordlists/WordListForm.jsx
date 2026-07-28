@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import FormCard from "../FormCard";
 import WordListTextArea from "./WordListTextArea";
 import WordsPreview from "./WordsPreview";
+import PageHeader from "../../layout/PageHeader";
 
 const WordListForm = ({ initialData, onSubmit }) => {
     const navigate = useNavigate();
@@ -14,7 +15,7 @@ const WordListForm = ({ initialData, onSubmit }) => {
     const [fieldsState] = useState({
         title: initialData?.title || "",
         description: initialData?.description || "",
-        isPublic: initialData?.isPublic || false,
+        isPublic: initialData?.isPublic ?? true,
     });
 
     // For editing, support prefilled words
@@ -40,11 +41,11 @@ const WordListForm = ({ initialData, onSubmit }) => {
             label: "תיאור",
             type: "textarea",
             rows: 3,
-            required: true,
         },
         {
             name: "isPublic",
             label: "רשימה ציבורית (אחרים יוכלו לראות ולהשתמש ברשימה)",
+            uncheckedLabel: "רשימה פרטית (רק אתה תוכל לראות ולהשתמש בה)",
             type: "checkbox",
             required: false,
         },
@@ -180,24 +181,17 @@ const WordListForm = ({ initialData, onSubmit }) => {
 
     return (
         <div className="container py-4">
+            <PageHeader
+                title={isEdit ? "עריכת רשימת מילים" : "יצירת רשימת מילים חדשה"}
+                subtitle={
+                    isEdit
+                        ? "עדכנו את פרטי הרשימה והמילים שבה"
+                        : "כתבו את שם הרשימה והמילים שבה"
+                }
+            />
             <div className="row justify-content-center">
                 <div className="col-lg-8">
-                    <div className="card shadow cover-motif">
-                        <div className="card-header bg-primary text-white border-0 d-flex align-items-center gap-3">
-                            <span className="cover-motif-icon">
-                                <i className="bi bi-collection-fill" />
-                            </span>
-                            <div className="text-truncate">
-                                <h2 className="card-title mb-0">
-                                    {isEdit ? "עריכת רשימת מילים" : "יצירת רשימת מילים חדשה"}
-                                </h2>
-                                <small className="opacity-75 d-block">
-                                    {isEdit
-                                        ? "עדכנו את פרטי הרשימה והמילים שבה"
-                                        : "כתבו את שם הרשימה והמילים שבה"}
-                                </small>
-                            </div>
-                        </div>
+                    <div className="card shadow">
                         <div className="card-body">
                             <FormCard
                                 fields={fields}

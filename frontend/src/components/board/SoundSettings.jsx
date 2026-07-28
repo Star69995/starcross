@@ -68,7 +68,7 @@ const SoundSettings = () => {
             >
                 <i className={`bi ${settings.enabled ? 'bi-volume-up' : 'bi-volume-mute'}`}></i>
             </button>
-            <div className="dropdown-menu sound-settings-menu p-3">
+            <div className="dropdown-menu toolbar-dropdown-menu p-3">
                 <div className="form-check form-switch mb-2">
                     <input
                         className="form-check-input"

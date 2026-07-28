@@ -90,7 +90,7 @@ const ContentCard = ({
                 <div className="mb-3 d-flex align-items-center gap-3">
                     <small className="text-muted d-flex align-items-center gap-1" style={{ minWidth: 0 }}>
                         <i className="bi bi-person flex-shrink-0"></i>
-                        <span className="text-truncate" dir="ltr" style={{ textAlign: 'right' }}>{creator}</span>
+                        <span className="text-truncate" dir="ltr" style={{ textAlign: 'center' }}>{creator}</span>
                     </small>
                     <small className="text-muted d-flex align-items-center gap-1 flex-shrink-0">
                         <i className="bi bi-calendar"></i>

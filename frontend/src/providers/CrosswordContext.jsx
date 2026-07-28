@@ -2,6 +2,7 @@ import { createContext, useContext, useState, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { playCorrectSound } from '../utils/sound';
 import { lettersMatch, normalizeFinalLetter } from '../utils/hebrew';
+import { getKeyboardSettings, setKeyboardSettings } from '../utils/keyboardSettings';
 
 const CrosswordContext = createContext();
 
@@ -39,6 +40,11 @@ export const CrosswordProvider = ({ children }) => {
     // state) so the on-screen mobile keyboard knows where to type without a
     // DOM element of its own. Kept in sync by each Block's onFocus/onBlur.
     const [activeCell, setActiveCell] = useState(null);
+    // Per-browser preferences (KeyboardSettings, solve toolbar): whether the
+    // docked on-screen Hebrew keyboard replaces the device's native one, and
+    // whether it shows the current clue above the keys.
+    const [keyboardSettings, setKeyboardSettingsState] = useState(getKeyboardSettings);
+    const { onScreenEnabled: onScreenKeyboardEnabled, showClue: showKeyboardClue } = keyboardSettings;
 
     const setGridData = (data) => {
         setGrid(data.grid);
@@ -277,6 +283,45 @@ export const CrosswordProvider = ({ children }) => {
         return allDefinitions.length > 0 && allDefinitions.every((d) => d.isAnswered);
     }, [definitionsUsed]);
 
+    const updateKeyboardSettings = (partial) => {
+        setKeyboardSettingsState(setKeyboardSettings(partial));
+    };
+
+    // Combines across+down into one number-ordered list so prev/next can step
+    // through every clue in reading order, regardless of direction. Shared by
+    // CurrentDef and the on-screen keyboard's clue row so both step through
+    // clues the same way.
+    const orderedDefinitions = useMemo(() => [
+        ...(definitionsUsed.across || []).map((d) => ({ ...d, isVertical: false })),
+        ...(definitionsUsed.down || []).map((d) => ({ ...d, isVertical: true })),
+    ].sort((a, b) => a.number - b.number || (a.isVertical === b.isVertical ? 0 : a.isVertical ? 1 : -1)), [definitionsUsed]);
+
+    const goToAdjacentDefinition = (step) => {
+        if (orderedDefinitions.length === 0) return;
+        const currentIndex = orderedDefinitions.findIndex(
+            (d) => d.text === selectedDefinition?.definition && d.isVertical === selectedDefinition?.isVertical
+        );
+        const nextIndex = (currentIndex + step + orderedDefinitions.length) % orderedDefinitions.length;
+        setActiveDefinition(null, orderedDefinitions[nextIndex].text);
+    };
+
+    // The on-screen keyboard is only docked while a cell is actually focused
+    // (like a native keyboard appearing on focus) and the preference above is
+    // on - so it starts closed, and gives the grid/clue list the full mobile
+    // viewport until the user taps a cell.
+    const isKeyboardOpen = onScreenKeyboardEnabled && Boolean(activeCell);
+
+    // Dismisses the on-screen keyboard on demand (its own close button) rather
+    // than only via Block's onBlur - blurring the focused cell first so the
+    // two stay in sync instead of leaving a cell visually focused underneath
+    // a hidden keyboard.
+    const closeKeyboard = () => {
+        if (document.activeElement instanceof HTMLElement) {
+            document.activeElement.blur();
+        }
+        setActiveCell(null);
+    };
+
     return (
         <CrosswordContext.Provider value={{
             grid,
@@ -293,6 +338,13 @@ export const CrosswordProvider = ({ children }) => {
             revealHint,
             activeCell,
             setActiveCell,
+            onScreenKeyboardEnabled,
+            showKeyboardClue,
+            updateKeyboardSettings,
+            isKeyboardOpen,
+            closeKeyboard,
+            orderedDefinitions,
+            goToAdjacentDefinition,
             selectedDefinition,
             setActiveDefinition,
             setGridData,

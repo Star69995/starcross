@@ -4,10 +4,11 @@ import { lettersMatch } from '../../utils/hebrew';
 import PropTypes from 'prop-types';
 
 
-const Block = ({ row, col }) => {
+const Block = ({ row, col, cellSize = 40 }) => {
     const {
         grid, showSolution, updateCell, typeLetter, deleteLetterAt,
         selectedDefinition, setActiveDefinition, activeCell, setActiveCell,
+        onScreenKeyboardEnabled,
     } = useCrossword();
     const cell = grid[row][col];
     const value = showSolution && cell.solution ? cell.solution : cell.value || '';
@@ -54,7 +55,7 @@ const Block = ({ row, col }) => {
                     position: 'absolute',
                     top: '2px',
                     right: '2px',
-                    fontSize: '12px',
+                    fontSize: `${Math.round(cellSize * 0.3)}px`,
                     zIndex: 1
                 }}>
                     {cell.definitionNumber}
@@ -62,7 +63,7 @@ const Block = ({ row, col }) => {
             )}
             <input
                 type="text"
-                inputMode="none"
+                inputMode={onScreenKeyboardEnabled ? 'none' : 'text'}
                 value={value}
                 onChange={handleChange}
                 onClick={handleClick}
@@ -71,7 +72,7 @@ const Block = ({ row, col }) => {
                     width: '100%',
                     height: '100%',
                     textAlign: 'center',
-                    fontSize: '24px',
+                    fontSize: `${Math.round(cellSize * 0.6)}px`,
                     border: 'none',
                     backgroundColor: isBlack ? 'var(--ink)' :
                         isFocused && lettersMatch(cell.value, cell.solution) ? '#D8E9C9' : // focused + correct
@@ -108,7 +109,8 @@ const Block = ({ row, col }) => {
 
 Block.propTypes = {
     row: PropTypes.number.isRequired,
-    col: PropTypes.number.isRequired
+    col: PropTypes.number.isRequired,
+    cellSize: PropTypes.number,
 };
 
 export default Block;

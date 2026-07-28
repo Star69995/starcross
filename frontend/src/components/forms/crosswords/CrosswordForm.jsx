@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import { createCrossword, updateCrossword, getMyWordLists, getWordLists } from "../../../services/api";
 import FormCard from "../FormCard";
 import WordListsPicker from "./WordListsPicker";
+import PageHeader from "../../layout/PageHeader";
 import { useAsyncData } from "../../../hooks/useAsyncData";
 
 const CrosswordForm = ({ initialData, onSubmit }) => {
@@ -17,7 +18,7 @@ const CrosswordForm = ({ initialData, onSubmit }) => {
         size: initialData?.size || 13,
         maxWords: initialData?.maxWords || 8,
         wordListIds: initialData?.wordListIds || [],
-        isPublic: initialData?.isPublic || false,
+        isPublic: initialData?.isPublic ?? true,
     });
 
     const isEdit = Boolean(initialData && initialData._id);
@@ -65,7 +66,6 @@ const CrosswordForm = ({ initialData, onSubmit }) => {
             label: "תיאור",
             type: "textarea",
             rows: 3,
-            required: true,
         },
         {
             name: "size",
@@ -89,6 +89,7 @@ const CrosswordForm = ({ initialData, onSubmit }) => {
         {
             name: "isPublic",
             label: "תשבץ ציבורי (אחרים יוכלו לראות ולפתור את התשבץ)",
+            uncheckedLabel: "תשבץ פרטי (רק אתה תוכל לראות ולפתור אותו)",
             type: "checkbox",
             required: false,
         },
@@ -167,24 +168,17 @@ const CrosswordForm = ({ initialData, onSubmit }) => {
 
     return (
         <div className="container py-4">
+            <PageHeader
+                title={isEdit ? "עריכת תשבץ" : "יצירת תשבץ חדש"}
+                subtitle={
+                    isEdit
+                        ? "עדכנו את פרטי התשבץ"
+                        : "מלאו את פרטי התשבץ ובחרו את רשימות המילים שישולבו בו"
+                }
+            />
             <div className="row justify-content-center">
                 <div className="col-lg-8">
-                    <div className="card shadow cover-motif">
-                        <div className="card-header bg-primary text-white border-0 d-flex align-items-center gap-3">
-                            <span className="cover-motif-icon">
-                                <i className="bi bi-puzzle-fill" />
-                            </span>
-                            <div className="text-truncate">
-                                <h2 className="card-title mb-0">
-                                    {isEdit ? "עריכת תשבץ" : "יצירת תשבץ חדש"}
-                                </h2>
-                                <small className="opacity-75 d-block">
-                                    {isEdit
-                                        ? "עדכנו את פרטי התשבץ"
-                                        : "מלאו את פרטי התשבץ ובחרו את רשימות המילים שישולבו בו"}
-                                </small>
-                            </div>
-                        </div>
+                    <div className="card shadow">
                         <div className="card-body">
                             <FormCard
                                 fields={fields}

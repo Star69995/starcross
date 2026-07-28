@@ -15,13 +15,15 @@ const WordListsPicker = ({
             {required && <span className="text-danger"> *</span>}
         </label>
         {wordLists.length === 0 ? (
-            <div className="alert alert-info">
-                <p className="mb-2">אין לך רשימות מילים עדיין.</p>
+            <div className="alert alert-info text-center">
+                <i className="bi bi-collection fs-3 d-block mb-2"></i>
+                <p className="mb-2">אין לך רשימות מילים עדיין</p>
                 <button
                     type="button"
-                    className="btn btn-sm btn-primary"
+                    className="btn btn-sm btn-primary d-inline-flex align-items-center gap-2"
                     onClick={onCreateNew}
                 >
+                    <i className="bi bi-plus-circle" />
                     צור רשימת מילים חדשה
                 </button>
             </div>
@@ -48,12 +50,16 @@ const WordListsPicker = ({
                                     }
                                 }}
                             />
+                            <span className="content-card-icon flex-shrink-0">
+                                <i className="bi bi-collection-fill" />
+                            </span>
                             <span className="flex-grow-1" style={{ minWidth: 0 }}>
                                 <span className="d-flex justify-content-between align-items-center gap-2">
                                     <span className="fw-bold text-truncate" style={{ minWidth: 0 }}>
                                         {wordList.title}
                                     </span>
-                                    <small className="text-muted flex-shrink-0">
+                                    <small className="content-card-stat flex-shrink-0">
+                                        <i className="bi bi-list-ul" />
                                         {wordList.words.length} מילים
                                     </small>
                                 </span>

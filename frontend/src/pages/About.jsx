@@ -72,7 +72,7 @@ const sections = [
 
 const About = () => {
     return (
-        <div className="container py-5" style={{ direction: 'rtl', textAlign: 'right' }}>
+        <div className="container py-5">
             <div className="row mb-4">
                 <div className="col">
                     <h1>
