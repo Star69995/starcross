@@ -19,7 +19,7 @@ function DefinitionsArea() {
             <div className="row">
                 <div className="col-12 col-lg-6 defs-column">
                     <h3>מאוזן:</h3>
-                    <ul className="list-unstyled" style={{ textAlign: "center" }}>
+                    <ul className="list-unstyled" style={{ textAlign: "right" }}>
                         {definitionsUsed.across.map((def) => (
                             <Definition
                                 key={def.number}
@@ -31,7 +31,7 @@ function DefinitionsArea() {
 
                 <div className="col-12 col-lg-6 defs-column mt-3 mt-lg-0">
                     <h3>מאונך:</h3>
-                    <ul className="list-unstyled" style={{ textAlign: "center" }}>
+                    <ul className="list-unstyled" style={{ textAlign: "right" }}>
                         {definitionsUsed.down.map((def) => (
                             <Definition
                                 key={def.number}

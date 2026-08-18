@@ -1,5 +1,5 @@
 // pages/WordListsBrowser.jsx
-import { Fragment, useState, useCallback } from 'react'
+import { useState, useCallback } from 'react'
 import WordListCard from '../components/cards/WordListCard'
 import CreateCard from '../components/cards/CreateCard'
 import PageHeader from '../components/layout/PageHeader'
@@ -99,33 +99,6 @@ const WordListsBrowser = () => {
                 </div>
             ) : (
                 <div className="row g-4">
-                    {filteredWordLists.map((wordList, i) => (
-                        <Fragment key={wordList._id}>
-                            <div className="col-lg-4 col-md-6">
-                                <WordListCard wordList={wordList} onDelete={handleDeleteWordList} showVisibilityBadge={filter !== 'all'} />
-                            </div>
-                            {i === 2 && filter === 'all' && (
-                                <div className="col-lg-4 col-md-6">
-                                    <CreateCard
-                                        to="/create-wordlist"
-                                        title="יצירת רשימת מילים"
-                                        subtitle="אפשר להתחיל מריק או מקובץ"
-                                        buttonText="להתחיל"
-                                    />
-                                </div>
-                            )}
-                        </Fragment>
-                    ))}
-                    {filter === 'all' && filteredWordLists.length > 0 && filteredWordLists.length < 3 && (
-                        <div className="col-lg-4 col-md-6">
-                            <CreateCard
-                                to="/create-wordlist"
-                                title="יצירת רשימת מילים"
-                                subtitle="אפשר להתחיל מריק או מקובץ"
-                                buttonText="להתחיל"
-                            />
-                        </div>
-                    )}
                     {filteredWordLists.length === 0 && (
                         <div className="col-12 text-center py-5">
                             <div className="text-muted">
@@ -133,6 +106,21 @@ const WordListsBrowser = () => {
                                 <h4>לא נמצאו רשימות מילים</h4>
                                 <p>נסה לשנות את החיפוש או הפילטר</p>
                             </div>
+                        </div>
+                    )}
+                    {filteredWordLists.map(wordList => (
+                        <div key={wordList._id} className="col-lg-4 col-md-6">
+                            <WordListCard wordList={wordList} onDelete={handleDeleteWordList} showVisibilityBadge={filter !== 'all'} />
+                        </div>
+                    ))}
+                    {filter === 'all' && (
+                        <div className={`col-lg-4 col-md-6 ${filteredWordLists.length === 0 ? 'mx-auto' : ''}`}>
+                            <CreateCard
+                                to="/create-wordlist"
+                                title="יצירת רשימת מילים"
+                                subtitle="אפשר להתחיל מריק או מקובץ"
+                                buttonText="להתחיל"
+                            />
                         </div>
                     )}
                 </div>
