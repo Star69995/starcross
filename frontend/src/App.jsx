@@ -24,6 +24,7 @@ import CrosswordEditor from './pages/CrosswordEditor'
 import WordListEditor from './pages/WordListEditor'
 import WordListView from './pages/WordListView'
 import Footer from './components/layout/Footer'
+import ScrollToTop from './components/layout/ScrollToTop'
 import About from './pages/About'
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -34,6 +35,7 @@ function App() {
   return (
     <Router>
       <div className="App d-flex flex-column min-vh-100">
+        <ScrollToTop />
         <Navbar />
         <main className="container-fluid flex-grow-1">
           <Routes>

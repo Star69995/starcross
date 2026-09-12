@@ -13,6 +13,33 @@ const Navbar = () => {
     // viewport height - a plain back-to-list action lives on that page instead.
     const isSolving = location.pathname.startsWith('/crossword/');
 
+    // Measured (not hardcoded) and exposed as a CSS variable that Footer.jsx
+    // reads for its own bottom margin - the fixed bar is pinned to the
+    // viewport bottom regardless of scroll, so the *page* (via Footer, always
+    // the last element on every route) needs exactly this much trailing space
+    // or the bar permanently covers the last bit of the footer. A value that
+    // ignored the iPhone home-indicator's safe-area padding would under-reserve
+    // space on notched iPhones for the same reason.
+    const bottomNavRef = useRef(null);
+    useEffect(() => {
+        if (isSolving || !bottomNavRef.current) {
+            document.documentElement.style.setProperty('--bottom-nav-height', '0px');
+            return undefined;
+        }
+        const el = bottomNavRef.current;
+        const updateHeight = () => {
+            document.documentElement.style.setProperty('--bottom-nav-height', `${el.getBoundingClientRect().height}px`);
+        };
+        updateHeight();
+        const observer = new ResizeObserver(updateHeight);
+        observer.observe(el);
+        window.addEventListener('resize', updateHeight);
+        return () => {
+            observer.disconnect();
+            window.removeEventListener('resize', updateHeight);
+        };
+    }, [isSolving]);
+
     const accountToggleRef = useRef(null); // Ref for the account dropdown toggle link
     const bsDropdownRef = useRef(null); // Ref to store the bootstrap Dropdown instance
 
@@ -252,7 +279,7 @@ const Navbar = () => {
 
         {!isSolving && (
             <>
-                <div className="bottom-nav">
+                <div className="bottom-nav" ref={bottomNavRef}>
                     <Link className={`bn-item ${location.pathname === '/' ? 'active' : ''}`} to="/">
                         <i className="bi bi-puzzle"></i>תשבצים
                     </Link>
@@ -269,7 +296,6 @@ const Navbar = () => {
                         <i className="bi bi-person-circle"></i>חשבון
                     </Link>
                 </div>
-                <div className="bottom-nav-spacer"></div>
             </>
         )}
         </>

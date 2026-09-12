@@ -879,9 +879,51 @@ body {
   }
 }
 
+/* ===== About page (landing-style) ===== */
+.about-hero-icon {
+  font-size: 3rem;
+  color: var(--accent);
+}
+
+.about-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.about-step-circle {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent-light), var(--accent));
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  font-weight: 800;
+  box-shadow: 0 8px 14px rgba(29, 78, 216, 0.26);
+}
+
+.about-portfolio-card {
+  background: linear-gradient(135deg, var(--accent-light), var(--accent-dark));
+  color: #fff;
+  border-radius: var(--radius-lg);
+  padding: 40px 24px;
+  box-shadow: 0 14px 30px rgba(29, 78, 216, 0.24);
+}
+
+.about-portfolio-icon {
+  font-size: 2.4rem;
+}
+
+.about-portfolio-card p {
+  color: rgba(255, 255, 255, 0.9);
+}
+
 /* ===== Navbar ===== */
 .app-navbar {
-  background: rgba(247, 243, 234, 0.92);
+  background: rgba(238, 241, 246, 0.92);
   backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--line);
 }
@@ -1009,18 +1051,13 @@ body {
 
 }
 
-/* Rendered by Navbar right after the fixed bottom-nav so the page content doesn't
-   sit underneath it - omitted (via isSolving) on the crossword solver, which hides
-   the bottom-nav entirely so the grid gets the full viewport height. */
-.bottom-nav-spacer {
-  display: none;
-}
-
-@media (max-width: 900px) {
-  .bottom-nav-spacer {
-    display: block;
-    height: 78px;
-  }
+/* Reserves exactly as much trailing space as the fixed bottom-nav's real
+   height (set on :root by Navbar.jsx, 0 on the crossword solver route/desktop
+   widths where the bar is hidden) - the footer is the last element on every
+   route, so this is what keeps the bar from permanently covering its last
+   row instead of just floating over blank page space. */
+.footer {
+  margin-bottom: var(--bottom-nav-height, 0px);
 }
 
 /* Docked on-screen Hebrew keyboard, shown only on the solver page (rendered
