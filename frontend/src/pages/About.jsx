@@ -66,28 +66,6 @@ const About = () => {
                 </p>
             </div>
 
-            {canInstall && (
-                <div className="row justify-content-center mb-5">
-                    <div className="col-md-8 col-lg-6">
-                        <div className="card content-card h-100 shadow-sm">
-                            <div className="card-body d-flex flex-column align-items-center text-center">
-                                <span className="content-card-icon mb-3">
-                                    <i className="bi bi-download"></i>
-                                </span>
-                                <h3 className="card-title h5">התקנת האפליקציה</h3>
-                                <p className="text-muted mb-3">
-                                    אפשר להתקין את משבצת על המכשיר שלכם לגישה מהירה, בדיוק כמו אפליקציה רגילה.
-                                </p>
-                                <button type="button" className="btn btn-primary" onClick={promptInstall}>
-                                    <i className="bi bi-download ms-2"></i>
-                                    התקנה
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            )}
-
             <h2 className="text-center mb-4">מה אפשר לעשות באתר</h2>
             <div className="row g-4 mb-5">
                 {FEATURES.map(feature => (
@@ -126,6 +104,28 @@ const About = () => {
                     מעבר לרשימות מילים<i className="bi bi-arrow-left me-2"></i>
                 </Link>
             </div>
+
+            {canInstall && (
+                <div className="row justify-content-center mb-5">
+                    <div className="col-md-8 col-lg-6">
+                        <div className="card content-card h-100 shadow-sm">
+                            <div className="card-body d-flex flex-column align-items-center text-center">
+                                <span className="content-card-icon mb-3">
+                                    <i className="bi bi-download"></i>
+                                </span>
+                                <h3 className="card-title h5">התקנת האפליקציה</h3>
+                                <p className="text-muted mb-3">
+                                    אפשר להתקין את משבצת על המכשיר שלכם לגישה מהירה, בדיוק כמו אפליקציה רגילה.
+                                </p>
+                                <button type="button" className="btn btn-primary" onClick={promptInstall}>
+                                    <i className="bi bi-download ms-2"></i>
+                                    התקנה
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
 
             <div className="about-portfolio-card text-center">
                 <i className="bi bi-person-workspace about-portfolio-icon"></i>
