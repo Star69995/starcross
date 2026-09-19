@@ -5,6 +5,8 @@ import Crossword from '../components/board/Crossword'
 import HebrewKeyboard from '../components/board/HebrewKeyboard'
 import SoundSettings from '../components/board/SoundSettings'
 import KeyboardSettings from '../components/board/KeyboardSettings'
+import SolvingSettings from '../components/board/SolvingSettings'
+import CompletionModal from '../components/board/CompletionModal'
 import {
     getCrosswordById,
     deleteCrossword,
@@ -27,10 +29,11 @@ const SAVE_DEBOUNCE_MS = 800
 const CrosswordSolver = () => {
     const { id } = useParams()
     const navigate = useNavigate()
-    const { grid, isCompleted, loadGridData, revealHint } = useCrossword()
+    const { grid, isCompleted, loadGridData, revealHint, resetGrid } = useCrossword()
     const { user, loading: authLoading } = useAuth()
     const [showClueList, setShowClueList] = useState(true)
     const [showLoginBanner, setShowLoginBanner] = useState(true)
+    const [showCompletionModal, setShowCompletionModal] = useState(false)
 
     // Progress sync bookkeeping - not React state on purpose, none of it should
     // trigger a re-render or be written to localStorage; Firestore is the only
@@ -38,6 +41,9 @@ const CrosswordSolver = () => {
     const readyToSaveRef = useRef(false)
     const wasCompletedRef = useRef(false)
     const lastSavedSnapshotRef = useRef(null)
+    // Separate from wasCompletedRef (which only updates for signed-in Firestore
+    // sync) so the completion modal also fires for signed-out visitors.
+    const wasCompletedForModalRef = useRef(false)
 
     const fetchCrossword = useCallback(async () => {
         try {
@@ -49,7 +55,7 @@ const CrosswordSolver = () => {
     }, [id])
 
     const { data: crossword, loading, error: fetchError, setData: setCrossword } = useAsyncData(fetchCrossword, { enabled: !authLoading })
-    const error = fetchError ? 'שגיאה בטעינת התשבץ' : (!loading && !crossword ? 'תשבץ לא נמצא' : '')
+    const notFound = Boolean(fetchError) || (!loading && !crossword)
     const isLiked = Boolean(crossword?.likes?.includes(user?._id))
 
     const percent = useMemo(() => {
@@ -78,6 +84,7 @@ const CrosswordSolver = () => {
             }
             if (cancelled) return
             wasCompletedRef.current = completed
+            wasCompletedForModalRef.current = completed
             lastSavedSnapshotRef.current = JSON.stringify({ values: savedValues, completed })
             loadGridData(crossword.crosswordObject.gridData, savedValues)
             readyToSaveRef.current = true
@@ -88,13 +95,24 @@ const CrosswordSolver = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [crossword, user, id])
 
-    // Autosave: persist filled-in letters (debounced) whenever the grid
-    // changes, and flip the crossword's `solved` membership the moment the
-    // puzzle becomes (or stops being) fully answered.
+    // Debounced: shows the completion modal once per "became fully solved"
+    // transition (for every visitor, signed in or not - wasCompletedForModalRef
+    // is independent of the Firestore-tied wasCompletedRef below), then
+    // persists filled-in letters and flips the crossword's `solved` membership
+    // for signed-in users. Both live in the same debounced callback (rather
+    // than a separate effect calling setState directly in its body) so a
+    // burst of keystrokes only triggers one round of work.
     useEffect(() => {
-        if (!user || !readyToSaveRef.current || grid.length === 0) return
+        if (!readyToSaveRef.current || grid.length === 0) return
 
         const timeoutId = setTimeout(async () => {
+            if (isCompleted !== wasCompletedForModalRef.current) {
+                wasCompletedForModalRef.current = isCompleted
+                if (isCompleted) setShowCompletionModal(true)
+            }
+
+            if (!user) return
+
             const values = extractGridValues(grid)
             const snapshot = JSON.stringify({ values, completed: isCompleted })
             if (snapshot === lastSavedSnapshotRef.current) return
@@ -108,7 +126,6 @@ const CrosswordSolver = () => {
                     if (isCompleted) {
                         await markCrosswordSolved(id)
                         setCrossword(prev => prev && { ...prev, solved: [...(prev.solved || []), user._id] })
-                        toast.success('כל הכבוד! פתרת את התשבץ בהצלחה')
                     } else {
                         await unmarkCrosswordSolved(id)
                         setCrossword(prev => prev && { ...prev, solved: (prev.solved || []).filter(uid => uid !== user._id) })
@@ -124,6 +141,12 @@ const CrosswordSolver = () => {
 
     const handleEdit = () => {
         navigate(`/edit-crossword/${crossword._id}/`)
+    }
+
+    const handleReset = () => {
+        if (window.confirm('לנקות את כל התשובות ולהתחיל את התשבץ מחדש?')) {
+            resetGrid()
+        }
     }
 
     const handleDelete = async () => {
@@ -175,17 +198,19 @@ const CrosswordSolver = () => {
         )
     }
 
-    if (error || !crossword) {
+    if (notFound || !crossword) {
         return (
             <div className="container py-5">
-                <div className="text-center">
-                    <div className="alert alert-danger" role="alert">
-                        <h4 className="alert-heading">שגיאה</h4>
-                        <p>{error || 'תשבץ לא נמצא'}</p>
-                        <button className="btn btn-primary" onClick={() => navigate('/')}>
-                            חזור לדף הבית
-                        </button>
-                    </div>
+                <div className="text-center mx-auto" style={{ maxWidth: '32rem' }}>
+                    <i className="bi bi-puzzle text-muted d-block mb-3" style={{ fontSize: '3.5rem' }}></i>
+                    <h2 className="mb-3">התשבץ לא נמצא</h2>
+                    <p className="text-muted text-center mb-4">
+                        ייתכן שהתשבץ נמחק, שהקישור שגוי, או שהתשבץ כבר אינו ציבורי.
+                    </p>
+                    <button className="btn btn-primary" onClick={() => navigate('/')}>
+                        <i className="bi bi-house-door-fill ms-2"></i>
+                        חזור לדף הבית
+                    </button>
                 </div>
             </div>
         )
@@ -215,7 +240,17 @@ const CrosswordSolver = () => {
                             <i className="bi bi-lightbulb"></i>
                         </button>
                         <SoundSettings />
+                        <SolvingSettings />
                         <KeyboardSettings />
+                        <button
+                            type="button"
+                            className="solve-toolbar-btn"
+                            onClick={handleReset}
+                            aria-label="ניקוי התשבץ"
+                            title="ניקוי התשבץ והתחלה מחדש"
+                        >
+                            <i className="bi bi-arrow-counterclockwise"></i>
+                        </button>
                         <button
                             type="button"
                             className="solve-toolbar-btn d-lg-none"
@@ -244,7 +279,7 @@ const CrosswordSolver = () => {
                                 handleDelete={handleDelete}
                             />
                             <button
-                                className="btn btn-outline-secondary"
+                                className="btn btn-sm btn-outline-secondary"
                                 onClick={() => navigate('/')}
                             >
                                 <i className="bi bi-arrow-right ms-2"></i>
@@ -273,6 +308,13 @@ const CrosswordSolver = () => {
 
             <Crossword showClueList={showClueList} />
             <HebrewKeyboard />
+
+            <CompletionModal
+                show={showCompletionModal}
+                onClose={() => setShowCompletionModal(false)}
+                onGoHome={() => { setShowCompletionModal(false); navigate('/') }}
+                onCreateNew={() => { setShowCompletionModal(false); navigate('/create-crossword') }}
+            />
         </div>
     )
 }

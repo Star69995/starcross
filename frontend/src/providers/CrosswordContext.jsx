@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { playCorrectSound } from '../utils/sound';
 import { lettersMatch, normalizeFinalLetter } from '../utils/hebrew';
 import { getKeyboardSettings, setKeyboardSettings } from '../utils/keyboardSettings';
+import { getSolvingSettings, setSolvingSettings } from '../utils/solvingSettings';
 
 const CrosswordContext = createContext();
 
@@ -45,6 +46,11 @@ export const CrosswordProvider = ({ children }) => {
     // whether it shows the current clue above the keys.
     const [keyboardSettings, setKeyboardSettingsState] = useState(getKeyboardSettings);
     const { onScreenEnabled: onScreenKeyboardEnabled, showClue: showKeyboardClue } = keyboardSettings;
+    // Whether a correct letter locks the instant it's typed ('letter', the
+    // original behavior) or only once every letter in its word is correct
+    // ('word') - see block.jsx's isCellConfirmed for where this is applied.
+    const [solvingSettings, setSolvingSettingsState] = useState(getSolvingSettings);
+    const { lockMode } = solvingSettings;
 
     const setGridData = (data) => {
         setGrid(data.grid);
@@ -287,6 +293,39 @@ export const CrosswordProvider = ({ children }) => {
         setKeyboardSettingsState(setKeyboardSettings(partial));
     };
 
+    const updateSolvingSettings = (partial) => {
+        setSolvingSettingsState(setSolvingSettings(partial));
+    };
+
+    // Whether a cell should render as "confirmed correct" and be locked from
+    // further edits. In 'letter' mode that's true the moment its own value
+    // matches the solution; in 'word' mode it also requires at least one of
+    // the words passing through this cell to be fully answered, so crossing
+    // cells don't lock until the intersecting word confirms them too.
+    const isCellConfirmed = (cell) => {
+        if (!lettersMatch(cell.value, cell.solution)) return false;
+        if (lockMode !== 'word') return true;
+        return (cell.definitions || []).some(({ definition, isVertical }) => {
+            const list = isVertical ? definitionsUsed.down : definitionsUsed.across;
+            return Boolean(list?.find((d) => d.text === definition)?.isAnswered);
+        });
+    };
+
+    // Clears every filled-in letter (keeping solutions/definitions intact) so
+    // the puzzle can be solved again from scratch. The existing autosave
+    // effect in CrosswordSolver picks up the resulting grid/isCompleted
+    // change on its own, so this doesn't need to touch Firestore directly.
+    const resetGrid = () => {
+        const clearedGrid = grid.map((row) =>
+            row.map((cell) => (cell.solution !== null ? { ...cell, value: '' } : cell))
+        );
+        const clearedDefinitions = {
+            across: (definitionsUsed.across || []).map((d) => ({ ...d, isAnswered: false })),
+            down: (definitionsUsed.down || []).map((d) => ({ ...d, isAnswered: false })),
+        };
+        setGridData({ grid: clearedGrid, definitionsUsed: clearedDefinitions, wordPositions });
+    };
+
     // Combines across+down into one number-ordered list so prev/next can step
     // through every clue in reading order, regardless of direction. Shared by
     // CurrentDef and the on-screen keyboard's clue row so both step through
@@ -341,6 +380,10 @@ export const CrosswordProvider = ({ children }) => {
             onScreenKeyboardEnabled,
             showKeyboardClue,
             updateKeyboardSettings,
+            lockMode,
+            updateSolvingSettings,
+            isCellConfirmed,
+            resetGrid,
             isKeyboardOpen,
             closeKeyboard,
             orderedDefinitions,

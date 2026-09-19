@@ -120,40 +120,23 @@ const MakeGrid = ({ size = 12, maxWords = 10, definitionsList = [] }) => {
         return newGrid;
     };
 
-    const generateCrossword = () => {
+    // Places every word (after the first) at whichever valid spot overlaps
+    // the most already-placed letters, instead of the first spot found while
+    // scanning top-left to bottom-right - a plain first-fit tends to spread
+    // words out with only one crossing each. Returns how many words this
+    // attempt managed to place and their total overlap count, so
+    // generateCrossword can run several shuffled attempts and keep the best.
+    const runPlacementAttempt = (words) => {
         let grid = createEmptyGrid();
-        const placedWords = new Set();
         const wordPositions = [];
-        let currentDefinitionNumber = 1;  // מונה להגדרות
+        let currentDefinitionNumber = 1;
+        let totalOverlaps = 0;
 
-        const shuffledDefinitions = [...definitionsList]
-            .sort(() => Math.random() - 0.5)
-            .slice(0, maxWords);
-
-        const sortedWords = shuffledDefinitions
-            .map(def => ({
-                ...def,
-                solution: sanitizeWord(def.solution)
-            }))
-            .filter(def => def.solution.length > 0) // keep only valid words
-            .sort((a, b) => b.solution.length - a.solution.length);
-
-        const firstWord = sortedWords[0];
+        const firstWord = words[0];
         const startRow = Math.floor(size / 2);
         const startCol = Math.floor((size - firstWord.solution.length) / 2);
 
-        grid = placeWord(
-            grid,
-            firstWord.solution,
-            firstWord.definition,
-            startRow,
-            startCol,
-            false,
-            0,
-            currentDefinitionNumber
-        );
-
-        placedWords.add(0);
+        grid = placeWord(grid, firstWord.solution, firstWord.definition, startRow, startCol, false, 0, currentDefinitionNumber);
         wordPositions.push({
             wordIndex: 0,
             definition: firstWord.definition,
@@ -164,53 +147,84 @@ const MakeGrid = ({ size = 12, maxWords = 10, definitionsList = [] }) => {
         });
         currentDefinitionNumber++;
 
-        for (let i = 1; i < sortedWords.length; i++) {
-            const wordObj = sortedWords[i];
-            let placed = false;
+        for (let i = 1; i < words.length; i++) {
+            const wordObj = words[i];
+            let best = null; // { row, col, isVertical, overlaps }
 
-            for (let row = 0; row < size && !placed; row++) {
-                for (let col = 0; col < size && !placed; col++) {
+            for (let row = 0; row < size; row++) {
+                for (let col = 0; col < size; col++) {
                     for (const isVertical of [true, false]) {
-                        if (canPlaceWord(grid, wordObj.solution, row, col, isVertical)) {
-                            let hasIntersection = false;
-                            for (let j = 0; j < wordObj.solution.length; j++) {
-                                const checkRow = isVertical ? row + j : row;
-                                const checkCol = isVertical ? col : col + j;
-                                if (grid[checkRow][checkCol].solution !== null) {
-                                    hasIntersection = true;
-                                    break;
-                                }
-                            }
+                        if (!canPlaceWord(grid, wordObj.solution, row, col, isVertical)) continue;
 
-                            if (hasIntersection) {
-                                grid = placeWord(
-                                    grid,
-                                    wordObj.solution,
-                                    wordObj.definition,
-                                    row,
-                                    col,
-                                    isVertical,
-                                    i,
-                                    currentDefinitionNumber
-                                );
-                                placedWords.add(i);
-                                wordPositions.push({
-                                    wordIndex: i,
-                                    definition: wordObj.definition,
-                                    row: row,
-                                    col: col,
-                                    isVertical: isVertical,
-                                    definitionNumber: currentDefinitionNumber
-                                });
-                                currentDefinitionNumber++;
-                                placed = true;
-                                break;
-                            }
+                        let overlaps = 0;
+                        for (let j = 0; j < wordObj.solution.length; j++) {
+                            const checkRow = isVertical ? row + j : row;
+                            const checkCol = isVertical ? col : col + j;
+                            if (grid[checkRow][checkCol].solution !== null) overlaps++;
+                        }
+                        if (overlaps === 0) continue;
+
+                        if (!best || overlaps > best.overlaps) {
+                            best = { row, col, isVertical, overlaps };
                         }
                     }
                 }
             }
+
+            if (best) {
+                grid = placeWord(grid, wordObj.solution, wordObj.definition, best.row, best.col, best.isVertical, i, currentDefinitionNumber);
+                wordPositions.push({
+                    wordIndex: i,
+                    definition: wordObj.definition,
+                    row: best.row,
+                    col: best.col,
+                    isVertical: best.isVertical,
+                    definitionNumber: currentDefinitionNumber
+                });
+                currentDefinitionNumber++;
+                totalOverlaps += best.overlaps;
+            }
         }
+
+        return { grid, wordPositions, totalOverlaps };
+    };
+
+    const generateCrossword = () => {
+        const shuffledDefinitions = [...definitionsList]
+            .sort(() => Math.random() - 0.5)
+            .slice(0, maxWords);
+
+        const baseWords = shuffledDefinitions
+            .map(def => ({
+                ...def,
+                solution: sanitizeWord(def.solution)
+            }))
+            .filter(def => def.solution.length > 0); // keep only valid words
+
+        // A few attempts with different random orderings (longest word still
+        // seeds each attempt, so the grid stays anchored) - keeping the one
+        // that places the most words, and among ties the one with the most
+        // letter overlaps, produces a noticeably denser, more "crossword-y"
+        // result than a single greedy pass.
+        const ATTEMPTS = 8;
+        let bestAttempt = null;
+
+        for (let attempt = 0; attempt < ATTEMPTS; attempt++) {
+            const words = [...baseWords]
+                .sort(() => Math.random() - 0.5)
+                .sort((a, b) => b.solution.length - a.solution.length);
+
+            const result = runPlacementAttempt(words);
+            if (
+                !bestAttempt ||
+                result.wordPositions.length > bestAttempt.wordPositions.length ||
+                (result.wordPositions.length === bestAttempt.wordPositions.length && result.totalOverlaps > bestAttempt.totalOverlaps)
+            ) {
+                bestAttempt = result;
+            }
+        }
+
+        let { grid, wordPositions } = bestAttempt;
 
         // חיתוך שורות ועמודות ריקות - ומזיזים את wordPositions באותו היסט,
         // אחרת השורה/עמודה שלהם תצביע על תאים שגויים בגריד החתוך

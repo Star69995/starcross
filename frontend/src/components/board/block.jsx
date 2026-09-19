@@ -1,6 +1,5 @@
 import { useRef } from 'react';
 import { useCrossword } from '../../providers/CrosswordContext';
-import { lettersMatch } from '../../utils/hebrew';
 import PropTypes from 'prop-types';
 
 
@@ -8,10 +7,11 @@ const Block = ({ row, col, cellSize = 40 }) => {
     const {
         grid, showSolution, updateCell, typeLetter, deleteLetterAt,
         selectedDefinition, setActiveDefinition, activeCell, setActiveCell,
-        onScreenKeyboardEnabled,
+        onScreenKeyboardEnabled, isCellConfirmed,
     } = useCrossword();
     const cell = grid[row][col];
     const value = showSolution && cell.solution ? cell.solution : cell.value || '';
+    const isConfirmed = isCellConfirmed(cell);
 
     const inputRef = useRef(null);
 
@@ -75,17 +75,17 @@ const Block = ({ row, col, cellSize = 40 }) => {
                     fontSize: `${Math.round(cellSize * 0.6)}px`,
                     border: 'none',
                     backgroundColor: isBlack ? 'var(--ink)' :
-                        isFocused && lettersMatch(cell.value, cell.solution) ? '#D8E9C9' : // focused + correct
+                        isFocused && isConfirmed ? '#D8E9C9' : // focused + confirmed correct
                             isFocused ? 'var(--highlight-tint)' : // focused (highlighter-pen tint)
-                                (cell.isHighlighted && lettersMatch(cell.value, cell.solution)) ? '#EAF6DE' : // active word + correct
+                                (cell.isHighlighted && isConfirmed) ? '#EAF6DE' : // active word + confirmed correct
                                     cell.isHighlighted ? 'var(--accent-tint)' : // active word
-                                        (lettersMatch(cell.value, cell.solution) || (showSolution && cell.solution)) ? 'var(--success-tint)' :
+                                        (isConfirmed || (showSolution && cell.solution)) ? 'var(--success-tint)' :
                                             'white',
                     outline: 'none',
                     opacity: isBlack || (showSolution && cell.solution) ? 1 : undefined,
                 }}
                 disabled={isBlack}
-                readOnly={lettersMatch(cell.value, cell.solution) || showSolution && cell.solution}
+                readOnly={isConfirmed || (showSolution && cell.solution)}
                 onFocus={(e) => {
                     if (!showSolution) {
                         e.target.select();

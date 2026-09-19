@@ -952,6 +952,16 @@ body {
   color: #fff;
 }
 
+/* The "install app" nav item (Navbar.jsx) is a <button>, not an <a> like its
+   siblings - .nav-link alone doesn't strip the browser's default button
+   chrome the way it does for anchors. */
+.app-navbar .nav-link[type="button"] {
+  background: none;
+  border: none;
+  width: 100%;
+  text-align: inherit;
+}
+
 .app-navbar .navbar-brand {
   color: var(--ink);
   display: flex;
@@ -1167,6 +1177,171 @@ body {
   }
 }
 
+/* ===== Crossword completion modal ===== */
+.completion-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(20, 27, 36, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  padding: 16px;
+  animation: completionBackdropIn 0.2s ease-out;
+}
+
+@keyframes completionBackdropIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.completion-modal-card {
+  position: relative;
+  background: #fff;
+  border-radius: var(--radius-lg);
+  padding: 32px 24px 24px;
+  width: min(92vw, 380px);
+  max-height: 90vh;
+  overflow-y: auto;
+  text-align: center;
+  box-shadow: 0 20px 50px rgba(20, 27, 36, 0.3);
+  animation: completionCardIn 0.35s var(--ease-snappy);
+}
+
+@keyframes completionCardIn {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.96);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.completion-modal-close {
+  position: absolute;
+  top: 12px;
+  inset-inline-end: 12px;
+}
+
+.completion-modal-confetti {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+  pointer-events: none;
+}
+
+.completion-confetti-piece {
+  position: absolute;
+  top: -10px;
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  animation: completionConfettiFall 1.4s ease-in forwards;
+}
+
+.completion-confetti-piece-0 {
+  background: var(--accent);
+}
+
+.completion-confetti-piece-1 {
+  background: var(--success);
+}
+
+.completion-confetti-piece-2 {
+  background: var(--like);
+}
+
+.completion-confetti-piece-3 {
+  background: var(--accent-light);
+}
+
+.completion-confetti-piece-4 {
+  background: var(--highlight-tint);
+}
+
+.completion-confetti-piece-5 {
+  background: var(--deep);
+}
+
+@keyframes completionConfettiFall {
+  0% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 1;
+  }
+
+  100% {
+    transform: translateY(340px) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+.completion-modal-check {
+  width: 84px;
+  height: 84px;
+  margin: 0 auto 12px;
+  position: relative;
+}
+
+.completion-check-svg {
+  width: 100%;
+  height: 100%;
+}
+
+.completion-check-circle {
+  stroke: var(--success);
+  stroke-width: 3;
+  stroke-dasharray: 151;
+  stroke-dashoffset: 151;
+  animation: completionCircle 0.5s ease-out forwards;
+}
+
+.completion-check-mark {
+  stroke: var(--success);
+  stroke-width: 4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 34;
+  stroke-dashoffset: 34;
+  animation: completionCheck 0.35s 0.45s ease-out forwards;
+}
+
+@keyframes completionCircle {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes completionCheck {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.completion-modal-title {
+  font-weight: 800;
+  margin-bottom: 4px;
+}
+
+.completion-modal-text {
+  color: var(--muted);
+  margin-bottom: 20px;
+}
+
+.completion-modal-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
 /* Respect the OS-level "reduce motion" setting - disable the transform-based
    press/lift/hover feedback above (and the heartbeat/fade keyframes) instead
    of forcing every user through them. */
@@ -1184,9 +1359,18 @@ body {
   .hebrew-keyboard-close,
   .hebrew-keyboard-clue-nav,
   .fade-in,
-  .btn-danger .bi-heart-fill {
+  .btn-danger .bi-heart-fill,
+  .completion-modal-backdrop,
+  .completion-modal-card,
+  .completion-confetti-piece {
     transition: none !important;
     animation: none !important;
     transform: none !important;
+  }
+
+  .completion-check-circle,
+  .completion-check-mark {
+    animation: none !important;
+    stroke-dashoffset: 0 !important;
   }
 }

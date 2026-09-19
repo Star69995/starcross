@@ -4,11 +4,13 @@ import { useAuth } from '../../providers/AuthContext';
 import { Collapse, Dropdown } from 'bootstrap'; // Import Collapse/Dropdown from bootstrap
 import Avatar from './Avatar';
 import { isAdmin } from '../../utils/permissions';
+import { useInstallPrompt } from '../../hooks/useInstallPrompt';
 
 const Navbar = () => {
     const { user, logout } = useAuth();
     const navigate = useNavigate();
     const location = useLocation();
+    const { canInstall, promptInstall } = useInstallPrompt();
     // The crossword solver hides the bottom bar so the grid/keyboard get the full
     // viewport height - a plain back-to-list action lives on that page instead.
     const isSolving = location.pathname.startsWith('/crossword/');
@@ -170,6 +172,18 @@ const Navbar = () => {
                                 תשבצים
                             </Link>
                         </li>
+                        {canInstall && (
+                            <li className="nav-item">
+                                <button
+                                    type="button"
+                                    className="nav-link"
+                                    onClick={() => { promptInstall(); hideNavbar(); }}
+                                >
+                                    <i className="bi bi-download ms-2"></i>
+                                    התקנת האפליקציה
+                                </button>
+                            </li>
+                        )}
                     </ul>
 
                     {/* User-related links */}
