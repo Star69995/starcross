@@ -11,6 +11,8 @@ project setup, and deploy instructions.
 - Bootstrap 5 + Bootstrap Icons (no Tailwind, no CSS-in-JS — see [../CLAUDE.md](../CLAUDE.md))
 - Firebase SDK (Firestore, Authentication)
 - React Router, Joi (form validation), react-toastify
+- `vite-plugin-pwa` — generates the service worker for offline caching/installability
+  (see [../README.md](../README.md#pwa--offline-support))
 
 ## Structure
 

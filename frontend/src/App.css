@@ -879,9 +879,51 @@ body {
   }
 }
 
+/* ===== About page (landing-style) ===== */
+.about-hero-icon {
+  font-size: 3rem;
+  color: var(--accent);
+}
+
+.about-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.about-step-circle {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent-light), var(--accent));
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  font-weight: 800;
+  box-shadow: 0 8px 14px rgba(29, 78, 216, 0.26);
+}
+
+.about-portfolio-card {
+  background: linear-gradient(135deg, var(--accent-light), var(--accent-dark));
+  color: #fff;
+  border-radius: var(--radius-lg);
+  padding: 40px 24px;
+  box-shadow: 0 14px 30px rgba(29, 78, 216, 0.24);
+}
+
+.about-portfolio-icon {
+  font-size: 2.4rem;
+}
+
+.about-portfolio-card p {
+  color: rgba(255, 255, 255, 0.9);
+}
+
 /* ===== Navbar ===== */
 .app-navbar {
-  background: rgba(247, 243, 234, 0.92);
+  background: rgba(238, 241, 246, 0.92);
   backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--line);
 }
@@ -908,6 +950,16 @@ body {
 .app-navbar .nav-link.active:hover {
   background: var(--deep);
   color: #fff;
+}
+
+/* The "install app" nav item (Navbar.jsx) is a <button>, not an <a> like its
+   siblings - .nav-link alone doesn't strip the browser's default button
+   chrome the way it does for anchors. */
+.app-navbar .nav-link[type="button"] {
+  background: none;
+  border: none;
+  width: 100%;
+  text-align: inherit;
 }
 
 .app-navbar .navbar-brand {
@@ -1009,18 +1061,13 @@ body {
 
 }
 
-/* Rendered by Navbar right after the fixed bottom-nav so the page content doesn't
-   sit underneath it - omitted (via isSolving) on the crossword solver, which hides
-   the bottom-nav entirely so the grid gets the full viewport height. */
-.bottom-nav-spacer {
-  display: none;
-}
-
-@media (max-width: 900px) {
-  .bottom-nav-spacer {
-    display: block;
-    height: 78px;
-  }
+/* Reserves exactly as much trailing space as the fixed bottom-nav's real
+   height (set on :root by Navbar.jsx, 0 on the crossword solver route/desktop
+   widths where the bar is hidden) - the footer is the last element on every
+   route, so this is what keeps the bar from permanently covering its last
+   row instead of just floating over blank page space. */
+.footer {
+  margin-bottom: var(--bottom-nav-height, 0px);
 }
 
 /* Docked on-screen Hebrew keyboard, shown only on the solver page (rendered
@@ -1130,6 +1177,171 @@ body {
   }
 }
 
+/* ===== Crossword completion modal ===== */
+.completion-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(20, 27, 36, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  padding: 16px;
+  animation: completionBackdropIn 0.2s ease-out;
+}
+
+@keyframes completionBackdropIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.completion-modal-card {
+  position: relative;
+  background: #fff;
+  border-radius: var(--radius-lg);
+  padding: 32px 24px 24px;
+  width: min(92vw, 380px);
+  max-height: 90vh;
+  overflow-y: auto;
+  text-align: center;
+  box-shadow: 0 20px 50px rgba(20, 27, 36, 0.3);
+  animation: completionCardIn 0.35s var(--ease-snappy);
+}
+
+@keyframes completionCardIn {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.96);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.completion-modal-close {
+  position: absolute;
+  top: 12px;
+  inset-inline-end: 12px;
+}
+
+.completion-modal-confetti {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+  pointer-events: none;
+}
+
+.completion-confetti-piece {
+  position: absolute;
+  top: -10px;
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  animation: completionConfettiFall 1.4s ease-in forwards;
+}
+
+.completion-confetti-piece-0 {
+  background: var(--accent);
+}
+
+.completion-confetti-piece-1 {
+  background: var(--success);
+}
+
+.completion-confetti-piece-2 {
+  background: var(--like);
+}
+
+.completion-confetti-piece-3 {
+  background: var(--accent-light);
+}
+
+.completion-confetti-piece-4 {
+  background: var(--highlight-tint);
+}
+
+.completion-confetti-piece-5 {
+  background: var(--deep);
+}
+
+@keyframes completionConfettiFall {
+  0% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 1;
+  }
+
+  100% {
+    transform: translateY(340px) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+.completion-modal-check {
+  width: 84px;
+  height: 84px;
+  margin: 0 auto 12px;
+  position: relative;
+}
+
+.completion-check-svg {
+  width: 100%;
+  height: 100%;
+}
+
+.completion-check-circle {
+  stroke: var(--success);
+  stroke-width: 3;
+  stroke-dasharray: 151;
+  stroke-dashoffset: 151;
+  animation: completionCircle 0.5s ease-out forwards;
+}
+
+.completion-check-mark {
+  stroke: var(--success);
+  stroke-width: 4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 34;
+  stroke-dashoffset: 34;
+  animation: completionCheck 0.35s 0.45s ease-out forwards;
+}
+
+@keyframes completionCircle {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes completionCheck {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.completion-modal-title {
+  font-weight: 800;
+  margin-bottom: 4px;
+}
+
+.completion-modal-text {
+  color: var(--muted);
+  margin-bottom: 20px;
+}
+
+.completion-modal-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
 /* Respect the OS-level "reduce motion" setting - disable the transform-based
    press/lift/hover feedback above (and the heartbeat/fade keyframes) instead
    of forcing every user through them. */
@@ -1147,9 +1359,18 @@ body {
   .hebrew-keyboard-close,
   .hebrew-keyboard-clue-nav,
   .fade-in,
-  .btn-danger .bi-heart-fill {
+  .btn-danger .bi-heart-fill,
+  .completion-modal-backdrop,
+  .completion-modal-card,
+  .completion-confetti-piece {
     transition: none !important;
     animation: none !important;
     transform: none !important;
+  }
+
+  .completion-check-circle,
+  .completion-check-mark {
+    animation: none !important;
+    stroke-dashoffset: 0 !important;
   }
 }

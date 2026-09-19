@@ -1,105 +1,119 @@
-const sections = [
+import { Link } from 'react-router-dom';
+
+const FEATURES = [
     {
-        icon: 'bi-book',
-        title: 'תיאור כללי',
-        body: (
-            <>
-                <p>
-                    Star Crossword היא פלטפורמה ליצירה, פתרון ושיתוף של תשבצים בעברית, הבנויה כ־
-                    <b> אפליקציית React</b> שמתחברת ישירות ל־<b>Firebase</b> (Firestore + Authentication)
-                    — ללא שרת מותאם אישית משלה.
-                </p>
-                <ul className="list-unstyled d-flex flex-column gap-2">
-                    <li><i className="bi bi-pencil-square text-primary ms-2"></i>יצירת תשבצים ורשימות מילים חדשים על ידי כל משתמש רשום</li>
-                    <li><i className="bi bi-puzzle text-primary ms-2"></i>פתרון תשבצים בזמן אמת עם ממשק גרפי ולוח אינטראקטיבי</li>
-                    <li><i className="bi bi-star-fill text-primary ms-2"></i>סימון תשבצים או רשימות מילים כמועדפים ולייק</li>
-                    <li><i className="bi bi-globe text-primary ms-2"></i>גלישה בתוכן ציבורי, וכן בתוכן האישי והמועדפים שלך</li>
-                    <li><i className="bi bi-key text-primary ms-2"></i>הרשמה והתחברות מאובטחות דרך Firebase Authentication (אימייל+סיסמה או גוגל)</li>
-                </ul>
-            </>
-        ),
+        icon: 'bi-pencil-square',
+        title: 'יצירת תשבצים',
+        text: 'בונים תשבץ משלכם צעד־צעד מרשימת מילים, מוסיפים רמזים, ובוחרים אם לשמור אותו כפרטי או לשתף עם כולם.',
     },
     {
-        icon: 'bi-cloud',
-        title: 'Firebase (במקום שרת)',
-        body: (
-            <>
-                <p>נבנה עם:</p>
-                <ul className="list-unstyled d-flex flex-column gap-2 mb-3">
-                    <li><i className="bi bi-database text-primary ms-2"></i>Cloud Firestore — בסיס הנתונים לתשבצים, רשימות מילים ופרופילי משתמשים</li>
-                    <li><i className="bi bi-key text-primary ms-2"></i>Firebase Authentication — ניהול משתמשים והתחברות (אימייל/סיסמה, גוגל)</li>
-                    <li><i className="bi bi-hdd-network text-primary ms-2"></i>Firebase Hosting — הגשת האתר</li>
-                    <li><i className="bi bi-file-earmark-lock text-primary ms-2"></i>Firestore Security Rules — אכיפת הרשאות (עריכה/מחיקה ליוצר בלבד, לייקים למשתמשים מחוברים, נראות ציבורית/פרטית)</li>
-                </ul>
-                <div className="card bg-body-tertiary">
-                    <div className="card-body">
-                        <b><i className="bi bi-collection text-primary ms-2"></i>אוספים עיקריים ב-Firestore:</b>
-                        <ul className="list-unstyled mt-2 mb-0">
-                            <li>פרופילי משתמשים ← users</li>
-                            <li>תשבצים ← crosswords</li>
-                            <li>רשימות מילים ← wordLists</li>
-                        </ul>
-                    </div>
-                </div>
-            </>
-        ),
+        icon: 'bi-puzzle',
+        title: 'פתרון אינטראקטיבי',
+        text: 'לוח פתירה נוח עם מקלדת עברית מובנית ומעבר בין רמזים, וההתקדמות נשמרת אוטומטית כדי לחזור בדיוק מאיפה שעצרתם.',
     },
     {
-        icon: 'bi-palette',
-        title: 'צד לקוח (Frontend)',
-        body: (
-            <>
-                <p>נבנה עם:</p>
-                <ul className="list-unstyled d-flex flex-column gap-2 mb-3">
-                    <li><i className="bi bi-code-slash text-primary ms-2"></i>React (Vite)</li>
-                    <li><i className="bi bi-bootstrap text-primary ms-2"></i>Bootstrap 5</li>
-                    <li><i className="bi bi-bootstrap-fill text-primary ms-2"></i>Bootstrap Icons</li>
-                </ul>
-                <p><b>פיצ&apos;רים עיקריים בצד לקוח:</b></p>
-                <ul className="list-unstyled d-flex flex-column gap-2">
-                    <li><i className="bi bi-phone text-primary ms-2"></i>עיצוב רספונסיבי למחשב, טאבלט וטלפון</li>
-                    <li><i className="bi bi-key text-primary ms-2"></i>התחברות + הרשמה עם ולידציית טפסים (Joi)</li>
-                    <li><i className="bi bi-arrow-repeat text-primary ms-2"></i>CRUD מלא לתשבצים ורשימות מילים</li>
-                    <li><i className="bi bi-star-fill text-primary ms-2"></i>מועדפים ולייקים נשמרים ב-Firestore</li>
-                    <li><i className="bi bi-file-earmark-text text-primary ms-2"></i>דף אודות מפורט</li>
-                    <li><i className="bi bi-search text-primary ms-2"></i>שדה חיפוש ותצוגות סינון</li>
-                    <li><i className="bi bi-shield-lock text-primary ms-2"></i>הרשאות מותנות למשתמש מחובר (יצירה, עריכה ומחיקה של תוכן אישי)</li>
-                </ul>
-            </>
-        ),
+        icon: 'bi-card-list',
+        title: 'רשימות מילים',
+        text: 'מגוון רשימות מילים מוכנות בעברית — חלופות, מקצועות, פירות וירקות ועוד — לשימוש חופשי בבניית תשבצים.',
+    },
+    {
+        icon: 'bi-star-fill',
+        title: 'מועדפים ולייקים',
+        text: 'מסמנים תשבצים ורשימות כמועדפים כדי לחזור אליהם בקלות, ומשאירים לייק לתוכן שאהבתם.',
+    },
+    {
+        icon: 'bi-globe',
+        title: 'תוכן ציבורי ואישי',
+        text: 'גולשים בתשבצים וברשימות המילים הציבוריים של כל המשתמשים, לצד התוכן האישי שיצרתם בעצמכם.',
+    },
+    {
+        icon: 'bi-shield-lock',
+        title: 'התחברות מאובטחת',
+        text: 'נרשמים ומתחברים בכמה שניות עם אימייל וסיסמה או עם חשבון גוגל.',
+    },
+];
+
+const STEPS = [
+    {
+        title: 'נרשמים או מתחברים',
+        text: 'יוצרים חשבון תוך שניות עם אימייל או גוגל — או פשוט גולשים כאורחים.',
+    },
+    {
+        title: 'בוחרים או יוצרים תשבץ',
+        text: 'מדפדפים בתשבצים הציבוריים, או בונים תשבץ חדש משלכם מרשימת מילים.',
+    },
+    {
+        title: 'פותרים ושומרים התקדמות',
+        text: 'פותרים בלוח האינטראקטיבי — ההתקדמות נשמרת אוטומטית כדי להמשיך בכל זמן.',
+    },
+    {
+        title: 'מסמנים ומשתפים',
+        text: 'מסמנים כמועדף, נותנים לייק, ושולחים לינק לחברים כדי לפתור יחד.',
     },
 ];
 
 const About = () => {
     return (
         <div className="container py-5">
-            <div className="row mb-4">
-                <div className="col">
-                    <h1>
-                        <i className="bi bi-puzzle-fill text-primary ms-2"></i>משבצת
-                    </h1>
-                    <p className="lead">
-                        פלטפורמת תשבצים אינטרנטית המאפשרת יצירה, פתרון ושיתוף של תשבצים –
-                        עם מערכת ניהול משתמשים, תמיכה בעברית (RTL), ועיצוב רספונסיבי
-                        למחשב, טאבלט ומובייל.
-                    </p>
-                </div>
+            <div className="about-hero text-center mb-5">
+                <i className="bi bi-puzzle-fill about-hero-icon"></i>
+                <h1 className="display-4 mt-3 mb-2">משבצת</h1>
+                <p className="lead text-center mb-0">
+                    פלטפורמת תשבצים בעברית ליצירה, פתרון ושיתוף — בחינם, בלי הרשמה מסובכת וללא צורך בהתקנה.
+                </p>
             </div>
 
-            <div className="row g-4">
-                {sections.map(section => (
-                    <div className="col-12" key={section.title}>
-                        <div className="card shadow-sm">
+            <h2 className="text-center mb-4">מה אפשר לעשות באתר</h2>
+            <div className="row g-4 mb-5">
+                {FEATURES.map(feature => (
+                    <div className="col-md-6 col-lg-4" key={feature.title}>
+                        <div className="card content-card h-100 shadow-sm">
                             <div className="card-body">
-                                <h3 className="card-title mb-3">
-                                    <i className={`bi ${section.icon} text-primary ms-2`}></i>
-                                    {section.title}
-                                </h3>
-                                {section.body}
+                                <span className="content-card-icon mb-3">
+                                    <i className={`bi ${feature.icon}`}></i>
+                                </span>
+                                <h3 className="card-title h5">{feature.title}</h3>
+                                <p className="text-muted mb-0">{feature.text}</p>
                             </div>
                         </div>
                     </div>
                 ))}
+            </div>
+
+            <h2 className="text-center mb-4">איך זה עובד</h2>
+            <div className="row g-4 mb-5">
+                {STEPS.map((step, index) => (
+                    <div className="col-md-6 col-lg-3" key={step.title}>
+                        <div className="about-step text-center h-100">
+                            <div className="about-step-circle">{index + 1}</div>
+                            <h3 className="h6 mt-3">{step.title}</h3>
+                            <p className="text-muted small mb-0">{step.text}</p>
+                        </div>
+                    </div>
+                ))}
+            </div>
+
+            <div className="d-flex flex-wrap justify-content-center gap-3 mb-5">
+                <Link to="/" className="btn btn-primary btn-lg">
+                    מעבר לתשבצים<i className="bi bi-arrow-left me-2"></i>
+                </Link>
+                <Link to="/wordlists" className="btn btn-primary btn-lg">
+                    מעבר לרשימות מילים<i className="bi bi-arrow-left me-2"></i>
+                </Link>
+            </div>
+
+            <div className="about-portfolio-card text-center">
+                <i className="bi bi-person-workspace about-portfolio-icon"></i>
+                <h3 className="mt-3 mb-2">האתר הזה נבנה על ידי סטאר</h3>
+                <p className="text-center mb-3">רוצים לראות עוד פרויקטים שבניתי? מוזמנים לבקר בתיק העבודות שלי.</p>
+                <a
+                    href="https://star69995.github.io/star-site/"
+                    className="btn btn-light"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                >
+                    <i className="bi bi-person-workspace ms-2"></i>לתיק העבודות שלי
+                </a>
             </div>
         </div>
     );

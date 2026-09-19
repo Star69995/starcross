@@ -102,7 +102,7 @@ const FormCard = ({
                 </div>
             )}
 
-            <div className="d-flex gap-2 mt-3">
+            <div className="d-flex justify-content-evenly gap-2 mt-3">
                 <button
                     type="submit"
                     className="btn btn-primary d-inline-flex align-items-center gap-2"

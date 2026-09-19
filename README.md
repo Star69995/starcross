@@ -79,6 +79,22 @@ npm run deploy:preview  # build:live + firebase hosting:channel:deploy preview
 npm run deploy:rules    # firestore.rules only — not part of any automated workflow
 ```
 
+## PWA / offline support
+
+The build (`vite-plugin-pwa`) generates a service worker (`dist/sw.js`) that precaches the
+app shell, so it's installable ("Add to Home Screen"/desktop install) and loads on a flaky
+connection. It registers with `autoUpdate`, so a deploy's new assets are picked up on a
+visitor's next navigation/reload without asking them to manually update. `frontend/public/manifest.webmanifest`
+(name/icons/colors) is hand-written and linked directly in `index.html` — the plugin is
+configured with `manifest: false` so it only adds the service worker on top of it, and
+doesn't generate a second manifest.
+
+On Chromium-based browsers (desktop Chrome/Edge, Android Chrome), the navbar shows an
+"התקנת האפליקציה" button once the browser fires `beforeinstallprompt` (see
+`src/hooks/useInstallPrompt.js`). iOS Safari has no equivalent event — the
+`apple-mobile-web-app-*` meta tags in `index.html` are what makes its native
+Share → "הוספה למסך הבית" open the app without Safari's chrome.
+
 ## What changed vs. the Mongo/Express version
 
 - `src/services/firebase.js` — new: Firebase SDK init.

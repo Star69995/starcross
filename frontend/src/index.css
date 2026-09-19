@@ -7,16 +7,16 @@
    --radius-* re-enable rounding (the reset below zeroes it out globally) only on the
    specific components in App.css that should have it; circles stay circles regardless. */
 :root {
-  --paper: #F7F3EA;
-  --bg-soft: #F0EAD9;
-  --ink: #241F1A;
-  --muted: #79715F;
-  --line: #E1D7C2;
-  --deep: #201B15;
+  --paper: #EEF1F6;
+  --bg-soft: #E1E7F0;
+  --ink: #1E2733;
+  --muted: #5F6C82;
+  --line: #D2DAE6;
+  --deep: #141B24;
   --accent: #1D4ED8;
   --accent-light: #3B82F6;
   --accent-dark: #1E40AF;
-  --accent-tint: #E7EEFC;
+  --accent-tint: #E4EBFB;
   --success: #0F9D6B;
   --success-tint: #DEF5EA;
   --like: #D6416A;

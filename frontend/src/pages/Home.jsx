@@ -1,5 +1,5 @@
 // pages/Home.jsx
-import { Fragment, useCallback, useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import CrosswordCard from '../components/cards/CrosswordCard'
@@ -180,25 +180,22 @@ const Home = () => {
                 </div>
             ) : (
                 <div className="row g-4">
-                    {filteredCrosswords.map((crossword, i) => (
-                        <Fragment key={crossword._id}>
-                            <div className="col-lg-4 col-md-6">
-                                <CrosswordCard crossword={crossword} onDelete={handleDeleteCrossword} showVisibilityBadge={filter !== 'all'} />
+                    {filteredCrosswords.length === 0 && (
+                        <div className="col-12 text-center py-5">
+                            <div className="text-muted">
+                                <i className="bi bi-puzzle fs-1 d-block mb-3"></i>
+                                <h4>לא נמצאו תשבצים</h4>
+                                <p>נסה לשנות את החיפוש או חזור מאוחר יותר</p>
                             </div>
-                            {i === 2 && filter === 'all' && (
-                                <div className="col-lg-4 col-md-6">
-                                    <CreateCard
-                                        to="/create-crossword"
-                                        title="יצירת תשבץ חדש"
-                                        subtitle="בנייה פשוטה בכמה צעדים"
-                                        buttonText="להתחיל"
-                                    />
-                                </div>
-                            )}
-                        </Fragment>
+                        </div>
+                    )}
+                    {filteredCrosswords.map(crossword => (
+                        <div key={crossword._id} className="col-lg-4 col-md-6">
+                            <CrosswordCard crossword={crossword} onDelete={handleDeleteCrossword} showVisibilityBadge={filter !== 'all'} />
+                        </div>
                     ))}
-                    {filter === 'all' && filteredCrosswords.length > 0 && filteredCrosswords.length < 3 && (
-                        <div className="col-lg-4 col-md-6">
+                    {filter === 'all' && (
+                        <div className={`col-lg-4 col-md-6 ${filteredCrosswords.length === 0 ? 'mx-auto' : ''}`}>
                             <CreateCard
                                 to="/create-crossword"
                                 title="יצירת תשבץ חדש"
@@ -206,27 +203,6 @@ const Home = () => {
                                 buttonText="להתחיל"
                             />
                         </div>
-                    )}
-                    {filteredCrosswords.length === 0 && (
-                        <>
-                            <div className="col-12 text-center py-5">
-                                <div className="text-muted">
-                                    <i className="bi bi-puzzle fs-1 d-block mb-3"></i>
-                                    <h4>לא נמצאו תשבצים</h4>
-                                    <p>נסה לשנות את החיפוש או חזור מאוחר יותר</p>
-                                </div>
-                            </div>
-                            {filter === 'all' && (
-                                <div className="col-lg-4 col-md-6 mx-auto">
-                                    <CreateCard
-                                        to="/create-crossword"
-                                        title="יצירת תשבץ חדש"
-                                        subtitle="בנייה פשוטה בכמה צעדים"
-                                        buttonText="להתחיל"
-                                    />
-                                </div>
-                            )}
-                        </>
                     )}
                 </div>
             )}
