@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { useInstallPrompt } from '../hooks/useInstallPrompt';
 
 const FEATURES = [
     {
@@ -53,6 +54,8 @@ const STEPS = [
 ];
 
 const About = () => {
+    const { canInstall, promptInstall } = useInstallPrompt();
+
     return (
         <div className="container py-5">
             <div className="about-hero text-center mb-5">
@@ -62,6 +65,28 @@ const About = () => {
                     פלטפורמת תשבצים בעברית ליצירה, פתרון ושיתוף — בחינם, בלי הרשמה מסובכת וללא צורך בהתקנה.
                 </p>
             </div>
+
+            {canInstall && (
+                <div className="row justify-content-center mb-5">
+                    <div className="col-md-8 col-lg-6">
+                        <div className="card content-card h-100 shadow-sm">
+                            <div className="card-body d-flex flex-column align-items-center text-center">
+                                <span className="content-card-icon mb-3">
+                                    <i className="bi bi-download"></i>
+                                </span>
+                                <h3 className="card-title h5">התקנת האפליקציה</h3>
+                                <p className="text-muted mb-3">
+                                    אפשר להתקין את משבצת על המכשיר שלכם לגישה מהירה, בדיוק כמו אפליקציה רגילה.
+                                </p>
+                                <button type="button" className="btn btn-primary" onClick={promptInstall}>
+                                    <i className="bi bi-download ms-2"></i>
+                                    התקנה
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
 
             <h2 className="text-center mb-4">מה אפשר לעשות באתר</h2>
             <div className="row g-4 mb-5">
